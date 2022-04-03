@@ -52,3 +52,8 @@ public:
 
     void receiveDigit(Digit d){}
 };
+
+class Cpu
+{
+
+};
