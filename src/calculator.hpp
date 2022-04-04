@@ -1,6 +1,9 @@
+#ifndef CALC_H
+#define CALC_H
+
 #include <iostream>
 
-enum Digit
+enum Digits
 {
     ZERO,
     ONE,
@@ -14,41 +17,53 @@ enum Digit
     NINE
 };
 
-class Display
+class Operations
 {
-public:
-    void add(Digit digit) {}
-    void clear() {}
+    char *name;
 };
 
-class Key
+class Plus : public Operations
 {
-    Keyboard *keyboard;
-    Digit digit;
-
-public:
-    Key(Digit d) : digit(d) {}
-    void press() {
-        this->keyboard->receiveDigit(this->digit);
-    }
-    void setKeyboard(Keyboard *keyboard)
-    {
-        this->keyboard = keyboard;
-    }
+    int num0;
+    int num1;
 };
 
-class Keyboard
+class Buttons
 {
-    Key *keys[200];
-    int KeysCount;
-    Cpu *cpu;
-
-public:
-    void addKey(Key *key)
-    {
-        this->keys[this->KeysCount++] = key;
-        key->setKeyboard(this);
-    }
-
-    void receiveDigit(Digit d){}
+    char *name;
+    Keyboards *keyboard;
 };
+
+class OpButtons : public Buttons
+{
+    Operations *op;
+};
+
+class DigitButtons : public Buttons
+{
+    Digits *digit;
+};
+
+class Displays
+{
+};
+
+class Keyboards
+{
+    Buttons *bt;
+    Cpus *cp;
+};
+
+class Cpus
+{
+    Displays *disp;
+};
+
+class Calculators
+{
+    Keyboards *kb;
+    Cpus *cp;
+    Displays *disp;
+};
+
+#endif
