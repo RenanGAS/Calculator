@@ -2,7 +2,9 @@
 
 int main()
 {
-    Keyboard k1;
+    Display display;
+    Cpu cpu;
+    Keyboard k1();
     Key key0(ZERO), key1(ONE);
 
     k1.addKey(&key0);

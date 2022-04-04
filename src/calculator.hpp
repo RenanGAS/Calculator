@@ -2,7 +2,7 @@
 
 enum Digit: unsigned char
 {
-    ZERO,
+    ZERO = 0,
     ONE,
     TWO,
     THREE,
@@ -16,7 +16,7 @@ enum Digit: unsigned char
 
 enum Operation: unsigned char
 {
-    PLUS,
+    PLUS = 10,
     MINUS,
     TIMES,
     DIVIDED,
@@ -26,7 +26,7 @@ enum Operation: unsigned char
 
 enum Control: unsigned char
 {
-    MEMORY,
+    MEMORY = 16,
     MEMORY_PLUS,
     MEMORY_MINUS,
     CLEAR,
@@ -39,24 +39,49 @@ class Display
 {
 public:
     void add(Digit digit) {}
+    void add(Operation op) {}
+    void add(Control command) {}
     void clear() {}
 };
 
 class Key
 {
     Keyboard *keyboard;
-    Digit digit;
+    // Digit digit;
 
 public:
-    Key(Digit d) : digit(d) {}
-    void press() {
+    // Key(Digit d) : digit(d) {}
+    /*void press() {
         this->keyboard->receiveDigit(this->digit);
-    }
+    } */
+    virtual void press() = 0;
     void setKeyboard(Keyboard *keyboard)
     {
         this->keyboard = keyboard;
     }
+};
+
+class Control_key: public Key
+{
+    Control command;
+    public:
+    Control_key(Control comm) : command(comm) {}
+
     
+};
+
+class Digit_key: public Key
+{
+    Digit digit;
+    public:
+    Digit_key(Digit d) : digit(d) {}
+};
+
+class Operation_Key: public Key
+{
+    Operation op;
+    public:
+    Operation_Key(Operation op) : op(op) {}
 };
 
 class Keyboard
@@ -66,6 +91,12 @@ class Keyboard
     Cpu *cpu;
 
 public:
+
+    Keyboard(Cpu *cpu)
+    {
+        Keyboard::cpu = cpu;
+    }
+
     void addKey(Key *key)
     {
         this->keys[this->KeysCount++] = key;
