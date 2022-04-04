@@ -1,6 +1,6 @@
 #include <iostream>
 
-enum Digit
+enum Digit: unsigned char
 {
     ZERO,
     ONE,
@@ -13,6 +13,27 @@ enum Digit
     EIGHT,
     NINE
 };
+
+enum Operation: unsigned char
+{
+    PLUS,
+    MINUS,
+    TIMES,
+    DIVIDED,
+    SQT,
+    PERCENT
+};
+
+enum Control: unsigned char
+{
+    MEMORY,
+    MEMORY_PLUS,
+    MEMORY_MINUS,
+    CLEAR,
+    EQUALS,
+    OFF
+};
+
 
 class Display
 {
@@ -35,6 +56,7 @@ public:
     {
         this->keyboard = keyboard;
     }
+    
 };
 
 class Keyboard
@@ -55,5 +77,6 @@ public:
 
 class Cpu
 {
+    Display *display;
 
 };
