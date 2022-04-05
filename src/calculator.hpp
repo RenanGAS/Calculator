@@ -38,7 +38,10 @@ enum Control: unsigned char
 class Display
 {
 public:
-    void add(Digit digit) {}
+    void add(Digit digit) 
+    {
+        std::cout << int(digit);
+    }
     void add(Operation op) {}
     void add(Control command) {}
     void clear() {}
@@ -46,13 +49,14 @@ public:
 
 class Key
 {
+protected:
     Keyboard *keyboard;
     // Digit digit;
 
 public:
     // Key(Digit d) : digit(d) {}
     /*void press() {
-        this->keyboard->receiveDigit(this->digit);
+        this->keyboard->receivereceiveDigit(this->digit);
     } */
     virtual void press() = 0;
     void setKeyboard(Keyboard *keyboard)
@@ -66,6 +70,10 @@ class Control_key: public Key
     Control command;
     public:
     Control_key(Control comm) : command(comm) {}
+    void press()
+    {
+        this->keyboard->receiveKeyPress(this->command);
+    }
 
     
 };
@@ -75,6 +83,10 @@ class Digit_key: public Key
     Digit digit;
     public:
     Digit_key(Digit d) : digit(d) {}
+    void press()
+    {
+        this->keyboard->receiveKeyPress(this->digit);
+    }
 };
 
 class Operation_Key: public Key
@@ -82,6 +94,10 @@ class Operation_Key: public Key
     Operation op;
     public:
     Operation_Key(Operation op) : op(op) {}
+    void press()
+    {
+        this->keyboard->receiveKeyPress(this->op);
+    }
 };
 
 class Keyboard
@@ -103,11 +119,16 @@ public:
         key->setKeyboard(this);
     }
 
-    void receiveDigit(Digit d){}
+    void receiveKeyPress(Digit d)
+    {}
+    void receiveKeyPress(Operation op){}
+    void receiveKeyPress(Control command){}
 };
 
 class Cpu
 {
     Display *display;
+    public:
+    Cpu(Display *display) : display(display) {}
 
 };
