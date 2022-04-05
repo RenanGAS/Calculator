@@ -2,6 +2,7 @@
 #define CALC_H
 
 #include <iostream>
+#define MAX 50
 
 enum Digits
 {
@@ -56,6 +57,8 @@ class Keyboards
 
 class Cpus
 {
+    int top;
+    int stack[MAX];
     Displays *disp;
 };
 
