@@ -44,6 +44,12 @@ public:
     }
     void add(Operation op) {}
     void add(Control command) {}
+    void show(Cpu *cpu)
+    {
+        Digit number1 = cpu->getOperand1();
+        Digit number2 = cpu->getOperand2();
+        Operation op = cpu->getOperation();
+    }
     void clear() {}
 };
 
@@ -118,9 +124,7 @@ public:
         this->keys[this->KeysCount++] = key;
         key->setKeyboard(this);
     }
-
-    void receiveKeyPress(Digit d)
-    {}
+    void receiveKeyPress(Digit d) {}
     void receiveKeyPress(Operation op){}
     void receiveKeyPress(Control command){}
 };
@@ -128,7 +132,41 @@ public:
 class Cpu
 {
     Display *display;
+    Digit arg1[8];
+    int count1 = 0;
+    Operation op;
+    Digit arg2[8];
+    int count2 = 0;
     public:
     Cpu(Display *display) : display(display) {}
+    void receiveInput(Digit d)
+    {
+        if ((count1 < 8) && !(op))
+        {
+            arg1[count1++] = d;
+        }
+        else if ((count2 < 8) && (op))
+        {
+            arg2[count2++] = d;
+        }
+        this->display->show(this);
 
+    }
+    void receiveInput(Operation op)
+    {
+
+    }
+    void receiveInput(Control command) {}
+    Digit getOperand1()
+    {
+        
+    }  
+    Digit getOperand2()
+    {
+        
+    }
+    Operation getOperation()
+    {
+        
+    }
 };
