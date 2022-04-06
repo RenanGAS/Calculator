@@ -55,12 +55,12 @@ public:
     {
         strcpy(type, Controls::type);
     }
-    const char MRC[10] = "mrc";
-    const char M_PLUS[10] = "m+";
-    const char M_MINUS[10] = "m-";
-    const char CE[10] = "ce";
-    const char EQUALS[10] = "=";
-    const char OFF[10] = "off";
+    const char MRC[10] = "mrc",
+               M_PLUS[10] = "m+",
+               M_MINUS[10] = "m-",
+               CE[10] = "ce",
+               EQUALS[10] = "=",
+               OFF[10] = "off";
 };
 
 class Buttons
