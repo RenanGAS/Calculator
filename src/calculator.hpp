@@ -2,52 +2,67 @@
 #define CALC_H
 
 #include <iostream>
+using namespace std;
+
 #define MAX 50
 
-enum Digits
+class Element
 {
-    ZERO = 0,
-    ONE,
-    TWO,
-    THREE,
-    FOUR,
-    FIVE,
-    SIX,
-    SEVEN,
-    EIGHT,
-    NINE
+    char type[30];
 };
 
-enum Operations
+class Digits : public Element
 {
-    PLUS = 10,
-    MINUS,
-    MULT,
-    DIV,
-    SQRT,
-    PERCENT
+public:
+    enum
+    {
+        ZERO = 0,
+        ONE,
+        TWO,
+        THREE,
+        FOUR,
+        FIVE,
+        SIX,
+        SEVEN,
+        EIGHT,
+        NINE
+    };
 };
 
-enum Controls
+class Operations : public Element
 {
-    MRC = 16,
-    M_PLUS,
-    M_MINUS,
-    CE,
-    EQUALS,
-    OFF
+public:
+    enum
+    {
+        PLUS = 10,
+        MINUS,
+        MULT,
+        DIV,
+        SQRT,
+        PERCENT
+    };
+};
+
+class Controls : public Element
+{
+public:
+    enum
+    {
+        MRC = 16,
+        M_PLUS,
+        M_MINUS,
+        CE,
+        EQUALS,
+        OFF
+    };
 };
 
 class Buttons
 {
-    Keyboards *kb;
-
 public:
+    Keyboards *kb;
     void virtual press() = 0;
-    void setKeyboard(Keyboards *kb)
-    {
-        this->kb = kb;
-    }
+    void setKeyboard(Keyboards *kb);
 };
 
 class OpButtons : public Buttons
@@ -55,10 +70,8 @@ class OpButtons : public Buttons
     Operations op;
 
 public:
-    void setOperation(Operations op)
-    {
-        OpButtons::op = op;
-    }
+    OpButtons(Operations op);
+    void press();
 };
 
 class DigitButtons : public Buttons
@@ -66,10 +79,8 @@ class DigitButtons : public Buttons
     Digits dg;
 
 public:
-    void setDigit(Digits dg)
-    {
-        DigitButtons::dg = dg;
-    }
+    DigitButtons(Digits dg);
+    void press();
 };
 
 class ControlButtons : public Buttons
@@ -77,22 +88,14 @@ class ControlButtons : public Buttons
     Controls ctrl;
 
 public:
-    void setControl(Controls ctrl)
-    {
-        ControlButtons::ctrl = ctrl;
-    }
+    ControlButtons(Controls ctrl);
+    void press();
 };
 
 class Displays
 {
 public:
-    void add(Digits *dg)
-    {
-    }
-    
-    void add(Controls *ctrl);
-    void add(Operations *op);
-
+    void show();
     void clear();
 };
 
@@ -103,18 +106,9 @@ class Keyboards
     Cpus *cp;
 
 public:
-    void setButtons(Buttons *bt)
-    {
-        this->bt[this->countBt++] = bt;
-        bt->setKeyboard(this);
-    }
-
-    void setCpu(Cpus *cp)
-    {
-        this->cp = cp;
-    }
-
-    void receiveDigit(Digits *dg);
+    void setButtons(Buttons *bt);
+    void setCpu(Cpus *cp);
+    void transport(Element e);
 };
 
 class Cpus
@@ -122,6 +116,10 @@ class Cpus
     int top;
     int stack[MAX];
     Displays *disp;
+
+    int *handleElem(Element *e);
+    int calculator(int *s);
+    char *toDisplay(int resp);
 };
 
 class Calculators
