@@ -1,10 +1,23 @@
-#include "calculator.h"
+#include "calculator.hpp"
+using namespace std;
 
 int main()
 {
-    Keyboard k1;
-    Key key0(ZERO), key1(ONE);
+    Keyboards *kb;
+    Buttons *bt;
 
-    k1.addKey(key0);
-    k1.addKey(key1);
+    
+
+    OpButtons *opB;
+    ControlButtons *ctrlB;
+
+    Digits *dgs;
+    DigitButtons *dgBt0;
+
+    dgBt0->setDigit(dgs[0]);
+
+    opB->setOperation();
+    bt->setKeyboard(kb);
+    kb->setButtons();
+    return EXIT_SUCCESS;
 }

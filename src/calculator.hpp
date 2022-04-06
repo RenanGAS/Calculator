@@ -1,54 +1,138 @@
+#ifndef CALC_H
+#define CALC_H
+
 #include <iostream>
+#include <cstring>
+using namespace std;
 
-enum Digit
-{
-    ZERO,
-    ONE,
-    TWO,
-    THREE,
-    FOUR,
-    FIVE,
-    SIX,
-    SEVEN,
-    EIGHT,
-    NINE
-};
+#define MAX 50
 
-class Display
+class Element
 {
 public:
-    void add(Digit digit) {}
-    void clear() {}
+    char type[30];
 };
 
-class Key
+class Digits : public Element
 {
-    Keyboard *keyboard;
-    Digit digit;
-
 public:
-    Key(Digit d) : digit(d) {}
-    void press() {
-        this->keyboard->receiveDigit(this->digit);
-    }
-    void setKeyboard(Keyboard *keyboard)
+    Digits(char *type)
     {
-        this->keyboard = keyboard;
+        strcpy(type, Digits::type);
     }
+
+    const char ZERO = '0',
+               ONE = '1',
+               TWO = '2',
+               THREE = '3',
+               FOUR = '4',
+               FIVE = '5',
+               SIX = '6',
+               SEVEN = '7',
+               EIGHT = '8',
+               NINE = '9';
 };
 
-class Keyboard
+class Operations : public Element
 {
-    Key *keys[200];
-    int KeysCount;
-    Cpu *cpu;
+public:
+    Operations(char *type)
+    {
+        strcpy(type, Operations::type);
+    }
+    const char PLUS = '+',
+               MINUS = '-',
+               MULT = '*',
+               DIV = '/',
+               PERCENT = '%';
+    //   SQRT = '',
+};
+
+class Controls : public Element
+{
+public:
+    Controls(char *type)
+    {
+        strcpy(type, Controls::type);
+    }
+    const char MRC[10] = "mrc";
+    const char M_PLUS[10] = "m+";
+    const char M_MINUS[10] = "m-";
+    const char CE[10] = "ce";
+    const char EQUALS[10] = "=";
+    const char OFF[10] = "off";
+};
+
+class Buttons
+{
+public:
+    Keyboards *kb;
+    void virtual press() = 0;
+    void setKeyboard(Keyboards *kb);
+};
+
+class OpButtons : public Buttons
+{
+    Operations::Element op;
 
 public:
-    void addKey(Key *key)
-    {
-        this->keys[this->KeysCount++] = key;
-        key->setKeyboard(this);
-    }
-
-    void receiveDigit(Digit d){}
+    OpButtons(Operations op);
+    void press();
 };
+
+class DigitButtons : public Buttons
+{
+    Digits::Element dg;
+
+public:
+    DigitButtons(Digits dg);
+    void press();
+};
+
+class ControlButtons : public Buttons
+{
+    Controls::Element ctrl;
+
+public:
+    ControlButtons(Controls ctrl);
+    void press();
+};
+
+class Displays
+{
+public:
+    void show();
+    void clear();
+};
+
+class Keyboards
+{
+    Buttons *bt[200];
+    int countBt;
+    Cpus *cp;
+
+public:
+    void setButtons(Buttons *bt);
+    void setCpu(Cpus *cp);
+    void transport(Element e);
+};
+
+class Cpus
+{
+    int top;
+    int stack[MAX];
+    Displays *disp;
+
+    int *handleElem(Element *e);
+    int calculator(int *s);
+    char *toDisplay(int resp);
+};
+
+class Calculators
+{
+    Keyboards *kb;
+    Cpus *cp;
+    Displays *disp;
+};
+
+#endif
