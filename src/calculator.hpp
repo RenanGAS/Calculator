@@ -2,59 +2,65 @@
 #define CALC_H
 
 #include <iostream>
+#include <cstring>
 using namespace std;
 
 #define MAX 50
 
 class Element
 {
+public:
     char type[30];
 };
 
 class Digits : public Element
 {
 public:
-    enum
+    Digits(char *type)
     {
-        ZERO = 0,
-        ONE,
-        TWO,
-        THREE,
-        FOUR,
-        FIVE,
-        SIX,
-        SEVEN,
-        EIGHT,
-        NINE
-    };
+        strcpy(type, Digits::type);
+    }
+
+    const char ZERO = '0',
+               ONE = '1',
+               TWO = '2',
+               THREE = '3',
+               FOUR = '4',
+               FIVE = '5',
+               SIX = '6',
+               SEVEN = '7',
+               EIGHT = '8',
+               NINE = '9';
 };
 
 class Operations : public Element
 {
 public:
-    enum
+    Operations(char *type)
     {
-        PLUS = 10,
-        MINUS,
-        MULT,
-        DIV,
-        SQRT,
-        PERCENT
-    };
+        strcpy(type, Operations::type);
+    }
+    const char PLUS = '+',
+               MINUS = '-',
+               MULT = '*',
+               DIV = '/',
+               PERCENT = '%';
+    //   SQRT = '',
 };
 
 class Controls : public Element
 {
 public:
-    enum
+    Controls(char *type)
     {
-        MRC = 16,
-        M_PLUS,
-        M_MINUS,
-        CE,
-        EQUALS,
-        OFF
-    };
+        strcpy(type, Controls::type);
+    }
+    const char MRC[10] = "mrc";
+    const char M_PLUS[10] = "m+";
+    const char M_MINUS[10] = "m-";
+    const char CE[10] = "ce";
+    const char EQUALS[10] = "=";
+    const char OFF[10] = "off";
 };
 
 class Buttons
@@ -67,7 +73,7 @@ public:
 
 class OpButtons : public Buttons
 {
-    Operations op;
+    Operations::Element op;
 
 public:
     OpButtons(Operations op);
@@ -76,7 +82,7 @@ public:
 
 class DigitButtons : public Buttons
 {
-    Digits dg;
+    Digits::Element dg;
 
 public:
     DigitButtons(Digits dg);
@@ -85,7 +91,7 @@ public:
 
 class ControlButtons : public Buttons
 {
-    Controls ctrl;
+    Controls::Element ctrl;
 
 public:
     ControlButtons(Controls ctrl);
