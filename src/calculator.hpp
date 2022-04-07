@@ -120,7 +120,6 @@ public:
     Cpu *cp;
     Display *disp;
 
-    Calculator();
     void setKeyboards(Keyboard *kb);
     void setCpus(Cpu *cp);
     void setDisplays(Display *disp);

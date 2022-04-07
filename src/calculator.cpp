@@ -178,10 +178,6 @@ void Cpu::processInput(int *stack)
     strcpy(input, s);
 }
 
-Calculator::Calculator()
-{
-}
-
 void Calculator::setKeyboards(Keyboard *kb)
 {
     this->kb = kb;
