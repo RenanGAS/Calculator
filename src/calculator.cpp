@@ -10,19 +10,24 @@ void Display::add(Control command) {}
 void Display::show(Cpu *cpu)
 {
     Digit *number1 = (cpu->getOperand1());
+    int counter1 = cpu->get_count1();
     Digit *number2 = (cpu->getOperand2());
+    int counter2 = cpu->get_count2();
     Operation op = cpu->getOperation();
+    int zero_checker = 0;
     if(op == SQTR)
     {
         std::cout << "^ (1/2)";
     }
-    for(int i = 0; i < MAX_DIGITS; i++)
+    for(int i = 0; i < counter1; i++)
     {
-        if(number1[i] != 0)
+        if((number1[i] != 0) || zero_checker) 
         {
             std::cout << int(number1[i]);
+            zero_checker = 1;
         }
     }
+    zero_checker = 0;
     std::cout << " ";
     switch (op)
     {
@@ -49,9 +54,9 @@ void Display::show(Cpu *cpu)
 
     }
     std::cout << " ";
-    for (int i = 0; i < MAX_DIGITS; i++)
+    for (int i = 0; i < counter1; i++)
     {
-        if(number2[i] != 0)
+        if((number2[i] != 0) || (zero_checker))
         {
             std::cout << int(number2[i]);
         }
@@ -120,6 +125,7 @@ void Keyboard::receiveKeyPress(Control command)
 }
 void Cpu::left_align(int arg)
 {
+
         int helper; //number of digits in the number
         if(arg == 2)
         {
@@ -160,9 +166,9 @@ int Cpu::convert_to_int(Digit *arg, int count)
     return result;
 }
 
-void Cpu::convert_to_digit(int arg, Digit *result)
+void Cpu::convert_to_digit(int num, Digit *result)
 {
-    int helper = arg;
+    int helper = num;
     int i = 0;
     while(helper != 0)
     {
@@ -224,6 +230,9 @@ void Cpu::operate()
     int operand1 = this->convert_to_int(this->arg1, this->count1);
         int operand2 = this->convert_to_int(this->arg2, this->count2);
         int result;
+        //printf("\n\nOperand1: %d", operand1);
+        //printf("\nOperand2: %d", operand2);
+        //printf("\nOperation: %d", this->op);
         switch (this->op)
         {
             case PLUS:
@@ -253,16 +262,27 @@ void Cpu::operate()
                 result = operand1 * 100;
                 break;
         }
+        //printf("\nResult: %d\n\n", result);
+        clear_array(this->arg1);
         convert_to_digit(result, this->arg1);
+        left_align(1);
         clear_array(this->arg2);
         this->count2 = 0;
         this->op = NONE;
-        this->display->show(this);
+        //this->display->show(this);
 }
 
 Digit *Cpu::getOperand1()
 {
     return this->arg1;
+}
+int Cpu::get_count1()
+{
+    return this->count1;
+}
+int Cpu::get_count2()
+{
+    return this->count2;
 }
 Digit *Cpu::getOperand2()
 {

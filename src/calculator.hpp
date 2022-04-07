@@ -138,7 +138,9 @@ class Cpu
     void receiveInput(Control command);
     void operate();
     Digit *getOperand1();
+    int get_count1();
     Digit *getOperand2();
+    int get_count2();
     Operation getOperation();
 };
 #endif
