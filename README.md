@@ -1,2 +1,2 @@
 # Calculator
-A calculator made with C++
+A object oriented calculator made with C++
