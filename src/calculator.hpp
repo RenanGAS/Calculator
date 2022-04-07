@@ -5,62 +5,42 @@
 #include <cstring>
 using namespace std;
 
-#define MAX 50
+#define MAX_STACK 17
+#define MAX_DISP 10
 
-class Element
+enum Digits
 {
-public:
-    char type[30];
+    ZERO = 0,
+    ONE,
+    TWO,
+    THREE,
+    FOUR,
+    FIVE,
+    SIX,
+    SEVEN,
+    EIGHT,
+    NINE
 };
 
-class Digits : public Element
+enum Operations
 {
-public:
-    Digits(char *type)
-    {
-        strcpy(type, Digits::type);
-    }
+    PLUS = 10,
+    MINUS,
+    MULT,
+    DIV,
+    SQRT,
+    PERCENT
 
-    const char ZERO = '0',
-               ONE = '1',
-               TWO = '2',
-               THREE = '3',
-               FOUR = '4',
-               FIVE = '5',
-               SIX = '6',
-               SEVEN = '7',
-               EIGHT = '8',
-               NINE = '9';
 };
 
-class Operations : public Element
+enum Controls
 {
-public:
-    Operations(char *type)
-    {
-        strcpy(type, Operations::type);
-    }
-    const char PLUS = '+',
-               MINUS = '-',
-               MULT = '*',
-               DIV = '/',
-               PERCENT = '%';
-    //   SQRT = '',
-};
-
-class Controls : public Element
-{
-public:
-    Controls(char *type)
-    {
-        strcpy(type, Controls::type);
-    }
-    const char MRC[10] = "mrc",
-               M_PLUS[10] = "m+",
-               M_MINUS[10] = "m-",
-               CE[10] = "ce",
-               EQUALS[10] = "=",
-               OFF[10] = "off";
+    MRC = 16,
+    M_PLUS,
+    M_MINUS,
+    CE,
+    EQUALS,
+    OFF
 };
 
 class Buttons
@@ -73,7 +53,7 @@ public:
 
 class OpButtons : public Buttons
 {
-    Operations::Element op;
+    Operations op;
 
 public:
     OpButtons(Operations op);
@@ -82,7 +62,7 @@ public:
 
 class DigitButtons : public Buttons
 {
-    Digits::Element dg;
+    Digits dg;
 
 public:
     DigitButtons(Digits dg);
@@ -91,7 +71,7 @@ public:
 
 class ControlButtons : public Buttons
 {
-    Controls::Element ctrl;
+    Controls ctrl;
 
 public:
     ControlButtons(Controls ctrl);
@@ -101,31 +81,35 @@ public:
 class Displays
 {
 public:
+    char disp[MAX_DISP];
     void show();
     void clear();
 };
 
 class Keyboards
 {
+public:
     Buttons *bt[200];
     int countBt;
     Cpus *cp;
 
-public:
     void setButtons(Buttons *bt);
     void setCpu(Cpus *cp);
-    void transport(Element e);
+    void transport(int x, Cpus *cp);
 };
 
 class Cpus
 {
+public:
     int top;
-    int stack[MAX];
+    int stack[MAX_STACK];
+    char input[MAX_DISP];
     Displays *disp;
 
-    int *handleElem(Element *e);
-    int calculator(int *s);
-    char *toDisplay(int resp);
+    void setDisplay(Displays *disp);
+    void sendDisp();
+    void receiveInput(int x, int *stack);
+    void processInput(int *stack);
 };
 
 class Calculators
