@@ -12,6 +12,51 @@ void Display::show(Cpu *cpu)
     Digit *number1 = (cpu->getOperand1());
     Digit *number2 = (cpu->getOperand2());
     Operation op = cpu->getOperation();
+    if(op == SQTR)
+    {
+        std::cout << "^ (1/2)";
+    }
+    for(int i = 0; i < MAX_DIGITS; i++)
+    {
+        if(number1[i] != 0)
+        {
+            std::cout << int(number1[i]);
+        }
+    }
+    std::cout << " ";
+    switch (op)
+    {
+        case PLUS:
+            std::cout << "+";
+            break;
+        case MINUS:
+            std::cout << "-";
+            break;
+        case TIMES:
+            std::cout << "x";
+            break;
+        case DIVIDED:
+            std::cout << "/";
+            break;
+        case SQTR:
+            std::cout << "^ (1/2)";
+            break;
+        case PERCENT:
+            std::cout << "%";
+            break;
+        default:
+            break;
+
+    }
+    std::cout << " ";
+    for (int i = 0; i < MAX_DIGITS; i++)
+    {
+        if(number2[i] != 0)
+        {
+            std::cout << int(number2[i]);
+        }
+    }
+    
 }
 void Display::clear() {}
 

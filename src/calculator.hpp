@@ -1,5 +1,5 @@
-#ifndef CALCULATOR.H
-#define CALCULATOR.H
+#ifndef CALC
+#define CALC
 
 #include <iostream>
 #include <cmath>
@@ -42,6 +42,8 @@ enum Control: unsigned char
 };
 
 
+class Cpu;
+class Keyboard;
 
 class Display
 {
@@ -50,7 +52,7 @@ public:
     void add(Operation op);
     void add(Control command);
     void show(Cpu *cpu);
-    void clear() {}
+    void clear();
 };
 
 class Key
