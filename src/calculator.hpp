@@ -8,7 +8,7 @@ using namespace std;
 #define MAX_STACK 17
 #define MAX_DISP 10
 
-enum Digits
+enum Digit
 {
     ZERO = 0,
     ONE,
@@ -22,7 +22,7 @@ enum Digits
     NINE
 };
 
-enum Operations
+enum Operation
 {
     PLUS = 10,
     MINUS,
@@ -33,7 +33,7 @@ enum Operations
 
 };
 
-enum Controls
+enum Control
 {
     MRC = 16,
     M_PLUS,
@@ -43,42 +43,42 @@ enum Controls
     OFF
 };
 
-class Buttons
+class Button
 {
 public:
-    Keyboards *kb;
+    Keyboard *kb;
     void virtual press() = 0;
-    void setKeyboard(Keyboards *kb);
+    void setKeyboard(Keyboard *kb);
 };
 
-class OpButtons : public Buttons
+class OpButton : public Button
 {
-    Operations op;
+    Operation op;
 
 public:
-    OpButtons(Operations op);
+    OpButton(Operation op);
     void press();
 };
 
-class DigitButtons : public Buttons
+class DigitButton : public Button
 {
-    Digits dg;
+    Digit dg;
 
 public:
-    DigitButtons(Digits dg);
+    DigitButton(Digit dg);
     void press();
 };
 
-class ControlButtons : public Buttons
+class ControlButton : public Button
 {
-    Controls ctrl;
+    Control ctrl;
 
 public:
-    ControlButtons(Controls ctrl);
+    ControlButton(Control ctrl);
     void press();
 };
 
-class Displays
+class Display
 {
 public:
     char disp[MAX_DISP];
@@ -86,37 +86,44 @@ public:
     void clear();
 };
 
-class Keyboards
+class Keyboard
 {
 public:
-    Buttons *bt[200];
+    Button *bt[200];
     int countBt;
-    Cpus *cp;
+    Cpu *cp;
 
-    void setButtons(Buttons *bt);
-    void setCpu(Cpus *cp);
-    void transport(int x, Cpus *cp);
+    Keyboard();
+    void setButtons(Button *bt);
+    void setCpu(Cpu *cp);
+    void transport(int x, Cpu *cp);
 };
 
-class Cpus
+class Cpu
 {
 public:
     int top;
     int stack[MAX_STACK];
     char input[MAX_DISP];
-    Displays *disp;
+    Display *disp;
 
-    void setDisplay(Displays *disp);
+    void setDisplay(Display *disp);
     void sendDisp();
-    void receiveInput(int x, int *stack);
+    void receiveInput(int x, int *stack, char *input);
     void processInput(int *stack);
 };
 
-class Calculators
+class Calculator
 {
-    Keyboards *kb;
-    Cpus *cp;
-    Displays *disp;
+public:
+    Keyboard *kb;
+    Cpu *cp;
+    Display *disp;
+
+    Calculator();
+    void setKeyboards(Keyboard *kb);
+    void setCpus(Cpu *cp);
+    void setDisplays(Display *disp);
 };
 
 #endif

@@ -3,85 +3,117 @@
 #include <sstream>
 using namespace std;
 
-// class Buttons
+// class Button
 
-void Buttons::setKeyboard(Keyboards *kb)
+void Button::setKeyboard(Keyboard *kb)
 {
     this->kb = kb;
 }
 
-// class OpButtons
+// class OpButton
 
-OpButtons::OpButtons(Operations op)
+OpButton::OpButton(Operation op)
 {
-    OpButtons::op = op;
+    OpButton::op = op;
 }
 
-void OpButtons::press()
+void OpButton::press()
 {
-    kb->transport(OpButtons::op, kb->cp);
+    kb->transport(OpButton::op, kb->cp);
 }
 
-// class DigitButtons
+// class DigitButton
 
-DigitButtons::DigitButtons(Digits dg)
+DigitButton::DigitButton(Digit dg)
 {
-    DigitButtons::dg = dg;
+    DigitButton::dg = dg;
 }
 
-void DigitButtons::press()
+void DigitButton::press()
 {
-    kb->transport(DigitButtons::dg, kb->cp);
+    kb->transport(DigitButton::dg, kb->cp);
 }
 
-// class ControlButtons
+// class ControlButton
 
-ControlButtons::ControlButtons(Controls ctrl)
+ControlButton::ControlButton(Control ctrl)
 {
-    ControlButtons::ctrl = ctrl;
+    ControlButton::ctrl = ctrl;
 }
 
-void ControlButtons::press()
+void ControlButton::press()
 {
-    kb->transport(ControlButtons::ctrl, kb->cp);
+    kb->transport(ControlButton::ctrl, kb->cp);
 }
 
-// class Displays
+// class Display
 
-void Displays::show() {}
-void Displays::clear() {}
+void Display::show() {}
+void Display::clear() {}
 
-// class Keyboards
+// class Keyboard
 
-void Keyboards::setButtons(Buttons *bt)
+Keyboard::Keyboard()
+{
+    DigitButton d0(ZERO), d1(ONE), d2(TWO), d3(THREE), d4(FOUR), d5(FIVE), d6(SIX), d7(SEVEN), d8(EIGHT), d9(NINE);
+    OpButton opPLUS(PLUS), opMINUS(MINUS), opDIV(DIV), opMULT(MULT), opSQRT(SQRT), opPERCENT(PERCENT);
+    ControlButton ctMP(M_PLUS), ctMM(M_MINUS), ctMRC(MRC), ctCE(CE), ctEQ(EQUALS), ctOFF(OFF);
+    
+    setButtons(&d0);
+    setButtons(&d1);
+    setButtons(&d2);
+    setButtons(&d3);
+    setButtons(&d4);
+    setButtons(&d5);
+    setButtons(&d6);
+    setButtons(&d7);
+    setButtons(&d8);
+    setButtons(&d9);
+
+    setButtons(&opPLUS);
+    setButtons(&opMINUS);
+    setButtons(&opDIV);
+    setButtons(&opMULT);
+    setButtons(&opSQRT);
+    setButtons(&opPERCENT);
+
+     setButtons(&ctMP);
+    setButtons(&ctMM);
+    setButtons(&ctMRC);
+    setButtons(&ctCE);
+    setButtons(&ctEQ);
+    setButtons(&ctOFF);
+}
+
+void Keyboard::setButtons(Button *bt)
 {
     this->bt[this->countBt++] = bt;
     bt->setKeyboard(this);
 }
 
-void Keyboards::setCpu(Cpus *cp)
+void Keyboard::setCpu(Cpu *cp)
 {
     this->cp = cp;
 }
 
-void Keyboards::transport(int x, Cpus *cp)
+void Keyboard::transport(int x, Cpu *cp)
 {
-    cp->receiveInput(x, cp->stack);
+    cp->receiveInput(x, cp->stack, cp->input);
 }
 
-// class Cpus
+// class Cpu
 
-void Cpus::setDisplay(Displays *disp)
+void Cpu::setDisplay(Display *disp)
 {
     this->disp = disp;
 }
 
-void Cpus::sendDisp()
+void Cpu::sendDisp()
 {
     strcpy(this->disp->disp, this->input);
 }
 
-void Cpus::receiveInput(int x, int *stack)
+void Cpu::receiveInput(int x, int *stack, char *input)
 {
     for (int i = 0; i < MAX_STACK; i++)
     {
@@ -89,7 +121,7 @@ void Cpus::receiveInput(int x, int *stack)
     }
 }
 
-void Cpus::processInput(int *stack)
+void Cpu::processInput(int *stack)
 {
     int n1 = 0, count1 = 0, n2 = 0, count2 = 0, op = 0, res = 0, countR = 0;
 
@@ -144,4 +176,21 @@ void Cpus::processInput(int *stack)
     char *s;
     ss >> s;
     strcpy(input, s);
+}
+
+Calculator::Calculator()
+{
+}
+
+void Calculator::setKeyboards(Keyboard *kb)
+{
+    this->kb = kb;
+}
+void Calculator::setCpus(Cpu *cp)
+{
+    this->cp = cp;
+}
+void Calculator::setDisplays(Display *disp)
+{
+    this->disp = disp;
 }
