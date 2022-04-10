@@ -15,10 +15,6 @@ void Display::show(Cpu *cpu)
     int counter2 = cpu->get_count2();
     Operation op = cpu->getOperation();
     int zero_checker = 0;
-    if(op == SQTR)
-    {
-        std::cout << "^ (1/2)";
-    }
     for(int i = 0; i < counter1; i++)
     {
         if((number1[i] != 0) || zero_checker) 
