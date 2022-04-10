@@ -8,7 +8,7 @@
 
 enum Digit: unsigned char
 {
-    ZERO = 0,
+    ZERO,
     ONE,
     TWO,
     THREE,
@@ -22,7 +22,7 @@ enum Digit: unsigned char
 
 enum Operation: unsigned char
 {
-    PLUS = 10,
+    PLUS,
     MINUS,
     TIMES,
     DIVIDED,
@@ -33,7 +33,7 @@ enum Operation: unsigned char
 
 enum Control: unsigned char
 {
-    MEMORY = 17,
+    MEMORY,
     MEMORY_PLUS,
     MEMORY_MINUS,
     CLEAR,
