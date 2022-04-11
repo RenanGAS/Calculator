@@ -3,7 +3,8 @@
 
 #define MAX_DIGITS 8
 
-enum Digit {ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, DOT};
+// wouldn't put error here, but on teacher's there is a switch for digits with error option 
+enum Digit {ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, ERROR};
 enum Operation {SUM, SUBTRACTION, MULTIPLICATION, DIVISION, SQRT, PERCENT, NONE};
 enum Control {CLEAR, RESET, EQUALS, MRC, MMINUS, MPLUS, OFF};
 
@@ -23,10 +24,10 @@ class Cpu{
     Digit *arg2;
     int count2;
 
-    void left_align(int arg);
-    void clear_array(Digit *array);
-    int convert_to_int(Digit *arg, int count);
-    void convert_to_digit(int arg, Digit *result);
+    void left_align(int );
+    void clear_array(Digit * );
+    int convert_to_int(Digit * , int );
+    void convert_to_digit(int , Digit * , int&);
     void call_display();
     void Operate();
   public:
@@ -40,7 +41,8 @@ class Cpu{
 
 class Key;
 
-class Keyboard{
+class Keyboard
+{
    Key* keys[200];
    int KeysCount;
    Cpu* cpu;
