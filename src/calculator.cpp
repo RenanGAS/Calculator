@@ -1,4 +1,4 @@
-#include "calculator.hpp"
+#include "calculator.h"
 #include <math.h>
 #include <sstream>
 using namespace std;
@@ -17,21 +17,32 @@ OpButton::OpButton(Operation op)
     OpButton::op = op;
 }
 
+int OpButton::getValue()
+{
+    return this->op;
+}
+
 void OpButton::press()
 {
-    kb->transport(OpButton::op, kb->cp);
+    kb->transport(this->op, kb->cp);
 }
 
 // class DigitButton
 
 DigitButton::DigitButton(Digit dg)
 {
-    DigitButton::dg = dg;
+    this->dg = dg;
+}
+
+int DigitButton::getValue()
+{
+    return this->dg;
 }
 
 void DigitButton::press()
 {
-    kb->transport(DigitButton::dg, kb->cp);
+    cout << "\nEnviando :" << dg;
+    kb->transport(this->dg, kb->cp);
 }
 
 // class ControlButton
@@ -41,24 +52,47 @@ ControlButton::ControlButton(Control ctrl)
     ControlButton::ctrl = ctrl;
 }
 
+int ControlButton::getValue()
+{
+    return this->ctrl;
+}
+
 void ControlButton::press()
 {
-    kb->transport(ControlButton::ctrl, kb->cp);
+    kb->transport(this->ctrl, kb->cp);
 }
 
 // class Display
 
-void Display::show() {}
-void Display::clear() {}
+Display::Display()
+{
+    this->disp[0] = '\0';
+    strcat(disp, "0");
+}
+
+void Display::show()
+{
+    cout << "\n"
+         << this->disp;
+    cout << "\n";
+}
+
+void Display::clear()
+{
+    this->disp[0] = '\0';
+    strcat(disp, "0");
+}
 
 // class Keyboard
 
 Keyboard::Keyboard()
 {
+    this->countBt = 0;
+
     DigitButton d0(ZERO), d1(ONE), d2(TWO), d3(THREE), d4(FOUR), d5(FIVE), d6(SIX), d7(SEVEN), d8(EIGHT), d9(NINE);
     OpButton opPLUS(PLUS), opMINUS(MINUS), opDIV(DIV), opMULT(MULT), opSQRT(SQRT), opPERCENT(PERCENT);
     ControlButton ctMP(M_PLUS), ctMM(M_MINUS), ctMRC(MRC), ctCE(CE), ctEQ(EQUALS), ctOFF(OFF);
-    
+
     setButtons(&d0);
     setButtons(&d1);
     setButtons(&d2);
@@ -77,7 +111,7 @@ Keyboard::Keyboard()
     setButtons(&opSQRT);
     setButtons(&opPERCENT);
 
-     setButtons(&ctMP);
+    setButtons(&ctMP);
     setButtons(&ctMM);
     setButtons(&ctMRC);
     setButtons(&ctCE);
@@ -96,9 +130,9 @@ void Keyboard::setCpu(Cpu *cp)
     this->cp = cp;
 }
 
-void Keyboard::transport(int x, Cpu *cp)
+char *Keyboard::sendInput(char *input, Cpu *cp)
 {
-    cp->receiveInput(x, cp->stack, cp->input);
+    cp->receiveInput(input, this);
 }
 
 // class Cpu
@@ -113,11 +147,131 @@ void Cpu::sendDisp()
     strcpy(this->disp->disp, this->input);
 }
 
-void Cpu::receiveInput(int x, int *stack, char *input)
+int Cpu::decodeNum(char *input)
 {
-    for (int i = 0; i < MAX_STACK; i++)
+    if (!strcmp(input, "0"))
     {
-        stack[i] = x;
+        return ZERO;
+    }
+    else if (!strcmp(input, "1"))
+    {
+        return ONE;
+    }
+    else if (!strcmp(input, "2"))
+    {
+        return TWO;
+    }
+    else if (!strcmp(input, "3"))
+    {
+        return THREE;
+    }
+    else if (!strcmp(input, "4"))
+    {
+        return FOUR;
+    }
+    else if (!strcmp(input, "5"))
+    {
+        return FIVE;
+    }
+    else if (!strcmp(input, "6"))
+    {
+        return SIX;
+    }
+    else if (!strcmp(input, "7"))
+    {
+        return SEVEN;
+    }
+    else if (!strcmp(input, "8"))
+    {
+        return EIGHT;
+    }
+    else if (!strcmp(input, "9"))
+    {
+        return NINE;
+    }
+
+    return -1;
+}
+
+int Cpu::decodeOp(char *input)
+{
+    if (!strcmp(input, "+"))
+    {
+        return PLUS;
+    }
+    else if (!strcmp(input, "-"))
+    {
+        return MINUS;
+    }
+    else if (!strcmp(input, "*"))
+    {
+        return MULT;
+    }
+    else if (!strcmp(input, "/"))
+    {
+        return DIV;
+    }
+
+    return -1;
+}
+
+int Cpu::decodeCtrl(char *input)
+{
+    if (!strcmp(input, "m+"))
+    {
+        return M_PLUS;
+    }
+    else if (!strcmp(input, "m-"))
+    {
+        return M_MINUS;
+    }
+    else if (!strcmp(input, "mrc"))
+    {
+        return MRC;
+    }
+    else if (!strcmp(input, "ce"))
+    {
+        return CE;
+    }
+    else if (!strcmp(input, "="))
+    {
+        return EQUALS;
+    }
+
+    return -1;
+}
+
+void Cpu::receiveInput(char *input, Keyboard *kb)
+{
+    while (strcmp(input, "off") != 0)
+    {
+        cout << "\n> ";
+        cin >> input;
+
+        if (decodeNum(input) != -1)
+        {
+            cout << "\nTESTES\n";
+            cout << "\nEntrada convertida para o inteiro: " << decodeNum(input) << "\n";
+            
+            int x = kb->bt[decodeNum(input)]->getValue();
+
+            cout << "\nDigito armazenado na posição do inteiro: " << x << "\n";
+            cout << "\nFIM\n";
+
+            kb->bt[decodeNum(input)]->press();
+        }
+        else if (decodeOp(input) != -1)
+        {
+            kb->bt[decodeOp(input)]->press();
+        }
+        else if (decodeCtrl(input) != -1)
+        {
+            kb->bt[decodeCtrl(input)]->press();
+        }
+        else
+        {
+            cout << "\nEntrada inválida\n";
+        }
     }
 }
 
@@ -158,12 +312,6 @@ void Cpu::processInput(int *stack)
         case 13:
             res = n1 / n2;
             break;
-            // case 14:
-            //     res = n1 + n2;
-            //     break;
-            // case 15:
-            //     res = n1 + n2;
-            //     break;
 
         default:
             res = -1;
@@ -178,15 +326,22 @@ void Cpu::processInput(int *stack)
     strcpy(input, s);
 }
 
-void Calculator::setKeyboards(Keyboard *kb)
+// class Calculator
+
+void Calculator::setKeyboard(Keyboard *kb)
 {
     this->kb = kb;
 }
-void Calculator::setCpus(Cpu *cp)
+void Calculator::setCpu(Cpu *cp)
 {
     this->cp = cp;
 }
-void Calculator::setDisplays(Display *disp)
+void Calculator::setDisplay(Display *disp)
 {
     this->disp = disp;
+}
+
+void Calculator::run()
+{
+   
 }

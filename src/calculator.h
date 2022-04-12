@@ -1,5 +1,4 @@
-#ifndef CALC_H
-#define CALC_H
+#pragma once
 
 #include <iostream>
 #include <cstring>
@@ -43,11 +42,14 @@ enum Control
     OFF
 };
 
+class Keyboard;
+
 class Button
 {
 public:
     Keyboard *kb;
     void virtual press() = 0;
+    int virtual getValue() = 0;
     void setKeyboard(Keyboard *kb);
 };
 
@@ -57,6 +59,7 @@ class OpButton : public Button
 
 public:
     OpButton(Operation op);
+    int getValue();
     void press();
 };
 
@@ -66,6 +69,7 @@ class DigitButton : public Button
 
 public:
     DigitButton(Digit dg);
+    int getValue();
     void press();
 };
 
@@ -75,6 +79,7 @@ class ControlButton : public Button
 
 public:
     ControlButton(Control ctrl);
+    int getValue();
     void press();
 };
 
@@ -82,9 +87,12 @@ class Display
 {
 public:
     char disp[MAX_DISP];
+    Display();
     void show();
     void clear();
 };
+
+class Cpu;
 
 class Keyboard
 {
@@ -96,6 +104,8 @@ public:
     Keyboard();
     void setButtons(Button *bt);
     void setCpu(Cpu *cp);
+
+    char *sendInput(char *input, Cpu *cp);
     void transport(int x, Cpu *cp);
 };
 
@@ -107,9 +117,13 @@ public:
     char input[MAX_DISP];
     Display *disp;
 
+    int decodeNum(char *input);
+    int decodeOp(char *input);
+    int decodeCtrl(char *input);
+    void receiveInput(char *input, Keyboard *kb);
+
     void setDisplay(Display *disp);
     void sendDisp();
-    void receiveInput(int x, int *stack, char *input);
     void processInput(int *stack);
 };
 
@@ -120,9 +134,8 @@ public:
     Cpu *cp;
     Display *disp;
 
-    void setKeyboards(Keyboard *kb);
-    void setCpus(Cpu *cp);
-    void setDisplays(Display *disp);
+    void setKeyboard(Keyboard *kb);
+    void setCpu(Cpu *cp);
+    void setDisplay(Display *disp);
+    void run();
 };
-
-#endif
