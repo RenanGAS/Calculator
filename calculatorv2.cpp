@@ -7,7 +7,7 @@
 void Display::add(Digit digit)
 {
     if (digit == ERROR) std::cout << "Error\n";
-    std::cout << int(digit);
+    else std::cout << int(digit);
 }
 void Display::add(Operation op)
 {
@@ -88,7 +88,7 @@ int Cpu::convert_to_int(Digit *arg, int count)
     }
     return result;
 }
-void Cpu::convert_to_digit(int num, Digit *result, int& count)
+int Cpu::convert_to_digit(int num, Digit *result, int& count)
 {
     int helper = num;
     int i = 0;
@@ -96,13 +96,14 @@ void Cpu::convert_to_digit(int num, Digit *result, int& count)
     {
         if(i == MAX_DIGITS) 
         {
-            result[0] = ERROR;
-            break;
+            return 1;
+            //HANDLING ERRORS
         }
         result[i++] = Digit(helper % 10);
         helper /= 10;
     }
     count = i;
+    return 0;
 }
 void Cpu::call_display()
 {
@@ -111,9 +112,7 @@ void Cpu::call_display()
     if (this->arg1[0] = ERROR)
     {
         this->display->add(ERROR);
-        this->clear_array(this->arg1);
-        //the responsability for clearing the array shouldn't be here, i guess
-        //but it's a private helper function, so the possible damage is mitigated
+        return;
     }
     for(int i = 0; i < this->count1; i++)
     {
@@ -137,11 +136,17 @@ void Cpu::call_display()
         }
     }
 }
+void Cpu::error_handle()
+{
+    clear_array(this->arg1);
+    this->arg1[0] = ERROR;
+    
+}
 void Cpu::Operate()
 {
     int operand1 = this->convert_to_int(this->arg1, this->count1);
     int operand2 = this->convert_to_int(this->arg2, this->count2);
-    int result;
+    int result = 0; //inicializing to
     //printf("\n\nOperand1: %d", operand1);
     //printf("\nOperand2: %d", operand2);
     //printf("\nOperation: %d", this->op);
@@ -156,22 +161,22 @@ void Cpu::Operate()
             break;
         case MULTIPLICATION:
             result = operand1 * operand2;
-            //TODO: check if the result is bigger than MAX_DIGITS
+            //DONE: check if the result is bigger than MAX_DIGITS
             break;
         case DIVISION:
-            result = operand1 / operand2;
-            //TODO: check if operand2 is 0
+            if(operand2 == 0) this->error_handle();
+            else result = operand1 / operand2;
+            //DONE: check if operand2 is 0
             break;
         case SQRT:
-            //TODO: check if operand1 is negative
+            //DONE: check if operand1 is negative
             if (operand1 > 0)
             {
                 result = sqrt(operand1);
             }
             else
             {
-                if(this->display != NULL)
-                    this->display->add(ERROR);
+                this->error_handle();
             }
             break;
         case NONE:
@@ -185,7 +190,10 @@ void Cpu::Operate()
     }
     //printf("\nResult: %d\n\n", result);
     clear_array(this->arg1);
-    convert_to_digit(result, this->arg1, this->count1);
+    if(convert_to_digit(result, this->arg1, this->count1))
+    {
+        this->error_handle();
+    }
     left_align(1);
     clear_array(this->arg2);
     this->count2 = 0;

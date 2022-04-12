@@ -27,8 +27,9 @@ class Cpu{
     void left_align(int );
     void clear_array(Digit * );
     int convert_to_int(Digit * , int );
-    void convert_to_digit(int , Digit * , int&);
+    int convert_to_digit(int , Digit * , int&);
     void call_display();
+    void error_handle();
     void Operate();
   public:
     Cpu();
