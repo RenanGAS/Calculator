@@ -4,16 +4,20 @@
 #define MAX_DIGITS 8
 
 // on teacher's there is a switch for digits with error option, even though it doesn't have it here
-enum Digit {ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, ERROR};
-enum Operation {ADDITION, SUBTRACTION, DIVISION, MULTIPLICATION, SQUARE_ROOT, PERCENTAGE, NONE};
+enum Digit {ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE};
+enum Operation {ADDITION, SUBTRACTION, DIVISION, MULTIPLICATION, SQUARE_ROOT, PERCENTAGE};
 enum Control {CLEAR, RESET, DECIMAL_SEPARATOR, MEMORY_READ, MEMORY_CLEAR, MEMORY_ADDITION, MEMORY_SUBTRACTION, EQUALS};
+enum Signal {POSITIVE, NEGATIVE};
+
 
 class Display
 {
   public:
     void add(Digit );
-    void add(Operation );
-    void addDecimalSeparator();
+    // void add(Operation ); não é mostrada na calculadora elgin
+    virtual void SetDecimalSeparator() = 0;
+    virtual void setSignal(Signal ) = 0;
+    virtual void setError() = 0;
     void clear();
 };
 
@@ -67,6 +71,13 @@ class Keyboard: public Receiver
 
 };
 
+class Calculator{
+  public:
+    virtual void setDisplay(Display* ) = 0;
+    virtual void setCpu(Cpu* ) = 0;
+    virtual void setKeyboard(Keyboard* ) = 0;
+};
+
 class Key
 {
    protected:
@@ -100,5 +111,6 @@ class KeyControl: public Key
       KeyControl(Control );
       void press();
 };
+
 
 #endif

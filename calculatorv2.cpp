@@ -6,44 +6,50 @@
 
 void Display::add(Digit digit)
 {
-    if (digit == ERROR) std::cout << "Error\n";
-    else std::cout << int(digit);
-}
-void Display::add(Operation op)
-{
-    switch(op)
+    switch (digit)
     {
-        case ADDITION:
-            std::cout << "+";
-            break;
-        case SUBTRACTION:
-            std::cout << "-";
-            break;
-        case MULTIPLICATION:
-            std::cout << "x";
-            break;
-        case DIVISION:
-            std::cout << "/";
-            break;
-        case SQUARE_ROOT:
-            std::cout << "^ (1/2)";
-            break;
-        case PERCENTAGE:
-            std::cout << "%";
-            break;
-        default:
-            std::cout << " ";
-            break;
-    }
+    case ZERO:
+        std::cout << "0";
+        break;
+    case ONE:
+        std::cout << "1";
+        break;
+    case TWO:
+        std::cout << "2";
+        break;
+    case THREE:
+        std::cout << "3";
+        break;
+    case FOUR:
+        std::cout << "4";
+        break;
+    case FIVE:
+        std::cout << "5";
+        break;
+    case SIX:
+        std::cout << "6";
+        break;
+    case SEVEN:
+        std::cout << "7";
+        break;
+    case EIGHT:
+        std::cout << "8";
+        break;
+    case NINE:
+        std::cout << "9";
+        break;
+    default:
+        break;
+    };
 }
 
-void Display::addDecimalSeparator()
+void Display::SetDecimalSeparator()
 {
     std::cout << ".";
 }
 void Display::clear()
 {
-    std::cout << "\n\n\n\n\n\n\n\n\n\n";
+    std::cout << "\n";
 }
 
 //Class Cpu methods
@@ -139,13 +145,9 @@ int Cpu::convert_to_digit(int num, Digit *result, int& count)
 }
 void Cpu::call_display()
 {
-    if(this->display == NULL) return;
+    //TODO: change everything
+    /* if(this->display == NULL) return;
     int zero_checker = 0;
-    if (this->arg1[0] = ERROR)
-    {
-        this->display->add(ERROR);
-        return;
-    }
     for(int i = 0; i < this->count1; i++)
     {
         if((arg1[i] != 0) || zero_checker) 
@@ -154,8 +156,7 @@ void Cpu::call_display()
             zero_checker = 1;
         }
     }
-    zero_checker = 0;
-    this->display->add(this->op);
+
     if ((this->op != NONE) && (this->op != SQUARE_ROOT))
     {
         for(int i = 0; i < this->count2; i++)
@@ -166,12 +167,13 @@ void Cpu::call_display()
                 zero_checker = 1;
             }
         }
-    }
+    } */
 }
 void Cpu::error_handle()
-{
+{   //TODO: check if it is still viable
     clear_array(this->arg1);
-    this->arg1[0] = ERROR;
+    clear_array(this->arg2);
+    if (this->display != NULL) this->display->setError();
     
 }
 void Cpu::Operate()
@@ -211,9 +213,6 @@ void Cpu::Operate()
                 this->error_handle();
             }
             break;
-        case NONE:
-            //TODO: this may happen when equal is pressed, treat appropriately
-            break;
             case PERCENTAGE:
             //DONE: check if it follows a real calculator
             //TODO: it doesn't, fix it
@@ -229,7 +228,6 @@ void Cpu::Operate()
     left_align(1);
     clear_array(this->arg2);
     this->count2 = 0;
-    this->op = NONE;
     //this->display->show(this);
 }
 Cpu::Cpu()
@@ -238,7 +236,6 @@ Cpu::Cpu()
     this->arg2 = static_cast <Digit*> (calloc(MAX_DIGITS, sizeof(Digit)));
     this->count1 = 0;
     this->count2 = 0;
-    this->op = NONE;
     this->display = NULL;
 }
 Cpu::~Cpu()
@@ -256,7 +253,7 @@ void Cpu::receiveDigit(Digit d)
     {
         this->arg1[this->count1++] = d;
     }
-    else if ((count2 < MAX_DIGITS) && (this->op != NONE))
+    else if ((count2 < MAX_DIGITS))
     {
         this->arg2[this->count2++] = d;
     }
@@ -264,15 +261,14 @@ void Cpu::receiveDigit(Digit d)
 }
 void Cpu::receiveOperation(Operation op)
 {
-    if (this->op == NONE)
+    this->op = op;
+    if (this->count1 != MAX_DIGITS)
     {
-        this->op = op;
         left_align(1);
     }
     else
     {
         this->Operate();
-        clear_array(this->arg1);
     }
     call_display();
 }
@@ -287,10 +283,7 @@ void Cpu::receiveControl(Control c)
             clear_array(this->arg2);
             this->count1 = 0;
             this->count2 = 0;
-            this->op = NONE;
             break;
-        case ERROR:
-            this->Operate();
             break;
         case MEMORY_CLEAR:
             //TODO: implement MRC
