@@ -13,7 +13,7 @@ void Display::add(Operation op)
 {
     switch(op)
     {
-        case SUM:
+        case ADDITION:
             std::cout << "+";
             break;
         case SUBTRACTION:
@@ -25,16 +25,21 @@ void Display::add(Operation op)
         case DIVISION:
             std::cout << "/";
             break;
-        case SQRT:
+        case SQUARE_ROOT:
             std::cout << "^ (1/2)";
             break;
-        case PERCENT:
+        case PERCENTAGE:
             std::cout << "%";
             break;
         default:
             std::cout << " ";
             break;
     }
+}
+
+void Display::addDecimalSeparator()
+{
+    std::cout << ".";
 }
 void Display::clear()
 {
@@ -82,9 +87,36 @@ void Cpu::clear_array(Digit *array)
 int Cpu::convert_to_int(Digit *arg, int count)
 {
     int result = 0;
+    int digit;
     for(int i = 0; i < count; i++)
     {
-        result += arg[i] * pow(10, count - i - 1);
+        switch (arg[i])
+        {
+        case ZERO:
+            digit = 0;
+        case ONE:
+            digit = 1;
+            break;
+        case TWO:
+            digit = 2;
+        case THREE:
+            digit = 3;
+        case FOUR:
+            digit = 4;
+        case FIVE:
+            digit = 5;
+        case SIX:
+            digit = 6;
+        case SEVEN:
+            digit = 7;
+        case EIGHT:
+            digit = 8;
+        case NINE:
+            digit = 9;
+        default:
+            break;
+        }
+        result += digit * pow(10, count - i - 1);
     }
     return result;
 }
@@ -124,7 +156,7 @@ void Cpu::call_display()
     }
     zero_checker = 0;
     this->display->add(this->op);
-    if ((this->op != NONE) && (this->op != SQRT))
+    if ((this->op != NONE) && (this->op != SQUARE_ROOT))
     {
         for(int i = 0; i < this->count2; i++)
         {
@@ -152,7 +184,7 @@ void Cpu::Operate()
     //printf("\nOperation: %d", this->op);
     switch (this->op)
     {
-        case SUM:
+        case ADDITION:
             result = operand1 + operand2;
             //DONE: check if the result is bigger than MAX_DIGITS
             break;
@@ -168,7 +200,7 @@ void Cpu::Operate()
             else result = operand1 / operand2;
             //DONE: check if operand2 is 0
             break;
-        case SQRT:
+        case SQUARE_ROOT:
             //DONE: check if operand1 is negative
             if (operand1 > 0)
             {
@@ -182,7 +214,7 @@ void Cpu::Operate()
         case NONE:
             //TODO: this may happen when equal is pressed, treat appropriately
             break;
-            case PERCENT:
+            case PERCENTAGE:
             //DONE: check if it follows a real calculator
             //TODO: it doesn't, fix it
             result = operand1 * 100;
@@ -257,20 +289,20 @@ void Cpu::receiveControl(Control c)
             this->count2 = 0;
             this->op = NONE;
             break;
-        case EQUALS:
+        case ERROR:
             this->Operate();
             break;
-        case MRC:
+        case MEMORY_CLEAR:
             //TODO: implement MRC
             break;
-        case MMINUS:
+        case MEMORY_SUBTRACTION:
             //TODO: implement MMINUS
             break;
-        case MPLUS:
+        case MEMORY_ADDITION:
             //TODO: implement MPLUS
             break;
-        case OFF:
-            //TODO: implement OFF
+        case MEMORY_READ:
+            //TODO: implement MEMREAD
     }
     call_display();
 }
