@@ -4,8 +4,10 @@
 
 //Class Display methods
 
+//adds a digit to the display
 void Display::add(Digit digit)
 {
+    //this is used to ensure the correct digit will be displayed even with a different order of the enum
     switch (digit)
     {
     case ZERO:
@@ -43,10 +45,30 @@ void Display::add(Digit digit)
     };
 }
 
+//adds a decimal separator to the display
 void Display::SetDecimalSeparator()
 {
     std::cout << ".";
 }
+
+//Sets the signal of the number to be displayed
+ void Display::setSignal(Signal signal)
+ {
+        switch (signal)
+        {
+        case POSITIVE:
+            //the calculator treats the absence of signal as positive
+            break;
+        case NEGATIVE:
+            std::cout << "-";
+            break;
+        default:
+            break;
+        };
+ }
+
+
+//clears the display
 void Display::clear()
 {
     std::cout << "\n";
@@ -54,6 +76,7 @@ void Display::clear()
 
 //Class Cpu methods
 
+//makes the number "complete" as in ready to operate
 void Cpu::left_align(int arg)
 {
     int* count;
@@ -83,6 +106,8 @@ void Cpu::left_align(int arg)
     if(arg == 2) this->count2 = MAX_DIGITS;
     else this->count1 = MAX_DIGITS;
 }
+
+//clears an array of digits OBS: this method does not clear the count of the array currently
 void Cpu::clear_array(Digit *array)
 {
     for(int i = 0; i < MAX_DIGITS; i++)
@@ -90,6 +115,8 @@ void Cpu::clear_array(Digit *array)
         array[i] = ZERO;
     }
 }
+
+//converts a finished array of digits to a number
 int Cpu::convert_to_int(Digit *arg, int count)
 {
     int result = 0;
@@ -126,6 +153,8 @@ int Cpu::convert_to_int(Digit *arg, int count)
     }
     return result;
 }
+
+//converts a number to an array of digits and returns the 1 if the number is too big
 int Cpu::convert_to_digit(int num, Digit *result, int& count)
 {
     int helper = num;
@@ -143,6 +172,8 @@ int Cpu::convert_to_digit(int num, Digit *result, int& count)
     count = i;
     return 0;
 }
+
+//contains all the logic to call the display methods
 void Cpu::call_display()
 {
     //TODO: change everything
@@ -169,13 +200,18 @@ void Cpu::call_display()
         }
     } */
 }
+
+//handles errors and displays them
 void Cpu::error_handle()
-{   //TODO: check if it is still viable
+{   //TODO: check how elgin does it
     clear_array(this->arg1);
     clear_array(this->arg2);
+    //TODO: check if the error should be displayed at this moment or later
     if (this->display != NULL) this->display->setError();
     
 }
+
+//takes the numbers and the operation and performs the operation
 void Cpu::Operate()
 {
     int operand1 = this->convert_to_int(this->arg1, this->count1);
@@ -230,6 +266,8 @@ void Cpu::Operate()
     this->count2 = 0;
     //this->display->show(this);
 }
+
+//constructs the cpu
 Cpu::Cpu()
 {
     this->arg1 = static_cast <Digit*> (calloc(MAX_DIGITS, sizeof(Digit)));
@@ -238,15 +276,21 @@ Cpu::Cpu()
     this->count2 = 0;
     this->display = NULL;
 }
+
+//destructs the cpu and frees the dinamically allocated arrays
 Cpu::~Cpu()
 {
     free(this->arg1);
     free(this->arg2);
 }
+
+//connects a display to the cpu
 void Cpu::setDisplay(Display* display)
 {
     this->display = display;
 }
+
+//contains the logic to receive the digits and put them in the correct array
 void Cpu::receiveDigit(Digit d)
 {
     if ((this->count1 < MAX_DIGITS))
@@ -259,9 +303,12 @@ void Cpu::receiveDigit(Digit d)
     }
     call_display();
 }
+
+//contains the logic to receive the operations and operate if needed
 void Cpu::receiveOperation(Operation op)
 {
     this->op = op;
+    //TODO: check if change is needed to accomodate floats
     if (this->count1 != MAX_DIGITS)
     {
         left_align(1);
@@ -272,6 +319,8 @@ void Cpu::receiveOperation(Operation op)
     }
     call_display();
 }
+
+//receive the control digit and treat appropriately
 void Cpu::receiveControl(Control c)
 {
     switch (c)
@@ -283,6 +332,7 @@ void Cpu::receiveControl(Control c)
             clear_array(this->arg2);
             this->count1 = 0;
             this->count2 = 0;
+            //TODO: make the changes needed to acommodate floats
             break;
             break;
         case MEMORY_CLEAR:
