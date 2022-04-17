@@ -29,15 +29,26 @@ void Cpu::left_align(int arg)
 		return;
 	}
 
-	for (int i = 0; i < helper; i++) //transfers the numbers to the rightmost side
-	{
-		this->arg1[MAX_DIGITS - helper + i] = array[i];
-		this->arg1[i] = ZERO;
-	}
 	if (arg == 2)
+	{
+		for (int i = 0; i < helper; i++) //transfers the numbers to the rightmost side
+		{
+			this->arg2[MAX_DIGITS - helper + i] = array[i];
+			this->arg2[i] = ZERO;
+		}
+
 		this->count2 = MAX_DIGITS;
+	}
 	else
+	{
+		for (int i = 0; i < helper; i++)
+		{
+			this->arg1[MAX_DIGITS - helper + i] = array[i];
+			this->arg1[i] = ZERO;
+		}
+
 		this->count1 = MAX_DIGITS;
+	}
 }
 
 //clears an array of digits OBS: this method does not clear the count of the array currently
@@ -252,7 +263,7 @@ void Cpu::receiveDigit(Digit d)
 	{
 		this->arg2[this->count2++] = d;
 	}
-	
+
 	call_display();
 }
 
@@ -265,11 +276,6 @@ void Cpu::receiveOperation(Operation op)
 	{
 		left_align(1);
 	}
-	else // TODO: think in how we'll make the program to wait the second operand and calculate the result
-	{
-		left_align(2);
-		Operate();
-	}
 
 	call_display();
 }
@@ -280,6 +286,8 @@ void Cpu::receiveControl(Control c)
 	switch (c)
 	{
 	case EQUALS:
+		left_align(2);
+		Operate();
 		break;
 	case CLEAR:
 		//TODO: implement clear
@@ -302,6 +310,8 @@ void Cpu::receiveControl(Control c)
 		break;
 	case MEMORY_READ:
 		//TODO: implement MEMREAD
+		break;
+	default:
 		break;
 	}
 
