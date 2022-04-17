@@ -473,5 +473,3 @@ void KeyControl::press()
 {
 	this->receiver->receiveControl(this->control);
 }
-
-
