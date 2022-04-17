@@ -7,38 +7,43 @@
 //makes the number "complete" as in ready to operate
 void Cpu::left_align(int arg)
 {
-	int* count;
-	Digit** array;
-	int* helper;
-	if(arg == 2)
+	int count;
+	Digit *array;
+	int helper;
+
+	if (arg == 2)
 	{
-		*helper = this->count2; //number of digits in the number
-		* array = this->arg2;
-		*count = this->count2;
+		helper = this->count2; //number of digits in the number
+		array = this->arg2;
+		count = this->count2;
 	}
 	else
 	{
-		*helper = this->count1;
-		* array = this->arg1;
-		*count = this->count1;
+		helper = this->count1;
+		array = this->arg1;
+		count = this->count1;
 	}
-	if (*count + 1 > MAX_DIGITS)
+
+	if (count + 1 > MAX_DIGITS)
 	{
 		return;
 	}
-	for(int i = 0; i < *helper; i++) //transfers the numbers to the rightmost side
+
+	for (int i = 0; i < helper; i++) //transfers the numbers to the rightmost side
 	{
-		*array[MAX_DIGITS - *helper + i] = *array[i];
-		*array[i] = ZERO;
+		this->arg1[MAX_DIGITS - helper + i] = array[i];
+		this->arg1[i] = ZERO;
 	}
-	if(arg == 2) this->count2 = MAX_DIGITS;
-	else this->count1 = MAX_DIGITS;
+	if (arg == 2)
+		this->count2 = MAX_DIGITS;
+	else
+		this->count1 = MAX_DIGITS;
 }
 
 //clears an array of digits OBS: this method does not clear the count of the array currently
 void Cpu::clear_array(Digit *array)
 {
-	for(int i = 0; i < MAX_DIGITS; i++)
+	for (int i = 0; i < MAX_DIGITS; i++)
 	{
 		array[i] = ZERO;
 	}
@@ -49,31 +54,40 @@ int Cpu::convert_to_int(Digit *arg, int count)
 {
 	int result = 0;
 	int digit;
-	for(int i = 0; i < count; i++)
+	for (int i = 0; i < count; i++)
 	{
 		switch (arg[i])
 		{
 		case ZERO:
 			digit = 0;
+			break;
 		case ONE:
 			digit = 1;
 			break;
 		case TWO:
 			digit = 2;
+			break;
 		case THREE:
 			digit = 3;
+			break;
 		case FOUR:
 			digit = 4;
+			break;
 		case FIVE:
 			digit = 5;
+			break;
 		case SIX:
 			digit = 6;
+			break;
 		case SEVEN:
 			digit = 7;
+			break;
 		case EIGHT:
 			digit = 8;
+			break;
 		case NINE:
 			digit = 9;
+			break;
 		default:
 			break;
 		}
@@ -83,13 +97,13 @@ int Cpu::convert_to_int(Digit *arg, int count)
 }
 
 //converts a number to an array of digits and returns the 1 if the number is too big
-int Cpu::convert_to_digit(int num, Digit *result, int& count)
+int Cpu::convert_to_digit(int num, Digit *result, int &count)
 {
 	int helper = num;
 	int i = 0;
-	while(helper != 0)
+	while (helper != 0)
 	{
-		if(i == MAX_DIGITS) 
+		if (i == MAX_DIGITS)
 		{
 			return 1;
 			//HANDLING ERRORS
@@ -131,12 +145,12 @@ void Cpu::call_display()
 
 //handles errors and displays them
 void Cpu::error_handle()
-{   //TODO: check how elgin does it
+{ //TODO: check how elgin does it
 	clear_array(this->arg1);
 	clear_array(this->arg2);
 	//TODO: check if the error should be displayed at this moment or later
-	if (this->display != NULL) this->display->setError();
-	
+	if (this->display != NULL)
+		this->display->setError();
 }
 
 //takes the numbers and the operation and performs the operation
@@ -150,42 +164,44 @@ void Cpu::Operate()
 	//printf("\nOperation: %d", this->op);
 	switch (this->op)
 	{
-		case ADDITION:
-			result = operand1 + operand2;
-			//DONE: check if the result is bigger than MAX_DIGITS
-			break;
-		case SUBTRACTION:
-			result = operand1 - operand2;
-			break;
-		case MULTIPLICATION:
-			result = operand1 * operand2;
-			//DONE: check if the result is bigger than MAX_DIGITS
-			break;
-		case DIVISION:
-			if(operand2 == 0) this->error_handle();
-			else result = operand1 / operand2;
-			//DONE: check if operand2 is 0
-			break;
-		case SQUARE_ROOT:
-			//DONE: check if operand1 is negative
-			if (operand1 > 0)
-			{
-				result = sqrt(operand1);
-			}
-			else
-			{
-				this->error_handle();
-			}
-			break;
-			case PERCENTAGE:
-			//DONE: check if it follows a real calculator
-			//TODO: it doesn't, fix it
-			result = operand1 * 100;
-			break;
+	case ADDITION:
+		result = operand1 + operand2;
+		//DONE: check if the result is bigger than MAX_DIGITS
+		break;
+	case SUBTRACTION:
+		result = operand1 - operand2;
+		break;
+	case MULTIPLICATION:
+		result = operand1 * operand2;
+		//DONE: check if the result is bigger than MAX_DIGITS
+		break;
+	case DIVISION:
+		if (operand2 == 0)
+			this->error_handle();
+		else
+			result = operand1 / operand2;
+		//DONE: check if operand2 is 0
+		break;
+	case SQUARE_ROOT:
+		//DONE: check if operand1 is negative
+		if (operand1 > 0)
+		{
+			result = sqrt(operand1);
+		}
+		else
+		{
+			this->error_handle();
+		}
+		break;
+	case PERCENTAGE:
+		//DONE: check if it follows a real calculator
+		//TODO: it doesn't, fix it
+		result = operand1 * 100;
+		break;
 	}
 	//printf("\nResult: %d\n\n", result);
 	clear_array(this->arg1);
-	if(convert_to_digit(result, this->arg1, this->count1))
+	if (convert_to_digit(result, this->arg1, this->count1))
 	{
 		this->error_handle();
 	}
@@ -198,8 +214,8 @@ void Cpu::Operate()
 //constructs the cpu
 Cpu::Cpu()
 {
-	this->arg1 = static_cast <Digit*> (calloc(MAX_DIGITS, sizeof(Digit)));
-	this->arg2 = static_cast <Digit*> (calloc(MAX_DIGITS, sizeof(Digit)));
+	this->arg1 = static_cast<Digit *>(calloc(MAX_DIGITS, sizeof(Digit)));
+	this->arg2 = static_cast<Digit *>(calloc(MAX_DIGITS, sizeof(Digit)));
 	this->count1 = 0;
 	this->count2 = 0;
 	this->display = NULL;
@@ -213,7 +229,7 @@ Cpu::~Cpu()
 }
 
 //connects a display to the cpu
-void Cpu::setDisplay(Display* display)
+void Cpu::setDisplay(Display *display)
 {
 	this->display = display;
 }
@@ -253,28 +269,28 @@ void Cpu::receiveControl(Control c)
 {
 	switch (c)
 	{
-		case CLEAR:
-			//TODO: implement clear
-			break;
-		case RESET:
-			clear_array(this->arg1);
-			clear_array(this->arg2);
-			this->count1 = 0;
-			this->count2 = 0;
-			//TODO: make the changes needed to acommodate floats
-			break;
-		case MEMORY_CLEAR:
-			//TODO: implement MRC
-			break;
-		case MEMORY_SUBTRACTION:
-			//TODO: implement MMINUS
-			break;
-		case MEMORY_ADDITION:
-			//TODO: implement MPLUS
-			break;
-		case MEMORY_READ:
-			//TODO: implement MEMREAD
-			break;
+	case CLEAR:
+		//TODO: implement clear
+		break;
+	case RESET:
+		clear_array(this->arg1);
+		clear_array(this->arg2);
+		this->count1 = 0;
+		this->count2 = 0;
+		//TODO: make the changes needed to acommodate floats
+		break;
+	case MEMORY_CLEAR:
+		//TODO: implement MRC
+		break;
+	case MEMORY_SUBTRACTION:
+		//TODO: implement MMINUS
+		break;
+	case MEMORY_ADDITION:
+		//TODO: implement MPLUS
+		break;
+	case MEMORY_READ:
+		//TODO: implement MEMREAD
+		break;
 	}
 	call_display();
 }
