@@ -118,12 +118,14 @@ int Cpu::convert_to_digit(int num, Digit *result, int &count)
 //contains all the logic to call the display methods
 void Cpu::call_display()
 {
-	//TODO: change everything
-	/* if(this->display == NULL) return;
+	if (this->display == NULL)
+		return;
+
 	int zero_checker = 0;
-	for(int i = 0; i < this->count1; i++)
+
+	for (int i = 0; i < this->count1; i++)
 	{
-		if((arg1[i] != 0) || zero_checker) 
+		if ((arg1[i] != 0) || zero_checker)
 		{
 			this->display->add(arg1[i]);
 			zero_checker = 1;
@@ -132,15 +134,15 @@ void Cpu::call_display()
 
 	if ((this->op != NONE) && (this->op != SQUARE_ROOT))
 	{
-		for(int i = 0; i < this->count2; i++)
+		for (int i = 0; i < this->count2; i++)
 		{
-			if((arg2[i] != 0) || zero_checker) 
+			if ((arg2[i] != 0) || zero_checker)
 			{
 				this->display->add(arg2[i]);
 				zero_checker = 1;
 			}
 		}
-	} */
+	}
 }
 
 //handles errors and displays them
@@ -199,16 +201,20 @@ void Cpu::Operate()
 		result = operand1 * 100;
 		break;
 	}
-	//printf("\nResult: %d\n\n", result);
+
 	clear_array(this->arg1);
+
 	if (convert_to_digit(result, this->arg1, this->count1))
 	{
 		this->error_handle();
 	}
+
 	left_align(1);
+
 	clear_array(this->arg2);
 	this->count2 = 0;
-	//this->display->show(this);
+
+	call_display();
 }
 
 //constructs the cpu
@@ -216,6 +222,7 @@ Cpu::Cpu()
 {
 	this->arg1 = static_cast<Digit *>(calloc(MAX_DIGITS, sizeof(Digit)));
 	this->arg2 = static_cast<Digit *>(calloc(MAX_DIGITS, sizeof(Digit)));
+	this->op = NONE;
 	this->count1 = 0;
 	this->count2 = 0;
 	this->display = NULL;
@@ -245,6 +252,7 @@ void Cpu::receiveDigit(Digit d)
 	{
 		this->arg2[this->count2++] = d;
 	}
+	
 	call_display();
 }
 
@@ -259,8 +267,10 @@ void Cpu::receiveOperation(Operation op)
 	}
 	else
 	{
-		this->Operate();
+		left_align(2);
+		Operate();
 	}
+
 	call_display();
 }
 
@@ -269,6 +279,8 @@ void Cpu::receiveControl(Control c)
 {
 	switch (c)
 	{
+	case EQUALS:
+		break;
 	case CLEAR:
 		//TODO: implement clear
 		break;
@@ -292,5 +304,6 @@ void Cpu::receiveControl(Control c)
 		//TODO: implement MEMREAD
 		break;
 	}
+
 	call_display();
 }

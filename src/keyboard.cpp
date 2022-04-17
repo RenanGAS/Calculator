@@ -20,7 +20,6 @@ void Keyboard::setCpu(Cpu* cpu)
 //Adds a key to the keyboard and updates the counter
 void Keyboard::addKey(Key* key)
 {
-	std::cout << "Key count is:" << this->KeysCount << std::endl;
 	if(this->KeysCount < 200)
 	{
 		this->keys[this->KeysCount++] = key;
