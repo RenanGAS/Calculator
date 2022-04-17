@@ -6,8 +6,9 @@ int main()
     Display display;
     Cpu cpu;
     Keyboard k1;
-    KeyDigit key0(TWO), key1(ONE);
-    KeyOperation key2(ADDITION);
+    KeyDigit key0(ZERO), key1(ONE), key2(TWO), key3(THREE), key4(FOUR), key5(FIVE), key6(SIX), key7(SEVEN), key8(EIGHT), key9(NINE);
+    KeyOperation key10(ADDITION), key11(SUBTRACTION), key12(DIVISION), key13(MULTIPLICATION), key14(SQUARE_ROOT), key15(PERCENTAGE);
+    KeyControl key16(EQUALS);
 
     k1.setCpu(&cpu);
     cpu.setDisplay(&display);
@@ -15,15 +16,29 @@ int main()
     k1.addKey(&key0);
     k1.addKey(&key1);
     k1.addKey(&key2);
+    k1.addKey(&key3);
+    k1.addKey(&key4);
+    k1.addKey(&key5);
+    k1.addKey(&key6);
+    k1.addKey(&key7);
+    k1.addKey(&key8);
+    k1.addKey(&key9);
+    k1.addKey(&key10);
+    k1.addKey(&key11);
+    k1.addKey(&key12);
+    k1.addKey(&key13);
+    k1.addKey(&key14);
+    k1.addKey(&key15);
+    k1.addKey(&key16);
     
-    key0.press();
-    std::cout << "   .1\n";
-    //check problem here
-    key2.press();
-    std::cout << "   .2\n";
     key1.press();
-    std::cout << "   .3\n";
+    std::cout << "       .1\n";
+    key3.press();
+    std::cout << "       .2\n";
+    key10.press();
+    std::cout << "       .3\n";
     key2.press();
-    std::cout << "   .4\n";
-
+    std::cout << "       .4\n";
+    key16.press();
+    std::cout << "       .5\n";
 }
