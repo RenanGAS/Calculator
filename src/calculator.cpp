@@ -67,6 +67,12 @@ void Display::setSignal(Signal signal)
 	};
 }
 
+//Sets a error message
+void Display::setError()
+{
+	std::cout << "Error" << std::endl;
+}
+
 //clears the display
 void Display::clear()
 {
@@ -326,13 +332,13 @@ void Cpu::receiveControl(Control c)
 	{
 		case CLEAR:
 			//TODO: implement clear
+			break;
 		case RESET:
 			clear_array(this->arg1);
 			clear_array(this->arg2);
 			this->count1 = 0;
 			this->count2 = 0;
 			//TODO: make the changes needed to acommodate floats
-			break;
 			break;
 		case MEMORY_CLEAR:
 			//TODO: implement MRC
@@ -345,11 +351,19 @@ void Cpu::receiveControl(Control c)
 			break;
 		case MEMORY_READ:
 			//TODO: implement MEMREAD
+			break;
 	}
 	call_display();
 }
 
 //Class Keyboard methods
+
+//constructs the keyboard
+Keyboard::Keyboard()
+{
+	this->cpu = NULL;
+	this->KeysCount = 0;
+}
 
 //Sets the cpu for a keyboard
 void Keyboard::setCpu(Cpu* cpu)
@@ -360,7 +374,16 @@ void Keyboard::setCpu(Cpu* cpu)
 //Adds a key to the keyboard and updates the counter
 void Keyboard::addKey(Key* key)
 {
-	this->keys[this->KeysCount++] = key;
+	std::cout << "Key count is:" << this->KeysCount << std::endl;
+	if(this->KeysCount < 200)
+	{
+		this->keys[this->KeysCount++] = key;
+		key->setReceiver(this);
+	}
+	else
+	{
+		std::cout << "Keyboard is full" << std::endl;
+	}
 }
 
 //Passes digits to the cpu
@@ -411,6 +434,12 @@ void Key::setReceiver(Receiver* receiver)
 
 //Class KeyDigit methods
 
+//constructs a key digit
+KeyDigit::KeyDigit(Digit d)
+{
+	this->digit = d;
+}
+
 //Sends a digit to the receiver
 void KeyDigit::press()
 {
@@ -419,6 +448,12 @@ void KeyDigit::press()
 
 //Class KeyOperation methods
 
+//constructs a key operation
+KeyOperation::KeyOperation(Operation op)
+{
+	this->operation = op;
+}
+
 //Sends a operation to the receiver
 void KeyOperation::press()
 {
@@ -426,6 +461,12 @@ void KeyOperation::press()
 }
 
 //Class KeyControl methods
+
+//constructs a key control
+KeyControl::KeyControl(Control c)
+{
+	this->control = c;
+}
 
 //Sends a control to the receiver
 void KeyControl::press()

@@ -11,11 +11,14 @@ int main()
 
     k1.setCpu(&cpu);
     cpu.setDisplay(&display);
+
     k1.addKey(&key0);
     k1.addKey(&key1);
     k1.addKey(&key2);
+    
     key0.press();
     std::cout << "   .1\n";
+    //check problem here
     key2.press();
     std::cout << "   .2\n";
     key1.press();
