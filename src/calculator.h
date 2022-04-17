@@ -15,9 +15,9 @@ class Display
 	public:
 		void add(Digit );
 		// void add(Operation ); não é mostrada na calculadora elgin
-		virtual void SetDecimalSeparator() = 0;
-		virtual void setSignal(Signal ) = 0;
-		virtual void setError() = 0;
+		 void SetDecimalSeparator();
+		 void setSignal(Signal );
+		 void setError();
 		void clear();
 };
 
