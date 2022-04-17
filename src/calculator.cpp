@@ -1,347 +1,475 @@
 #include "calculator.h"
-#include <math.h>
-#include <sstream>
-using namespace std;
+#include <iostream>
+#include <cmath>
 
-// class Button
+//Class Display methods
 
-void Button::setKeyboard(Keyboard *kb)
+//adds a digit to the display
+void Display::add(Digit digit)
 {
-    this->kb = kb;
+	//this is used to ensure the correct digit will be displayed even with a different order of the enum
+	switch (digit)
+	{
+		case ZERO:
+			std::cout << "0";
+			break;
+		case ONE:
+			std::cout << "1";
+			break;
+		case TWO:
+			std::cout << "2";
+			break;
+		case THREE:
+			std::cout << "3";
+			break;
+		case FOUR:
+			std::cout << "4";
+			break;
+		case FIVE:
+			std::cout << "5";
+			break;
+		case SIX:
+			std::cout << "6";
+			break;
+		case SEVEN:
+			std::cout << "7";
+			break;
+		case EIGHT:
+			std::cout << "8";
+			break;
+		case NINE:
+			std::cout << "9";
+			break;
+		default:
+			break;
+	};
 }
 
-// class OpButton
-
-OpButton::OpButton(Operation op)
+//adds a decimal separator to the display
+void Display::SetDecimalSeparator()
 {
-    OpButton::op = op;
+	std::cout << ".";
 }
 
-int OpButton::getValue()
+//Sets the signal of the number to be displayed
+void Display::setSignal(Signal signal)
 {
-    return this->op;
+	switch (signal)
+	{
+	case POSITIVE:
+		//the calculator treats the absence of signal as positive
+		break;
+	case NEGATIVE:
+		std::cout << "-";
+		break;
+	default:
+		break;
+	};
 }
 
-void OpButton::press()
+//Sets a error message
+void Display::setError()
 {
-    kb->transport(this->op, kb->cp);
+	std::cout << "Error" << std::endl;
 }
 
-// class DigitButton
-
-DigitButton::DigitButton(Digit dg)
-{
-    this->dg = dg;
-}
-
-int DigitButton::getValue()
-{
-    return this->dg;
-}
-
-void DigitButton::press()
-{
-    cout << "\nEnviando :" << dg;
-    kb->transport(this->dg, kb->cp);
-}
-
-// class ControlButton
-
-ControlButton::ControlButton(Control ctrl)
-{
-    ControlButton::ctrl = ctrl;
-}
-
-int ControlButton::getValue()
-{
-    return this->ctrl;
-}
-
-void ControlButton::press()
-{
-    kb->transport(this->ctrl, kb->cp);
-}
-
-// class Display
-
-Display::Display()
-{
-    this->disp[0] = '\0';
-    strcat(disp, "0");
-}
-
-void Display::show()
-{
-    cout << "\n"
-         << this->disp;
-    cout << "\n";
-}
-
+//clears the display
 void Display::clear()
 {
-    this->disp[0] = '\0';
-    strcat(disp, "0");
+	std::cout << "\n";
 }
 
-// class Keyboard
+//Class Cpu methods
 
+//makes the number "complete" as in ready to operate
+void Cpu::left_align(int arg)
+{
+	int* count;
+	Digit** array;
+	int* helper;
+	if(arg == 2)
+	{
+		*helper = this->count2; //number of digits in the number
+		* array = this->arg2;
+		*count = this->count2;
+	}
+	else
+	{
+		*helper = this->count1;
+		* array = this->arg1;
+		*count = this->count1;
+	}
+	if (*count + 1 > MAX_DIGITS)
+	{
+		return;
+	}
+	for(int i = 0; i < *helper; i++) //transfers the numbers to the rightmost side
+	{
+		*array[MAX_DIGITS - *helper + i] = *array[i];
+		*array[i] = ZERO;
+	}
+	if(arg == 2) this->count2 = MAX_DIGITS;
+	else this->count1 = MAX_DIGITS;
+}
+
+//clears an array of digits OBS: this method does not clear the count of the array currently
+void Cpu::clear_array(Digit *array)
+{
+	for(int i = 0; i < MAX_DIGITS; i++)
+	{
+		array[i] = ZERO;
+	}
+}
+
+//converts a finished array of digits to a number
+int Cpu::convert_to_int(Digit *arg, int count)
+{
+	int result = 0;
+	int digit;
+	for(int i = 0; i < count; i++)
+	{
+		switch (arg[i])
+		{
+		case ZERO:
+			digit = 0;
+		case ONE:
+			digit = 1;
+			break;
+		case TWO:
+			digit = 2;
+		case THREE:
+			digit = 3;
+		case FOUR:
+			digit = 4;
+		case FIVE:
+			digit = 5;
+		case SIX:
+			digit = 6;
+		case SEVEN:
+			digit = 7;
+		case EIGHT:
+			digit = 8;
+		case NINE:
+			digit = 9;
+		default:
+			break;
+		}
+		result += digit * pow(10, count - i - 1);
+	}
+	return result;
+}
+
+//converts a number to an array of digits and returns the 1 if the number is too big
+int Cpu::convert_to_digit(int num, Digit *result, int& count)
+{
+	int helper = num;
+	int i = 0;
+	while(helper != 0)
+	{
+		if(i == MAX_DIGITS) 
+		{
+			return 1;
+			//HANDLING ERRORS
+		}
+		result[i++] = Digit(helper % 10);
+		helper /= 10;
+	}
+	count = i;
+	return 0;
+}
+
+//contains all the logic to call the display methods
+void Cpu::call_display()
+{
+	//TODO: change everything
+	/* if(this->display == NULL) return;
+	int zero_checker = 0;
+	for(int i = 0; i < this->count1; i++)
+	{
+		if((arg1[i] != 0) || zero_checker) 
+		{
+			this->display->add(arg1[i]);
+			zero_checker = 1;
+		}
+	}
+
+	if ((this->op != NONE) && (this->op != SQUARE_ROOT))
+	{
+		for(int i = 0; i < this->count2; i++)
+		{
+			if((arg2[i] != 0) || zero_checker) 
+			{
+				this->display->add(arg2[i]);
+				zero_checker = 1;
+			}
+		}
+	} */
+}
+
+//handles errors and displays them
+void Cpu::error_handle()
+{   //TODO: check how elgin does it
+	clear_array(this->arg1);
+	clear_array(this->arg2);
+	//TODO: check if the error should be displayed at this moment or later
+	if (this->display != NULL) this->display->setError();
+	
+}
+
+//takes the numbers and the operation and performs the operation
+void Cpu::Operate()
+{
+	int operand1 = this->convert_to_int(this->arg1, this->count1);
+	int operand2 = this->convert_to_int(this->arg2, this->count2);
+	int result = 0; //inicializing to
+	//printf("\n\nOperand1: %d", operand1);
+	//printf("\nOperand2: %d", operand2);
+	//printf("\nOperation: %d", this->op);
+	switch (this->op)
+	{
+		case ADDITION:
+			result = operand1 + operand2;
+			//DONE: check if the result is bigger than MAX_DIGITS
+			break;
+		case SUBTRACTION:
+			result = operand1 - operand2;
+			break;
+		case MULTIPLICATION:
+			result = operand1 * operand2;
+			//DONE: check if the result is bigger than MAX_DIGITS
+			break;
+		case DIVISION:
+			if(operand2 == 0) this->error_handle();
+			else result = operand1 / operand2;
+			//DONE: check if operand2 is 0
+			break;
+		case SQUARE_ROOT:
+			//DONE: check if operand1 is negative
+			if (operand1 > 0)
+			{
+				result = sqrt(operand1);
+			}
+			else
+			{
+				this->error_handle();
+			}
+			break;
+			case PERCENTAGE:
+			//DONE: check if it follows a real calculator
+			//TODO: it doesn't, fix it
+			result = operand1 * 100;
+			break;
+	}
+	//printf("\nResult: %d\n\n", result);
+	clear_array(this->arg1);
+	if(convert_to_digit(result, this->arg1, this->count1))
+	{
+		this->error_handle();
+	}
+	left_align(1);
+	clear_array(this->arg2);
+	this->count2 = 0;
+	//this->display->show(this);
+}
+
+//constructs the cpu
+Cpu::Cpu()
+{
+	this->arg1 = static_cast <Digit*> (calloc(MAX_DIGITS, sizeof(Digit)));
+	this->arg2 = static_cast <Digit*> (calloc(MAX_DIGITS, sizeof(Digit)));
+	this->count1 = 0;
+	this->count2 = 0;
+	this->display = NULL;
+}
+
+//destructs the cpu and frees the dinamically allocated arrays
+Cpu::~Cpu()
+{
+	free(this->arg1);
+	free(this->arg2);
+}
+
+//connects a display to the cpu
+void Cpu::setDisplay(Display* display)
+{
+	this->display = display;
+}
+
+//contains the logic to receive the digits and put them in the correct array
+void Cpu::receiveDigit(Digit d)
+{
+	if ((this->count1 < MAX_DIGITS))
+	{
+		this->arg1[this->count1++] = d;
+	}
+	else if ((count2 < MAX_DIGITS))
+	{
+		this->arg2[this->count2++] = d;
+	}
+	call_display();
+}
+
+//contains the logic to receive the operations and operate if needed
+void Cpu::receiveOperation(Operation op)
+{
+	this->op = op;
+	//TODO: check if change is needed to accomodate floats
+	if (this->count1 != MAX_DIGITS)
+	{
+		left_align(1);
+	}
+	else
+	{
+		this->Operate();
+	}
+	call_display();
+}
+
+//receive the control digit and treat appropriately
+void Cpu::receiveControl(Control c)
+{
+	switch (c)
+	{
+		case CLEAR:
+			//TODO: implement clear
+			break;
+		case RESET:
+			clear_array(this->arg1);
+			clear_array(this->arg2);
+			this->count1 = 0;
+			this->count2 = 0;
+			//TODO: make the changes needed to acommodate floats
+			break;
+		case MEMORY_CLEAR:
+			//TODO: implement MRC
+			break;
+		case MEMORY_SUBTRACTION:
+			//TODO: implement MMINUS
+			break;
+		case MEMORY_ADDITION:
+			//TODO: implement MPLUS
+			break;
+		case MEMORY_READ:
+			//TODO: implement MEMREAD
+			break;
+	}
+	call_display();
+}
+
+//Class Keyboard methods
+
+//constructs the keyboard
 Keyboard::Keyboard()
 {
-    this->countBt = 0;
-
-    DigitButton d0(ZERO), d1(ONE), d2(TWO), d3(THREE), d4(FOUR), d5(FIVE), d6(SIX), d7(SEVEN), d8(EIGHT), d9(NINE);
-    OpButton opPLUS(PLUS), opMINUS(MINUS), opDIV(DIV), opMULT(MULT), opSQRT(SQRT), opPERCENT(PERCENT);
-    ControlButton ctMP(M_PLUS), ctMM(M_MINUS), ctMRC(MRC), ctCE(CE), ctEQ(EQUALS), ctOFF(OFF);
-
-    setButtons(&d0);
-    setButtons(&d1);
-    setButtons(&d2);
-    setButtons(&d3);
-    setButtons(&d4);
-    setButtons(&d5);
-    setButtons(&d6);
-    setButtons(&d7);
-    setButtons(&d8);
-    setButtons(&d9);
-
-    setButtons(&opPLUS);
-    setButtons(&opMINUS);
-    setButtons(&opDIV);
-    setButtons(&opMULT);
-    setButtons(&opSQRT);
-    setButtons(&opPERCENT);
-
-    setButtons(&ctMP);
-    setButtons(&ctMM);
-    setButtons(&ctMRC);
-    setButtons(&ctCE);
-    setButtons(&ctEQ);
-    setButtons(&ctOFF);
+	this->cpu = NULL;
+	this->KeysCount = 0;
 }
 
-void Keyboard::setButtons(Button *bt)
+//Sets the cpu for a keyboard
+void Keyboard::setCpu(Cpu* cpu)
 {
-    this->bt[this->countBt++] = bt;
-    bt->setKeyboard(this);
+	this->cpu = cpu;
 }
 
-void Keyboard::setCpu(Cpu *cp)
+//Adds a key to the keyboard and updates the counter
+void Keyboard::addKey(Key* key)
 {
-    this->cp = cp;
+	std::cout << "Key count is:" << this->KeysCount << std::endl;
+	if(this->KeysCount < 200)
+	{
+		this->keys[this->KeysCount++] = key;
+		key->setReceiver(this);
+	}
+	else
+	{
+		std::cout << "Keyboard is full" << std::endl;
+	}
 }
 
-char *Keyboard::sendInput(char *input, Cpu *cp)
+//Passes digits to the cpu
+void Keyboard::receiveDigit(Digit d)
 {
-    cp->receiveInput(input, this);
+	this->cpu->receiveDigit(d);
 }
 
-// class Cpu
-
-void Cpu::setDisplay(Display *disp)
+//Passes operations to the cpu
+void Keyboard::receiveOperation(Operation op)
 {
-    this->disp = disp;
+	this->cpu->receiveOperation(op);
 }
 
-void Cpu::sendDisp()
+//Passes Control to the cpu
+void Keyboard::receiveControl(Control c)
 {
-    strcpy(this->disp->disp, this->input);
+	this->cpu->receiveControl(c);
 }
 
-int Cpu::decodeNum(char *input)
-{
-    if (!strcmp(input, "0"))
-    {
-        return ZERO;
-    }
-    else if (!strcmp(input, "1"))
-    {
-        return ONE;
-    }
-    else if (!strcmp(input, "2"))
-    {
-        return TWO;
-    }
-    else if (!strcmp(input, "3"))
-    {
-        return THREE;
-    }
-    else if (!strcmp(input, "4"))
-    {
-        return FOUR;
-    }
-    else if (!strcmp(input, "5"))
-    {
-        return FIVE;
-    }
-    else if (!strcmp(input, "6"))
-    {
-        return SIX;
-    }
-    else if (!strcmp(input, "7"))
-    {
-        return SEVEN;
-    }
-    else if (!strcmp(input, "8"))
-    {
-        return EIGHT;
-    }
-    else if (!strcmp(input, "9"))
-    {
-        return NINE;
-    }
+//Class Calculator methods
 
-    return -1;
+//Sets the keyboard for a calculator
+void Calculator::setKeyboard(Keyboard* keyboard)
+{
+	this->keyboard = keyboard;
 }
 
-int Cpu::decodeOp(char *input)
+//Sets the display for a calculator
+void Calculator::setDisplay(Display* display)
 {
-    if (!strcmp(input, "+"))
-    {
-        return PLUS;
-    }
-    else if (!strcmp(input, "-"))
-    {
-        return MINUS;
-    }
-    else if (!strcmp(input, "*"))
-    {
-        return MULT;
-    }
-    else if (!strcmp(input, "/"))
-    {
-        return DIV;
-    }
-
-    return -1;
+	this->display = display;
 }
 
-int Cpu::decodeCtrl(char *input)
+//Sets the cpu for a calculator
+void Calculator::setCpu(Cpu* cpu)
 {
-    if (!strcmp(input, "m+"))
-    {
-        return M_PLUS;
-    }
-    else if (!strcmp(input, "m-"))
-    {
-        return M_MINUS;
-    }
-    else if (!strcmp(input, "mrc"))
-    {
-        return MRC;
-    }
-    else if (!strcmp(input, "ce"))
-    {
-        return CE;
-    }
-    else if (!strcmp(input, "="))
-    {
-        return EQUALS;
-    }
-
-    return -1;
+	this->cpu = cpu;
 }
 
-void Cpu::receiveInput(char *input, Keyboard *kb)
+//Class Key methods
+
+//Sets a receiver to the key
+void Key::setReceiver(Receiver* receiver)
 {
-    while (strcmp(input, "off") != 0)
-    {
-        cout << "\n> ";
-        cin >> input;
-
-        if (decodeNum(input) != -1)
-        {
-            cout << "\nTESTES\n";
-            cout << "\nEntrada convertida para o inteiro: " << decodeNum(input) << "\n";
-            
-            int x = kb->bt[decodeNum(input)]->getValue();
-
-            cout << "\nDigito armazenado na posição do inteiro: " << x << "\n";
-            cout << "\nFIM\n";
-
-            kb->bt[decodeNum(input)]->press();
-        }
-        else if (decodeOp(input) != -1)
-        {
-            kb->bt[decodeOp(input)]->press();
-        }
-        else if (decodeCtrl(input) != -1)
-        {
-            kb->bt[decodeCtrl(input)]->press();
-        }
-        else
-        {
-            cout << "\nEntrada inválida\n";
-        }
-    }
+	this->receiver = receiver;
 }
 
-void Cpu::processInput(int *stack)
+//Class KeyDigit methods
+
+//constructs a key digit
+KeyDigit::KeyDigit(Digit d)
 {
-    int n1 = 0, count1 = 0, n2 = 0, count2 = 0, op = 0, res = 0, countR = 0;
-
-    if (count2 < 8 && stack[top] < 10)
-    {
-        n2 += stack[top] * pow(10, count2);
-        count2++;
-        top--;
-    }
-    else if (count1 < 8 && stack[top] < 10)
-    {
-        n1 += stack[top] * pow(10, count1);
-        count1++;
-        top--;
-    }
-    else
-    {
-        op = top;
-    }
-
-    if (top == -1)
-    {
-        switch (op)
-        {
-        case 10:
-            res = n1 + n2;
-            break;
-        case 11:
-            res = n1 - n2;
-            break;
-        case 12:
-            res = n1 * n2;
-            break;
-        case 13:
-            res = n1 / n2;
-            break;
-
-        default:
-            res = -1;
-            break;
-        }
-    }
-
-    stringstream ss;
-    ss << res;
-    char *s;
-    ss >> s;
-    strcpy(input, s);
+	this->digit = d;
 }
 
-// class Calculator
-
-void Calculator::setKeyboard(Keyboard *kb)
+//Sends a digit to the receiver
+void KeyDigit::press()
 {
-    this->kb = kb;
-}
-void Calculator::setCpu(Cpu *cp)
-{
-    this->cp = cp;
-}
-void Calculator::setDisplay(Display *disp)
-{
-    this->disp = disp;
+	this->receiver->receiveDigit(this->digit);
 }
 
-void Calculator::run()
+//Class KeyOperation methods
+
+//constructs a key operation
+KeyOperation::KeyOperation(Operation op)
 {
-   
+	this->operation = op;
+}
+
+//Sends a operation to the receiver
+void KeyOperation::press()
+{
+	this->receiver->receiveOperation(this->operation);
+}
+
+//Class KeyControl methods
+
+//constructs a key control
+KeyControl::KeyControl(Control c)
+{
+	this->control = c;
+}
+
+//Sends a control to the receiver
+void KeyControl::press()
+{
+	this->receiver->receiveControl(this->control);
 }

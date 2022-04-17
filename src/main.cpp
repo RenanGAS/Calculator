@@ -1,33 +1,29 @@
 #include "calculator.h"
-#include "calculator.cpp"
 #include <iostream>
-#include <cstring>
-using namespace std;
-
-void limpatela(char **s)
-{
-    delete *s;
-}
 
 int main()
 {
-    Keyboard *kb = new Keyboard();
-    Cpu *cp = new Cpu();
-    Display *dp = new Display();
-    Calculator calc;
+    Display display;
+    Cpu cpu;
+    Keyboard k1;
+    KeyDigit key0(TWO), key1(ONE);
+    KeyOperation key2(ADDITION);
 
-    calc.setKeyboard(kb);
-    calc.setCpu(cp);
-    calc.setDisplay(dp);
+    k1.setCpu(&cpu);
+    cpu.setDisplay(&display);
 
-    // Funciona:
-    // if (calc.kb->bt[2]->getValue() == 2)
-    // {
-    //     int x = calc.kb->bt[2]->getValue();
-    //     cout << "\nbt[2]->getValue() = " << x << "\n";
-    // }
+    k1.addKey(&key0);
+    k1.addKey(&key1);
+    k1.addKey(&key2);
+    
+    key0.press();
+    std::cout << "   .1\n";
+    //check problem here
+    key2.press();
+    std::cout << "   .2\n";
+    key1.press();
+    std::cout << "   .3\n";
+    key2.press();
+    std::cout << "   .4\n";
 
-    calc.run();
-
-    return EXIT_SUCCESS;
 }
