@@ -265,7 +265,7 @@ void Cpu::receiveOperation(Operation op)
 	{
 		left_align(1);
 	}
-	else
+	else // TODO: think in how we'll make the program to wait the second operand and calculate the result
 	{
 		left_align(2);
 		Operate();
