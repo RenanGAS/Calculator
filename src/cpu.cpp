@@ -2,6 +2,8 @@
 #include <iostream>
 #include <cmath>
 
+#define TEST 0
+
 //Class Cpu methods
 
 //makes the number "complete" as in ready to operate
@@ -52,12 +54,14 @@ void Cpu::left_align(int arg)
 }
 
 //clears an array of digits OBS: this method does not clear the count of the array currently
-void Cpu::clear_array(Digit *array)
+void Cpu::clear_array(Digit *array, int *count)
 {
 	for (int i = 0; i < MAX_DIGITS; i++)
 	{
 		array[i] = ZERO;
 	}
+
+	*count = 0;
 }
 
 //converts a finished array of digits to a number
@@ -108,21 +112,25 @@ int Cpu::convert_to_int(Digit *arg, int count)
 }
 
 //converts a number to an array of digits and returns the 1 if the number is too big
-int Cpu::convert_to_digit(int num, Digit *result, int &count)
+int Cpu::convert_to_digit(int num, Digit *result, int *count)
 {
-	int helper = num;
-	int i = 0;
-	while (helper != 0)
+	int i = 7;
+
+	while (num != 0)
 	{
 		if (i == MAX_DIGITS)
 		{
 			return 1;
 			//HANDLING ERRORS
 		}
-		result[i++] = Digit(helper % 10);
-		helper /= 10;
+
+		result[i] = Digit(num % 10);
+		num /= 10;
+		i--;
 	}
-	count = i;
+
+	*count = MAX_DIGITS;
+
 	return 0;
 }
 
@@ -159,11 +167,26 @@ void Cpu::call_display()
 //handles errors and displays them
 void Cpu::error_handle()
 { //TODO: check how elgin does it
-	clear_array(this->arg1);
-	clear_array(this->arg2);
+	clear_array(this->arg1, &this->count1);
+	clear_array(this->arg2, &this->count2);
 	//TODO: check if the error should be displayed at this moment or later
 	if (this->display != NULL)
 		this->display->setError();
+}
+
+void Cpu::setOperands(int count1, int count2)
+{
+	//TODO: check if change is needed to accomodate floats
+
+	if (count1 > 0 && count1 != MAX_DIGITS)
+	{
+		left_align(1);
+	}
+
+	if (count2 > 0 && count2 != MAX_DIGITS)
+	{
+		left_align(2);
+	}
 }
 
 //takes the numbers and the operation and performs the operation
@@ -172,9 +195,7 @@ void Cpu::Operate()
 	int operand1 = this->convert_to_int(this->arg1, this->count1);
 	int operand2 = this->convert_to_int(this->arg2, this->count2);
 	int result = 0; //inicializing to
-	//printf("\n\nOperand1: %d", operand1);
-	//printf("\nOperand2: %d", operand2);
-	//printf("\nOperation: %d", this->op);
+
 	switch (this->op)
 	{
 	case ADDITION:
@@ -213,19 +234,14 @@ void Cpu::Operate()
 		break;
 	}
 
-	clear_array(this->arg1);
+	clear_array(this->arg1, &this->count1);
 
-	if (convert_to_digit(result, this->arg1, this->count1))
+	if (convert_to_digit(result, this->arg1, &this->count1))
 	{
 		this->error_handle();
 	}
 
-	left_align(1);
-
-	clear_array(this->arg2);
-	this->count2 = 0;
-
-	call_display();
+	clear_array(this->arg2, &this->count2);
 }
 
 //constructs the cpu
@@ -271,11 +287,8 @@ void Cpu::receiveDigit(Digit d)
 void Cpu::receiveOperation(Operation op)
 {
 	this->op = op;
-	//TODO: check if change is needed to accomodate floats
-	if (this->count1 != MAX_DIGITS)
-	{
-		left_align(1);
-	}
+
+	setOperands(this->count1, this->count2);
 
 	call_display();
 }
@@ -286,15 +299,15 @@ void Cpu::receiveControl(Control c)
 	switch (c)
 	{
 	case EQUALS:
-		left_align(2);
+		setOperands(this->count1, this->count2);
 		Operate();
 		break;
 	case CLEAR:
 		//TODO: implement clear
 		break;
 	case RESET:
-		clear_array(this->arg1);
-		clear_array(this->arg2);
+		clear_array(this->arg1, &this->count1);
+		clear_array(this->arg2, &this->count2);
 		this->count1 = 0;
 		this->count2 = 0;
 		//TODO: make the changes needed to acommodate floats
