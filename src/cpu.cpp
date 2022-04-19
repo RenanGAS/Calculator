@@ -1,4 +1,5 @@
 #include "calculator.h"
+#include "cpu.h"
 #include <iostream>
 #include <cmath>
 
@@ -7,7 +8,7 @@
 //Class Cpu methods
 
 //makes the number "complete" as in ready to operate
-void Cpu::left_align(int arg)
+void NossaCpu::left_align(int arg)
 {
 	int count;
 	Digit *array;
@@ -54,7 +55,7 @@ void Cpu::left_align(int arg)
 }
 
 //clears an array of digits OBS: this method does not clear the count of the array currently
-void Cpu::clear_array(Digit *array, int *count)
+void NossaCpu::clear_array(Digit *array, int *count)
 {
 	for (int i = 0; i < MAX_DIGITS; i++)
 	{
@@ -65,7 +66,7 @@ void Cpu::clear_array(Digit *array, int *count)
 }
 
 //converts a finished array of digits to a number
-int Cpu::convert_to_int(Digit *arg, int count)
+int NossaCpu::convert_to_int(Digit *arg, int count)
 {
 	int result = 0;
 	int digit;
@@ -112,7 +113,7 @@ int Cpu::convert_to_int(Digit *arg, int count)
 }
 
 //converts a number to an array of digits and returns the 1 if the number is too big
-int Cpu::convert_to_digit(int num, Digit *result, int *count)
+int NossaCpu::convert_to_digit(int num, Digit *result, int *count)
 {
 	int i = 7;
 
@@ -135,7 +136,7 @@ int Cpu::convert_to_digit(int num, Digit *result, int *count)
 }
 
 //contains all the logic to call the display methods
-void Cpu::call_display()
+void NossaCpu::call_display()
 {
 	if (this->display == NULL)
 		return;
@@ -162,7 +163,7 @@ void Cpu::call_display()
 }
 
 //handles errors and displays them
-void Cpu::error_handle()
+void NossaCpu::error_handle()
 { //TODO: check how elgin does it
 	clear_array(this->arg1, &this->count1);
 	clear_array(this->arg2, &this->count2);
@@ -171,7 +172,7 @@ void Cpu::error_handle()
 		this->display->setError();
 }
 
-void Cpu::setOperands(int count1, int count2)
+void NossaCpu::setOperands(int count1, int count2)
 {
 	//TODO: check if change is needed to accomodate floats
 
@@ -187,7 +188,7 @@ void Cpu::setOperands(int count1, int count2)
 }
 
 //takes the numbers and the operation and performs the operation
-void Cpu::Operate()
+void NossaCpu::Operate()
 {
 	int operand1 = this->convert_to_int(this->arg1, this->count1);
 	int operand2 = this->convert_to_int(this->arg2, this->count2);
@@ -242,7 +243,7 @@ void Cpu::Operate()
 }
 
 //constructs the cpu
-Cpu::Cpu()
+NossaCpu::NossaCpu()
 {
 	this->arg1 = static_cast<Digit *>(calloc(MAX_DIGITS, sizeof(Digit)));
 	this->arg2 = static_cast<Digit *>(calloc(MAX_DIGITS, sizeof(Digit)));
@@ -253,20 +254,20 @@ Cpu::Cpu()
 }
 
 //destructs the cpu and frees the dinamically allocated arrays
-Cpu::~Cpu()
+NossaCpu::~NossaCpu()
 {
 	free(this->arg1);
 	free(this->arg2);
 }
 
 //connects a display to the cpu
-void Cpu::setDisplay(Display *display)
+void NossaCpu::setDisplay(Display *display)
 {
 	this->display = display;
 }
 
 //contains the logic to receive the digits and put them in the correct array
-void Cpu::receiveDigit(Digit d)
+void NossaCpu::receiveDigit(Digit d)
 {
 	if ((this->count1 < MAX_DIGITS))
 	{
@@ -281,7 +282,7 @@ void Cpu::receiveDigit(Digit d)
 }
 
 //contains the logic to receive the operations and operate if needed
-void Cpu::receiveOperation(Operation op)
+void NossaCpu::receiveOperation(Operation op)
 {
 	this->op = op;
 
@@ -291,7 +292,7 @@ void Cpu::receiveOperation(Operation op)
 }
 
 //receive the control digit and treat appropriately
-void Cpu::receiveControl(Control c)
+void NossaCpu::receiveControl(Control c)
 {
 	switch (c)
 	{

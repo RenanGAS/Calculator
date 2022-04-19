@@ -63,38 +63,21 @@ public:
 
 class Cpu : public Receiver
 {
-	Display *display;
-	Digit *arg1;
-	int count1;
-	Operation op;
-	Digit *arg2;
-	int count2;
-
-	void left_align(int);
-	void clear_array(Digit *, int *);
-	int convert_to_int(Digit *, int);
-	int convert_to_digit(int, Digit *, int *);
-	void call_display();
-	void error_handle();
-	void Operate();
-	void setOperands(int, int);
-
 public:
-	Cpu();
-	~Cpu();
-	void setDisplay(Display *);
-	void receiveDigit(Digit);
-	void receiveOperation(Operation);
-	void receiveControl(Control);
+	virtual void setDisplay(Display *) = 0;
+	virtual void receiveDigit(Digit) = 0;
+	virtual void receiveOperation(Operation) = 0;
+	virtual void receiveControl(Control) = 0;
 };
 
 class Key;
 
 class Keyboard : public Receiver
 {
+	Cpu *cpu;
+
 	Key *keys[200];
 	int KeysCount;
-	Cpu *cpu;
 
 public:
 	Keyboard();
@@ -107,9 +90,12 @@ public:
 
 class Calculator
 {
+
+
 	Display *display;
 	Keyboard *keyboard;
 	Cpu *cpu;
+
 
 public:
 	virtual void setDisplay(Display *) = 0;
