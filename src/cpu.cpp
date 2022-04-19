@@ -10,6 +10,7 @@
 //makes the number "complete" as in ready to operate
 void NossaCpu::left_align(int arg)
 {
+	//TODO: accomodate the floating point
 	int count;
 	Digit *array;
 	int helper;
@@ -55,7 +56,7 @@ void NossaCpu::left_align(int arg)
 }
 
 //clears an array of digits OBS: this method does not clear the count of the array currently
-void NossaCpu::clear_array(Digit *array, int *count)
+void NossaCpu::clear_array(Digit *array, int* count, int* decimal_count)
 {
 	for (int i = 0; i < MAX_DIGITS; i++)
 	{
@@ -63,11 +64,13 @@ void NossaCpu::clear_array(Digit *array, int *count)
 	}
 
 	*count = 0;
+	*decimal_count = 0;
 }
 
 //converts a finished array of digits to a number
 int NossaCpu::convert_to_int(Digit *arg, int count)
 {
+	//TODO: accomodate the floating point
 	int result = 0;
 	int digit;
 	for (int i = 0; i < count; i++)
@@ -115,7 +118,8 @@ int NossaCpu::convert_to_int(Digit *arg, int count)
 //converts a number to an array of digits and returns the 1 if the number is too big
 int NossaCpu::convert_to_digit(int num, Digit *result, int *count)
 {
-	int i = 7;
+	//TODO: accomodate floating point
+	int i = MAX_DIGITS - 1;
 
 	while (num != 0)
 	{
@@ -138,6 +142,7 @@ int NossaCpu::convert_to_digit(int num, Digit *result, int *count)
 //contains all the logic to call the display methods
 void NossaCpu::call_display()
 {
+	//TODO: accomodate floating point
 	if (this->display == NULL)
 		return;
 
@@ -165,8 +170,8 @@ void NossaCpu::call_display()
 //handles errors and displays them
 void NossaCpu::error_handle()
 { //TODO: check how elgin does it
-	clear_array(this->arg1, &this->count1);
-	clear_array(this->arg2, &this->count2);
+	clear_array(this->arg1, &this->count1, &this->count_point2);
+	clear_array(this->arg2, &this->count2, &this->count_point2);
 	//TODO: check if the error should be displayed at this moment or later
 	if (this->display != NULL)
 		this->display->setError();
@@ -174,8 +179,6 @@ void NossaCpu::error_handle()
 
 void NossaCpu::setOperands(int count1, int count2)
 {
-	//TODO: check if change is needed to accomodate floats
-
 	if (count1 > 0 && count1 != MAX_DIGITS)
 	{
 		left_align(1);
@@ -192,8 +195,9 @@ void NossaCpu::Operate()
 {
 	int operand1 = this->convert_to_int(this->arg1, this->count1);
 	int operand2 = this->convert_to_int(this->arg2, this->count2);
-	int result = 0; //inicializing to
+	int result = 0;
 
+	//TODO: operate with number of decimal digits
 	switch (this->op)
 	{
 	case ADDITION:
@@ -228,18 +232,18 @@ void NossaCpu::Operate()
 	case PERCENTAGE:
 		//DONE: check if it follows a real calculator
 		//TODO: it doesn't, fix it
-		result = operand1 * 100;
+		result = operand1 / 100;
 		break;
 	}
 
-	clear_array(this->arg1, &this->count1);
+	clear_array(this->arg1, &this->count1, &this->count_point1);
 
 	if (convert_to_digit(result, this->arg1, &this->count1))
 	{
 		this->error_handle();
 	}
 
-	clear_array(this->arg2, &this->count2);
+	clear_array(this->arg2, &this->count2, &this->count_point2);
 }
 
 //constructs the cpu
@@ -250,6 +254,8 @@ NossaCpu::NossaCpu()
 	this->op = NONE;
 	this->count1 = 0;
 	this->count2 = 0;
+	this->count_point1 = 0;
+	this->count_point2 = 0;
 	this->display = NULL;
 }
 
@@ -304,8 +310,8 @@ void NossaCpu::receiveControl(Control c)
 		//TODO: implement clear
 		break;
 	case RESET:
-		clear_array(this->arg1, &this->count1);
-		clear_array(this->arg2, &this->count2);
+		clear_array(this->arg1, &this->count1, &this->count_point2);
+		clear_array(this->arg2, &this->count2, &this->count_point2);
 		this->count1 = 0;
 		this->count2 = 0;
 		//TODO: make the changes needed to acommodate floats
@@ -322,9 +328,19 @@ void NossaCpu::receiveControl(Control c)
 	case MEMORY_READ:
 		//TODO: implement MEMREAD
 		break;
+	case DECIMAL_SEPARATOR:
+		if (count1 > 0 && count1 != MAX_DIGITS && (!this->count_point1))
+		{
+			this->count_point1 = this->count1;
+		}
+		else if(!this->count_point2)
+		{
+			this->count_point2 = this->count2;
+		}
+		//TODO: test
+		break;
 	default:
 		break;
 	}
-
 	call_display();
 }
