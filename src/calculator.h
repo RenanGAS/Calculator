@@ -46,11 +46,11 @@ enum Signal
 class Display
 {
 public:
-	void add(Digit);
-	void SetDecimalSeparator();
-	void setSignal(Signal);
-	void setError();
-	void clear();
+	virtual void add(Digit) = 0;
+	virtual void SetDecimalSeparator() = 0;
+	virtual void setSignal(Signal) = 0;
+	virtual void setError() = 0;
+	virtual void clear() = 0;
 };
 
 class Receiver
