@@ -31,14 +31,14 @@ int main()
     k1.addKey(&key15);
     k1.addKey(&key16);
     
-    key1.press();
+    key1.press(); // um
     std::cout << "       .1\n";
-    key3.press();
+    key3.press(); // três
     std::cout << "       .2\n";
-    key10.press();
+    key10.press(); // +
     std::cout << "       .3\n";
-    key2.press();
+    key2.press(); // dois
     std::cout << "       .4\n";
-    key16.press();
+    key16.press(); // igual
     std::cout << "       .5\n";
 }
