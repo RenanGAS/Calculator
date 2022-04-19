@@ -144,22 +144,19 @@ void Cpu::call_display()
 
 	for (int i = 0; i < this->count1; i++)
 	{
-		if ((arg1[i] != 0) || zero_checker)
+		if (((arg1[i] != 0) || zero_checker) && !(this->count2))
 		{
 			this->display->add(arg1[i]);
 			zero_checker = 1;
 		}
 	}
 
-	if ((this->op != NONE) && (this->op != SQUARE_ROOT))
+	for (int i = 0; i < this->count2; i++)
 	{
-		for (int i = 0; i < this->count2; i++)
+		if ((arg2[i] != 0) || zero_checker)
 		{
-			if ((arg2[i] != 0) || zero_checker)
-			{
-				this->display->add(arg2[i]);
-				zero_checker = 1;
-			}
+			this->display->add(arg2[i]);
+			zero_checker = 1;
 		}
 	}
 }
