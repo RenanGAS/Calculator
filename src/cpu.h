@@ -19,7 +19,9 @@ class NossaCpu : public Cpu
 	void error_handle();
 	void Operate();
 	void setOperands(int, int);
-
+	int calculate_offset(int, int);
+	int digit_to_int(Digit);
+	double convert_to_operands(Digit *, int, int);
 public:
     NossaCpu();
 	~NossaCpu();
