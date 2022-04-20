@@ -12,7 +12,7 @@ class NossaCpu : public Cpu
 	Digit *arg2;
 	int count2;
 	int count_point2;
-
+	//TODO: name the variables in the methods
 	void left_align(int);
 	void clear_array(Digit *, int *, int *);
 	int convert_to_int(Digit *, int);
@@ -21,9 +21,11 @@ class NossaCpu : public Cpu
 	void error_handle();
 	void Operate();
 	void setOperands(int, int);
-	int calculate_offset(int, int);
+	int calculate_offset();
 	int digit_to_int(Digit);
+	Digit double_to_digit(double number);
 	double convert_to_operands(Digit *, int, int);
+	int convert_from_operand(int result, int offset);
 public:
     NossaCpu();
 	~NossaCpu();

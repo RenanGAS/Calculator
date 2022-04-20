@@ -54,7 +54,7 @@ void NossaCpu::left_align(int arg)
 	}
 }
 
-//clears an array of digits OBS: this method does not clear the count of the array currently
+//clears an array of digits
 void NossaCpu::clear_array(Digit *array, int* count, int* decimal_count)
 {
 	for (int i = 0; i < MAX_DIGITS; i++)
@@ -64,6 +64,19 @@ void NossaCpu::clear_array(Digit *array, int* count, int* decimal_count)
 
 	*count = 0;
 	*decimal_count = MAX_DIGITS;
+}
+
+int NossaCpu::calculate_offset()
+{
+	if (this->count1 > this->count2)
+	{
+		return (this->count1 - this->count2);
+	}
+	else
+	{
+		return (this->count2 - this->count1);
+	}
+	
 }
 
 //transforms a single digit in a single int
@@ -96,6 +109,36 @@ int NossaCpu::digit_to_int(Digit digit)
 	}
 }
 
+Digit NossaCpu::double_to_digit(double number)
+{
+	int digit = (int)number;
+	switch (digit)
+	{
+	case 0:
+		return ZERO;
+	case 1:
+		return ONE;
+	case 2:
+		return TWO;
+	case 3:
+		return THREE;
+	case 4:
+		return FOUR;
+	case 5:
+		return FIVE;
+	case 6:
+		return SIX;
+	case 7:	
+		return SEVEN;
+	case 8:
+		return EIGHT;
+	case 9:
+		return NINE;
+	default:
+		return ZERO;
+	}
+}
+
 
 //Convert a finished array of digits to an double to accomodate floating points
 double NossaCpu::convert_to_operands(Digit *arg, int count, int offset)
@@ -105,7 +148,7 @@ double NossaCpu::convert_to_operands(Digit *arg, int count, int offset)
 	for (int i = 0; i < count; i++)
 	{
 		digit = this->digit_to_int(arg[i]);
-		result += digit * pow(10, count - i - 1 + offset);
+		result += digit * pow(10, count - i + offset);
 	}
 	//seems to simple, i hope it works
 }
@@ -126,15 +169,36 @@ int NossaCpu::convert_to_int(Digit *arg, int count)
 	return result;
 }
 
+//converts a number to a finished array of digits
+int NossaCpu::convert_from_operand(int result,int offset)
+{
+	int i = MAX_DIGITS -1;
+	
+	while (result != 0)
+	{
+		if(i < 0)
+		{
+			return 1;
+		}
+		this->arg1[i] = this->double_to_digit(result % 10);
+		result /= 10;
+		i--;
+	}
+	//TODO: Fix bugs related to number not in the rightmost position
+	this->count1 = MAX_DIGITS;
+	
+
+}
+
 //converts a number to an array of digits and returns the 1 if the number is too big
 int NossaCpu::convert_to_digit(int num, Digit *result, int *count)
 {
-	//TODO: accomodate floating point
+	//may bet deprecated
 	int i = MAX_DIGITS - 1;
 
 	while (num != 0)
 	{
-		if (i == MAX_DIGITS)
+		if (i < 0)
 		{
 			return 1;
 			//HANDLING ERRORS
@@ -167,7 +231,7 @@ void NossaCpu::call_display()
 			{
 				this->display->SetDecimalSeparator();
 			}
-			
+			//check errors displaying zeros after dot
 			this->display->add(arg1[i]);
 			zero_checker = 1;
 		}
@@ -177,6 +241,10 @@ void NossaCpu::call_display()
 	{
 		if ((arg2[i] != 0) || zero_checker)
 		{
+			if (i == this->count_point2) 
+			{
+				this->display->SetDecimalSeparator();
+			}
 			this->display->add(arg2[i]);
 			zero_checker = 1;
 		}
@@ -209,10 +277,21 @@ void NossaCpu::setOperands(int count1, int count2)
 //takes the numbers and the operation and performs the operation
 void NossaCpu::Operate()
 {
-	int operand1 = this->convert_to_int(this->arg1, this->count1);
-	int operand2 = this->convert_to_int(this->arg2, this->count2);
-	int result = 0;
-
+	int offset = this->calculate_offset();
+	double operand1, operand2;
+	if(this->count1 > this->count2)
+	{
+		operand1 = this->convert_to_operands(this->arg1, this->count1, offset);
+		operand2 = this->convert_to_operands(this->arg2, this->count2, 0);
+	}
+	else
+	{
+		operand1 = this->convert_to_operands(this->arg1, this->count1, 0);
+		operand2 = this->convert_to_operands(this->arg2, this->count2, offset);
+	}
+	//int operand1 = this->convert_to_int(this->arg1, this->count1);
+	//int operand2 = this->convert_to_int(this->arg2, this->count2);
+	double result = 0;
 	//TODO: operate with number of decimal digits
 	switch (this->op)
 	{
@@ -254,10 +333,14 @@ void NossaCpu::Operate()
 
 	clear_array(this->arg1, &this->count1, &this->count_point1);
 
-	if (convert_to_digit(result, this->arg1, &this->count1))
+	if (this->convert_from_operand(result, offset))
 	{
 		this->error_handle();
 	}
+	/* if (convert_to_digit(result, this->arg1, &this->count1))
+	{
+		this->error_handle();
+	} */
 
 	clear_array(this->arg2, &this->count2, &this->count_point2);
 }
