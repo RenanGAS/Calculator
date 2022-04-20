@@ -64,52 +64,64 @@ void NossaCpu::clear_array(Digit *array, int* count, int* decimal_count)
 	}
 
 	*count = 0;
-	*decimal_count = 0;
+	*decimal_count = MAX_DIGITS;
 }
+
+//transforms a single digit in a single int
+int NossaCpu::digit_to_int(Digit digit)
+{
+	switch (digit)
+	{
+	case ZERO:
+		return 0;
+	case ONE:
+		return 1;
+	case TWO:
+		return 2;
+	case THREE:
+		return 3;
+	case FOUR:
+		return 4;
+	case FIVE:
+		return 5;
+	case SIX:
+		return 6;
+	case SEVEN:
+		return 7;
+	case EIGHT:
+		return 8;
+	case NINE:
+		return 9;
+	default:
+		return 0;
+	}
+}
+
+
+//Convert a finished array of digits to an double to accomodate floating points
+double NossaCpu::convert_to_operands(Digit *arg, int count, int offset)
+{
+	double result = 0;
+	int digit;
+	for (int i = 0; i < count; i++)
+	{
+		digit = this->digit_to_int(arg[i]);
+		result += digit * pow(10, count - i - 1 + offset);
+	}
+	//seems to simple, i hope it works
+}
+
 
 //converts a finished array of digits to a number
 int NossaCpu::convert_to_int(Digit *arg, int count)
 {
 	//TODO: accomodate the floating point
+	//maybe will be ditched
 	int result = 0;
 	int digit;
 	for (int i = 0; i < count; i++)
 	{
-		switch (arg[i])
-		{
-		case ZERO:
-			digit = 0;
-			break;
-		case ONE:
-			digit = 1;
-			break;
-		case TWO:
-			digit = 2;
-			break;
-		case THREE:
-			digit = 3;
-			break;
-		case FOUR:
-			digit = 4;
-			break;
-		case FIVE:
-			digit = 5;
-			break;
-		case SIX:
-			digit = 6;
-			break;
-		case SEVEN:
-			digit = 7;
-			break;
-		case EIGHT:
-			digit = 8;
-			break;
-		case NINE:
-			digit = 9;
-			break;
-		default:
-			break;
-		}
+		digit = this->digit_to_int(arg[i]);
 		result += digit * pow(10, count - i - 1);
 	}
 	return result;
@@ -152,6 +164,11 @@ void NossaCpu::call_display()
 	{
 		if (((arg1[i] != 0) || zero_checker) && !(this->count2))
 		{
+			if (i == this->count_point1) 
+			{
+				this->display->SetDecimalSeparator();
+			}
+			
 			this->display->add(arg1[i]);
 			zero_checker = 1;
 		}
@@ -254,8 +271,8 @@ NossaCpu::NossaCpu()
 	this->op = NONE;
 	this->count1 = 0;
 	this->count2 = 0;
-	this->count_point1 = 0;
-	this->count_point2 = 0;
+	this->count_point1 = MAX_DIGITS;
+	this->count_point2 = MAX_DIGITS;
 	this->display = NULL;
 }
 
