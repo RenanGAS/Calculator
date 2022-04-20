@@ -1,5 +1,4 @@
-#ifndef CALC
-#define CALC
+#pragma once
 
 #define MAX_DIGITS 8
 
@@ -74,28 +73,19 @@ class Key;
 
 class Keyboard : public Receiver
 {
-	Cpu *cpu;
-
-	Key *keys[200];
-	int KeysCount;
-
 public:
-	Keyboard();
-	void setCpu(Cpu *);
-	void addKey(Key *);
-	void receiveDigit(Digit);
-	void receiveOperation(Operation);
-	void receiveControl(Control);
+	virtual void setCpu(Cpu *) = 0;
+	virtual void addKey(Key *) = 0;
+	virtual void receiveDigit(Digit) = 0;
+	virtual void receiveOperation(Operation) = 0;
+	virtual void receiveControl(Control) = 0;
 };
 
 class Calculator
 {
-
-
 	Display *display;
 	Keyboard *keyboard;
 	Cpu *cpu;
-
 
 public:
 	virtual void setDisplay(Display *) = 0;
@@ -105,39 +95,25 @@ public:
 
 class Key
 {
-protected:
-	Receiver *receiver;
-
 public:
-	void setReceiver(Receiver *);
+	virtual void setReceiver(Receiver *);
 	virtual void press() = 0;
 };
 
 class KeyDigit : public Key
 {
-	Digit digit;
-
 public:
-	KeyDigit(Digit);
-	void press();
+	virtual void press();
 };
 
 class KeyOperation : public Key
 {
-	Operation operation;
-
 public:
-	KeyOperation(Operation);
-	void press();
+	virtual void press();
 };
 
 class KeyControl : public Key
 {
-	Control control;
-
 public:
-	KeyControl(Control);
-	void press();
+	virtual void press();
 };
-
-#endif

@@ -1,4 +1,3 @@
-#include "calculator.h"
 #include "cpu.h"
 #include <iostream>
 #include <cmath>
