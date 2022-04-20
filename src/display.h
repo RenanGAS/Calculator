@@ -1,6 +1,8 @@
+#pragma once
+
 #include "calculator.h"
 
-class Display
+class NossoDisplay : public Display
 {
 public:
 	void add(Digit);
