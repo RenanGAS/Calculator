@@ -5,7 +5,7 @@
 
 class NossaCpu : public Cpu
 {
-    NossoDisplay *display;
+    Display *display;
 	Digit *arg1;
 	int count1;
 	int count_point1;
@@ -32,7 +32,7 @@ class NossaCpu : public Cpu
 public:
     NossaCpu();
 	~NossaCpu();
-    void setDisplay(NossoDisplay *);
+    void setDisplay(Display *);
 	void receiveDigit(Digit);
 	void receiveOperation(Operation);
 	void receiveControl(Control);
