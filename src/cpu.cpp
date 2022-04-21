@@ -40,7 +40,9 @@ void NossaCpu::left_align(int arg)
 			this->arg2[MAX_DIGITS - helper + i] = array[i];
 			this->arg2[i] = Digit(ZERO);
 		}
-
+		this->count2 = MAX_DIGITS;
+	}
+	else
 	{
 		for (int i = 0; i < helper; i++)
 		{
