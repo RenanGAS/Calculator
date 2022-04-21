@@ -13,6 +13,8 @@ class NossaCpu : public Cpu
 	Digit *arg2;
 	int count2;
 	int count_point2;
+	int memory;
+	int mrcFlag;
 	//TODO: name the variables in the methods
 	void left_align(int);
 	void clear_array(Digit *, int *, int *);

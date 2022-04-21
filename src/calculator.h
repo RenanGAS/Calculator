@@ -3,6 +3,7 @@ enum Operation {ADDITION, SUBTRACTION, DIVISION, MULTIPLICATION, SQUARE_ROOT, PE
 enum Control {CLEAR, RESET, DECIMAL_SEPARATOR, MEMORY_READ_CLEAR, MEMORY_ADDITION, MEMORY_SUBTRACTION, EQUAL};
 enum Signal {POSITIVE, NEGATIVE};
 
+<<<<<<< HEAD
 class Display{
   public:
     virtual void add(Digit ) = 0;
@@ -10,6 +11,47 @@ class Display{
     virtual void setSignal(Signal ) = 0;
     virtual void setError() = 0;
     virtual void clear() = 0;
+=======
+#define MAX_DIGITS 8
+
+enum Digit
+{
+	ZERO,
+	ONE,
+	TWO,
+	THREE,
+	FOUR,
+	FIVE,
+	SIX,
+	SEVEN,
+	EIGHT,
+	NINE
+};
+enum Operation
+{
+	ADDITION,
+	SUBTRACTION,
+	DIVISION,
+	MULTIPLICATION,
+	SQUARE_ROOT,
+	PERCENTAGE,
+	NONE
+};
+enum Control
+{
+	CLEAR,
+	RESET,
+	DECIMAL_SEPARATOR,
+	MEMORY_READ_CLEAR,
+	MEMORY_ADDITION,
+	MEMORY_SUBTRACTION,
+	EQUALS
+};
+enum Signal
+{
+	POSITIVE,
+	NEGATIVE
+>>>>>>> ffde97cc0e039d568d96355c55c5e84da62e6119
 };
 
 class Receiver{

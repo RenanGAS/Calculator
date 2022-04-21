@@ -5,19 +5,19 @@
 #define TEST 0
 #define MAX_DIGITS 8
 
-//Class Cpu methods
+// Class Cpu methods
 
-//makes the number "complete" as in ready to operate
+// makes the number "complete" as in ready to operate
 void NossaCpu::left_align(int arg)
 {
-	//TODO: accomodate the floating point
+	// TODO: accomodate the floating point
 	int count;
 	Digit *array;
 	int helper;
 
 	if (arg == 2)
 	{
-		helper = this->count2; //number of digits in the number
+		helper = this->count2; // number of digits in the number
 		array = this->arg2;
 		count = this->count2;
 	}
@@ -35,15 +35,12 @@ void NossaCpu::left_align(int arg)
 
 	if (arg == 2)
 	{
-		for (int i = 0; i < helper; i++) //transfers the numbers to the rightmost side
+		for (int i = 0; i < helper; i++) // transfers the numbers to the rightmost side
 		{
 			this->arg2[MAX_DIGITS - helper + i] = array[i];
 			this->arg2[i] = Digit(ZERO);
 		}
 
-		this->count2 = MAX_DIGITS;
-	}
-	else
 	{
 		for (int i = 0; i < helper; i++)
 		{
@@ -54,7 +51,6 @@ void NossaCpu::left_align(int arg)
 		this->count1 = MAX_DIGITS;
 	}
 }
-
 //clears an array of digits
 void NossaCpu::clear_array(Digit *array, int* count, int* decimal_count)
 {
@@ -194,7 +190,7 @@ int NossaCpu::convert_from_operand(int result,int offset)
 //converts a number to an array of digits and returns the 1 if the number is too big
 int NossaCpu::convert_to_digit(int num, Digit *result, int *count)
 {
-	//may bet deprecated
+	//may get deprecated
 	int i = MAX_DIGITS - 1;
 
 	while (num != 0)
@@ -202,7 +198,7 @@ int NossaCpu::convert_to_digit(int num, Digit *result, int *count)
 		if (i < 0)
 		{
 			return 1;
-			//HANDLING ERRORS
+			// HANDLING ERRORS
 		}
 
 		result[i] = Digit(num % 10);
@@ -215,10 +211,10 @@ int NossaCpu::convert_to_digit(int num, Digit *result, int *count)
 	return 0;
 }
 
-//contains all the logic to call the display methods
+// contains all the logic to call the display methods
 void NossaCpu::call_display()
 {
-	//TODO: accomodate floating point
+	// TODO: accomodate floating point
 	if (this->display == NULL)
 		return;
 
@@ -252,12 +248,12 @@ void NossaCpu::call_display()
 	}
 }
 
-//handles errors and displays them
+// handles errors and displays them
 void NossaCpu::error_handle()
-{ //TODO: check how elgin does it
+{ // TODO: check how elgin does it
 	clear_array(this->arg1, &this->count1, &this->count_point2);
 	clear_array(this->arg2, &this->count2, &this->count_point2);
-	//TODO: check if the error should be displayed at this moment or later
+	// TODO: check if the error should be displayed at this moment or later
 	if (this->display != NULL)
 		this->display->setError();
 }
@@ -275,7 +271,7 @@ void NossaCpu::setOperands(int count1, int count2)
 	}
 }
 
-//takes the numbers and the operation and performs the operation
+// takes the numbers and the operation and performs the operation
 void NossaCpu::Operate()
 {
 	int offset = this->calculate_offset();
@@ -298,24 +294,24 @@ void NossaCpu::Operate()
 	{
 	case ADDITION:
 		result = operand1 + operand2;
-		//DONE: check if the result is bigger than MAX_DIGITS
+		// DONE: check if the result is bigger than MAX_DIGITS
 		break;
 	case SUBTRACTION:
 		result = operand1 - operand2;
 		break;
 	case MULTIPLICATION:
 		result = operand1 * operand2;
-		//DONE: check if the result is bigger than MAX_DIGITS
+		// DONE: check if the result is bigger than MAX_DIGITS
 		break;
 	case DIVISION:
 		if (operand2 == 0)
 			this->error_handle();
 		else
 			result = operand1 / operand2;
-		//DONE: check if operand2 is 0
+		// DONE: check if operand2 is 0
 		break;
 	case SQUARE_ROOT:
-		//DONE: check if operand1 is negative
+		// DONE: check if operand1 is negative
 		if (operand1 > 0)
 		{
 			result = sqrt(operand1);
@@ -326,8 +322,8 @@ void NossaCpu::Operate()
 		}
 		break;
 	case PERCENTAGE:
-		//DONE: check if it follows a real calculator
-		//TODO: it doesn't, fix it
+		// DONE: check if it follows a real calculator
+		// TODO: it doesn't, fix it
 		result = operand1 / 100;
 		break;
 	}
@@ -346,7 +342,7 @@ void NossaCpu::Operate()
 	clear_array(this->arg2, &this->count2, &this->count_point2);
 }
 
-//constructs the cpu
+// constructs the cpu
 NossaCpu::NossaCpu()
 {
 	this->arg1 = static_cast<Digit *>(calloc(MAX_DIGITS, sizeof(Digit)));
@@ -357,22 +353,24 @@ NossaCpu::NossaCpu()
 	this->count_point1 = MAX_DIGITS;
 	this->count_point2 = MAX_DIGITS;
 	this->display = NULL;
+	this->memory = 0;
+	this->mrcFlag = 0;
 }
 
-//destructs the cpu and frees the dinamically allocated arrays
+// destructs the cpu and frees the dinamically allocated arrays
 NossaCpu::~NossaCpu()
 {
 	free(this->arg1);
 	free(this->arg2);
 }
 
-//connects a display to the cpu
-void NossaCpu::setDisplay(NossoDisplay *display)
+// connects a display to the cpu
+void NossaCpu::setDisplay(Display *display)
 {
 	this->display = display;
 }
 
-//contains the logic to receive the digits and put them in the correct array
+// contains the logic to receive the digits and put them in the correct array
 void NossaCpu::receiveDigit(Digit d)
 {
 	if ((this->count1 < MAX_DIGITS))
@@ -387,7 +385,7 @@ void NossaCpu::receiveDigit(Digit d)
 	call_display();
 }
 
-//contains the logic to receive the operations and operate if needed
+// contains the logic to receive the operations and operate if needed
 void NossaCpu::receiveOperation(Operation op)
 {
 	this->op = op;
@@ -397,7 +395,7 @@ void NossaCpu::receiveOperation(Operation op)
 	call_display();
 }
 
-//receive the control digit and treat appropriately
+// receive the control digit and treat appropriately
 void NossaCpu::receiveControl(Control c)
 {
 	switch (c)
@@ -407,35 +405,81 @@ void NossaCpu::receiveControl(Control c)
 		Operate();
 		break;
 	case CLEAR:
-		//TODO: implement clear
+		// TODO: implement clear
 		break;
 	case RESET:
 		clear_array(this->arg1, &this->count1, &this->count_point2);
 		clear_array(this->arg2, &this->count2, &this->count_point2);
 		this->count1 = 0;
 		this->count2 = 0;
-		//TODO: make the changes needed to acommodate floats
+		// TODO: make the changes needed to acommodate floats
 		break;
 	case MEMORY_READ_CLEAR:
-		//TODO: implement MRC
+		setOperands(this->count1, this->count2);
+
+		if (this->mrcFlag)
+		{
+			// TODO: Implement a flag that disappears when MEMORY_CLEAR is used.
+			this->mrcFlag = 0;
+			break;
+		}
+		
+		if (this->count2 > 0)
+		{
+			clear_array(this->arg2, &this->count2, &this->count_point2);
+			convert_to_digit(this->memory, this->arg2, &this->count2);
+		}
+		else
+		{
+			if (this->count1 > 0)
+			{
+				clear_array(this->arg1, &this->count1, &this->count_point1);
+			}
+
+			convert_to_digit(this->memory, this->arg1, &this->count1);
+		}
+
+		this->mrcFlag = 1;
+
+		call_display();
+
 		break;
 	case MEMORY_SUBTRACTION:
-		//TODO: implement MMINUS
+		setOperands(this->count1, this->count2);
+		if (this->count2 > 0)
+		{
+			this->memory -= int(this->arg2[MAX_DIGITS - 1]);
+		}
+		else if (this->count1 > 0)
+		{
+			this->memory -= int(this->arg1[MAX_DIGITS - 1]);
+		}
+
+		// TODO: Implement a flag that disappears when MEMORY_SUBTRACTION sets the memory to zero.
 		break;
 	case MEMORY_ADDITION:
-		//TODO: implement MPLUS
-		break;
+		setOperands(this->count1, this->count2);
+		if (this->count2 > 0)
+		{
+			this->memory += int(this->arg2[MAX_DIGITS - 1]);
+		}
+		else if (this->count1 > 0)
+		{
+			this->memory += int(this->arg1[MAX_DIGITS - 1]);
+		}
+
+		// TODO: Implement a flag that appears when MEMORY_ADDITION is used.
 		break;
 	case DECIMAL_SEPARATOR:
 		if (count1 > 0 && count1 != MAX_DIGITS && (!this->count_point1))
 		{
 			this->count_point1 = this->count1;
 		}
-		else if(!this->count_point2)
+		else if (!this->count_point2)
 		{
 			this->count_point2 = this->count2;
 		}
-		//TODO: test
+		// TODO: test
 		break;
 	default:
 		break;
