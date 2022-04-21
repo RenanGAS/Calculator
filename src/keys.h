@@ -2,7 +2,7 @@
 
 #include "calculator.h"
 
-class NossaKey : public Key
+class NossaKey
 {
 protected:
     Receiver *receiver;
