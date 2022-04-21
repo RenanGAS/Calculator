@@ -6,7 +6,7 @@ class NossoDisplay : public Display
 {
 public:
 	void add(Digit);
-	void SetDecimalSeparator();
+	void setDecimalSeparator();
 	void setSignal(Signal);
 	void setError();
 	void clear();

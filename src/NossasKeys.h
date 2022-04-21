@@ -2,17 +2,13 @@
 
 #include "calculator.h"
 
-class NossaKey
+class NossaKey: virtual public Key
 {
-protected:
-    Receiver *receiver;
-
 public:
-    void setReceiver(Receiver *);
-    virtual void press() = 0;
+    virtual void setReceiver(Receiver *);
 };
 
-class NossaKeyDigit : public KeyDigit, NossaKey
+class NossaKeyDigit : public NossaKey, KeyDigit
 {
     Digit digit;
 
@@ -21,7 +17,7 @@ public:
     void press();
 };
 
-class NossaKeyOperation : public KeyOperation, NossaKey
+class NossaKeyOperation : public NossaKey, KeyOperation
 {
     Operation operation;
 
@@ -30,7 +26,7 @@ public:
     void press();
 };
 
-class NossaKeyControl : public KeyControl, NossaKey
+class NossaKeyControl : public NossaKey, KeyControl
 {
     Control control;
 

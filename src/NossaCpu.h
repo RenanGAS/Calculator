@@ -1,10 +1,11 @@
 #pragma once
 
 #include "calculator.h"
+#include "NossoDisplay.h"
 
 class NossaCpu : public Cpu
 {
-    Display *display;
+    NossoDisplay *display;
 	Digit *arg1;
 	int count1;
 	int count_point1;
@@ -29,7 +30,7 @@ class NossaCpu : public Cpu
 public:
     NossaCpu();
 	~NossaCpu();
-    void setDisplay(Display *);
+    void setDisplay(NossoDisplay *);
 	void receiveDigit(Digit);
 	void receiveOperation(Operation);
 	void receiveControl(Control);

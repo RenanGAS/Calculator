@@ -1,8 +1,8 @@
 #include "calculator.h"
-#include "cpu.h"
-#include "keyboard.h"
-#include "keys.h"
-#include "display.h"
+#include "NossaCpu.h"
+#include "NossoKeyboard.h"
+#include "NossasKeys.h"
+#include "NossoDisplay.h"
 #include <iostream>
 
 int main()

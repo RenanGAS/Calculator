@@ -1,4 +1,4 @@
-#include "display.h"
+#include "NossoDisplay.h"
 #include <iostream>
 #include <cmath>
 
@@ -19,7 +19,7 @@ void NossoDisplay::add(Digit digit)
 	case TWO:
 		std::cout << "2";
 		break;
-	case THREE:
+	case THRE:
 		std::cout << "3";
 		break;
 	case FOUR:
@@ -46,7 +46,7 @@ void NossoDisplay::add(Digit digit)
 }
 
 //adds a decimal separator to the display
-void NossoDisplay::SetDecimalSeparator()
+void NossoDisplay::setDecimalSeparator()
 {
 	std::cout << ".";
 }

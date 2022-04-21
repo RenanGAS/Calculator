@@ -1,119 +1,84 @@
-#pragma once
+enum Digit {ZERO, ONE, TWO, THRE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE};
+enum Operation {ADDITION, SUBTRACTION, DIVISION, MULTIPLICATION, SQUARE_ROOT, PERCENTAGE};
+enum Control {CLEAR, RESET, DECIMAL_SEPARATOR, MEMORY_READ_CLEAR, MEMORY_ADDITION, MEMORY_SUBTRACTION, EQUAL};
+enum Signal {POSITIVE, NEGATIVE};
 
-#define MAX_DIGITS 8
-
-enum Digit
-{
-	ZERO,
-	ONE,
-	TWO,
-	THREE,
-	FOUR,
-	FIVE,
-	SIX,
-	SEVEN,
-	EIGHT,
-	NINE
-};
-enum Operation
-{
-	ADDITION,
-	SUBTRACTION,
-	DIVISION,
-	MULTIPLICATION,
-	SQUARE_ROOT,
-	PERCENTAGE,
-	NONE
-};
-enum Control
-{
-	CLEAR,
-	RESET,
-	DECIMAL_SEPARATOR,
-	MEMORY_READ,
-	MEMORY_CLEAR,
-	MEMORY_ADDITION,
-	MEMORY_SUBTRACTION,
-	EQUALS
-};
-enum Signal
-{
-	POSITIVE,
-	NEGATIVE
+class Display{
+  public:
+    virtual void add(Digit ) = 0;
+    virtual void setDecimalSeparator() = 0;
+    virtual void setSignal(Signal ) = 0;
+    virtual void setError() = 0;
+    virtual void clear() = 0;
 };
 
-class Display
-{
-public:
-	virtual void add(Digit) = 0;
-	virtual void SetDecimalSeparator() = 0;
-	virtual void setSignal(Signal) = 0;
-	virtual void setError() = 0;
-	virtual void clear() = 0;
+class Receiver{
+  public:
+    virtual void receiveDigit(Digit ) = 0;
+    virtual void receiveOperation(Operation ) = 0;
+    virtual void receiveControl(Control ) = 0;
+
+};
+class Cpu: public Receiver{
+  Display* display;
+  Cpu* cpu;
+  Keyboard* keyboard;
+
+  public:
+    void setDisplay(Display* );
+
+    virtual void receiveDigit(Digit ) = 0;
+    virtual void receiveOperation(Operation ) = 0;
+    virtual void receiveControl(Control ) = 0;
 };
 
-class Receiver
-{
-public:
-	virtual void receiveDigit(Digit) = 0;
-	virtual void receiveOperation(Operation) = 0;
-	virtual void receiveControl(Control) = 0;
+class Key; // Preset for early reference
+
+class Keyboard: public Receiver{
+   Cpu* cpu;
+   public:
+      void setCpu(Cpu* );
+
+      virtual void addKey(Key* ) = 0;
+
+      virtual void receiveDigit(Digit ) = 0;
+      virtual void receiveOperation(Operation ) = 0;
+      virtual void receiveControl(Control ) = 0;
 };
 
-class Cpu : public Receiver
-{
-public:
-	virtual void setDisplay(Display *) = 0;
-	virtual void receiveDigit(Digit) = 0;
-	virtual void receiveOperation(Operation) = 0;
-	virtual void receiveControl(Control) = 0;
+class Calculator{
+  public:
+    virtual void setDisplay(Display* ) = 0;
+    virtual void setCpu(Cpu* ) = 0;
+    virtual void setKeyboard(Keyboard* ) = 0;
 };
 
-class Key;
+class Key{
+   protected:
+     Receiver* receiver;
+   public:
+      void setReceiver(Receiver* );
 
-class Keyboard : public Receiver
-{
-public:
-	virtual void setCpu(Cpu *) = 0;
-	virtual void addKey(Key *) = 0;
-	virtual void receiveDigit(Digit) = 0;
-	virtual void receiveOperation(Operation) = 0;
-	virtual void receiveControl(Control) = 0;
+      virtual void press() = 0;
 };
 
-class Calculator
-{
-	Display *display;
-	Keyboard *keyboard;
-	Cpu *cpu;
-
-public:
-	virtual void setDisplay(Display *) = 0;
-	virtual void setCpu(Cpu *) = 0;
-	virtual void setKeyboard(Keyboard *) = 0;
+class KeyDigit: virtual public Key{
+     Digit digit;
+   public:
+      KeyDigit(Digit );
+      void press();
 };
 
-class Key
-{
-public:
-	virtual void setReceiver(Receiver *);
-	virtual void press() = 0;
+class KeyOperation: virtual public Key{
+     Operation operation;
+   public:
+      KeyOperation(Operation );
+      void press();
 };
 
-class KeyDigit : public Key
-{
-public:
-	virtual void press();
-};
-
-class KeyOperation : public Key
-{
-public:
-	virtual void press();
-};
-
-class KeyControl : public Key
-{
-public:
-	virtual void press();
+class KeyControl: virtual public Key{
+     Control control;
+   public:
+      KeyControl(Control );
+      void press();
 };
