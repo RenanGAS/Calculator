@@ -221,7 +221,7 @@ void NossaCpu::call_display()
 		return;
 
 	int zero_checker = 0;
-
+	
 	for (int i = 0; i < this->count1; i++)
 	{
 		if (((arg1[i] != 0) || zero_checker) && !(this->count2))
@@ -288,6 +288,12 @@ void NossaCpu::Operate()
 		operand1 = this->convert_to_operands(this->arg1, this->count1, 0);
 		operand2 = this->convert_to_operands(this->arg2, this->count2, offset);
 	}
+
+	if (this->signal == 1)
+	{
+		operand1 *= -1;
+	}
+	
 	//int operand1 = this->convert_to_int(this->arg1, this->count1);
 	//int operand2 = this->convert_to_int(this->arg2, this->count2);
 	double result = 0;
@@ -357,6 +363,7 @@ NossaCpu::NossaCpu()
 	this->display = NULL;
 	this->memory = 0;
 	this->mrcFlag = 0;
+	this->signal = Signal(POSITIVE);
 }
 
 // destructs the cpu and frees the dinamically allocated arrays
@@ -392,8 +399,17 @@ void NossaCpu::receiveOperation(Operation op)
 {
 	this->op = op;
 
+	// If the user press the SUBTRACTION Key just after ON/CE, the operand 1 will be negative
+	if (this->op == 1 && this->count1 == 0)
+	{
+		this->signal = Signal(NEGATIVE);
+	}
+	
 	setOperands(this->count1, this->count2);
 
+	// TODO: the setSignal occurs when it's pressed an operation or control key. How to filter these cases
+	// in callDisplay?
+	this->display->setSignal(this->signal);
 	call_display();
 }
 
@@ -443,8 +459,6 @@ void NossaCpu::receiveControl(Control c)
 
 		this->mrcFlag = 1;
 
-		call_display();
-
 		break;
 	case MEMORY_SUBTRACTION:
 		setOperands(this->count1, this->count2);
@@ -486,5 +500,9 @@ void NossaCpu::receiveControl(Control c)
 	default:
 		break;
 	}
+
+	// TODO: the setSignal occurs when it's pressed an operation or control key. How to filter these cases
+	// in callDisplay?
+	this->display->setSignal(this->signal);
 	call_display();
 }

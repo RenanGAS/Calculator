@@ -15,6 +15,7 @@ class NossaCpu : public Cpu
 	int count_point2;
 	int memory;
 	int mrcFlag;
+	Signal signal;
 	//TODO: name the variables in the methods
 	void left_align(int);
 	void clear_array(Digit *, int *, int *);
