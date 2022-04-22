@@ -1,4 +1,4 @@
-#include "keys.h"
+#include "NossasKeys.h"
 #include <iostream>
 #include <cmath>
 
@@ -21,12 +21,13 @@ NossaKeyDigit::NossaKeyDigit(Digit d)
 //Sends a digit to the receiver
 void NossaKeyDigit::press()
 {
-	this->receiver->receiveDigit(this->digit);
+	this->NossaKey::receiver->receiveDigit(this->digit);
 }
 
 //Class KeyOperation methods
 
 //constructs a key operation
+
 NossaKeyOperation::NossaKeyOperation(Operation op)
 {
 	this->operation = op;
@@ -35,7 +36,7 @@ NossaKeyOperation::NossaKeyOperation(Operation op)
 //Sends a operation to the receiver
 void NossaKeyOperation::press()
 {
-	this->receiver->receiveOperation(this->operation);
+	this->NossaKey::receiver->receiveOperation(this->operation);
 }
 
 //Class KeyControl methods
@@ -49,5 +50,5 @@ NossaKeyControl::NossaKeyControl(Control c)
 //Sends a control to the receiver
 void NossaKeyControl::press()
 {
-	this->receiver->receiveControl(this->control);
+	this->NossaKey::receiver->receiveControl(this->control);
 }

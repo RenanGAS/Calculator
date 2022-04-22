@@ -1,8 +1,9 @@
-#include "cpu.h"
+#include "NossaCpu.h"
 #include <iostream>
 #include <cmath>
 
 #define TEST 0
+#define MAX_DIGITS 8
 
 // Class Cpu methods
 
@@ -37,14 +38,16 @@ void NossaCpu::left_align(int arg)
 		for (int i = 0; i < helper; i++) // transfers the numbers to the rightmost side
 		{
 			this->arg2[MAX_DIGITS - helper + i] = array[i];
-			this->arg2[i] = ZERO;
+			this->arg2[i] = Digit(ZERO);
 		}
-
+		this->count2 = MAX_DIGITS;
+	}
+	else
 	{
 		for (int i = 0; i < helper; i++)
 		{
 			this->arg1[MAX_DIGITS - helper + i] = array[i];
-			this->arg1[i] = ZERO;
+			this->arg1[i] = Digit(ZERO);
 		}
 
 		this->count1 = MAX_DIGITS;
@@ -55,7 +58,7 @@ void NossaCpu::clear_array(Digit *array, int* count, int* decimal_count)
 {
 	for (int i = 0; i < MAX_DIGITS; i++)
 	{
-		array[i] = ZERO;
+		array[i] = Digit(ZERO);
 	}
 
 	*count = 0;
@@ -86,7 +89,7 @@ int NossaCpu::digit_to_int(Digit digit)
 		return 1;
 	case TWO:
 		return 2;
-	case THREE:
+	case THRE:
 		return 3;
 	case FOUR:
 		return 4;
@@ -111,27 +114,27 @@ Digit NossaCpu::double_to_digit(double number)
 	switch (digit)
 	{
 	case 0:
-		return ZERO;
+		return Digit(ZERO);
 	case 1:
-		return ONE;
+		return Digit(ONE);
 	case 2:
-		return TWO;
+		return Digit(TWO);
 	case 3:
-		return THREE;
+		return Digit(THRE);
 	case 4:
-		return FOUR;
+		return Digit(FOUR);
 	case 5:
-		return FIVE;
+		return Digit(FIVE);
 	case 6:
-		return SIX;
+		return Digit(SIX);
 	case 7:	
-		return SEVEN;
+		return Digit(SEVEN);
 	case 8:
-		return EIGHT;
+		return Digit(EIGHT);
 	case 9:
-		return NINE;
+		return Digit(NINE);
 	default:
-		return ZERO;
+		return Digit(ZERO);
 	}
 }
 
@@ -225,7 +228,7 @@ void NossaCpu::call_display()
 		{
 			if (i == this->count_point1) 
 			{
-				this->display->SetDecimalSeparator();
+				this->display->setDecimalSeparator();
 			}
 			//check errors displaying zeros after dot
 			this->display->add(arg1[i]);
@@ -239,7 +242,7 @@ void NossaCpu::call_display()
 		{
 			if (i == this->count_point2) 
 			{
-				this->display->SetDecimalSeparator();
+				this->display->setDecimalSeparator();
 			}
 			this->display->add(arg2[i]);
 			zero_checker = 1;
@@ -346,7 +349,7 @@ NossaCpu::NossaCpu()
 {
 	this->arg1 = static_cast<Digit *>(calloc(MAX_DIGITS, sizeof(Digit)));
 	this->arg2 = static_cast<Digit *>(calloc(MAX_DIGITS, sizeof(Digit)));
-	this->op = NONE;
+	//this->op = NONE;
 	this->count1 = 0;
 	this->count2 = 0;
 	this->count_point1 = MAX_DIGITS;
@@ -399,7 +402,7 @@ void NossaCpu::receiveControl(Control c)
 {
 	switch (c)
 	{
-	case EQUALS:
+	case EQUAL:
 		setOperands(this->count1, this->count2);
 		Operate();
 		break;

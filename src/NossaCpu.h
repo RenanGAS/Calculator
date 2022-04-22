@@ -1,6 +1,7 @@
 #pragma once
 
 #include "calculator.h"
+#include "NossoDisplay.h"
 
 class NossaCpu : public Cpu
 {
