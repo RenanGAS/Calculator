@@ -1,7 +1,6 @@
 #include "calculator.h"
 #include "NossaCpu.h"
 #include "NossoKeyboard.h"
-#include "NossasKeys.h"
 #include "NossoDisplay.h"
 #include <iostream>
 
@@ -10,9 +9,9 @@ int main()
     NossoDisplay display;
     NossaCpu cpu;
     NossoKeyboard k1;
-    NossaKeyDigit key0(ZERO), key1(ONE), key2(TWO), key3(THREE), key4(FOUR), key5(FIVE), key6(SIX), key7(SEVEN), key8(EIGHT), key9(NINE);
-    NossaKeyOperation key10(ADDITION), key11(SUBTRACTION), key12(DIVISION), key13(MULTIPLICATION), key14(SQUARE_ROOT), key15(PERCENTAGE);
-    NossaKeyControl key16(EQUALS), key17(MEMORY_READ_CLEAR), key18(MEMORY_ADDITION), key19(MEMORY_SUBTRACTION);
+    KeyDigit key0(ZERO), key1(ONE), key2(TWO), key3(THRE), key4(FOUR), key5(FIVE), key6(SIX), key7(SEVEN), key8(EIGHT), key9(NINE);
+    KeyOperation key10(ADDITION), key11(SUBTRACTION), key12(DIVISION), key13(MULTIPLICATION), key14(SQUARE_ROOT), key15(PERCENTAGE);
+    KeyControl key16(EQUAL), key17(MEMORY_READ_CLEAR), key18(MEMORY_ADDITION), key19(MEMORY_SUBTRACTION);
 
     k1.setCpu(&cpu);
     cpu.setDisplay(&display);

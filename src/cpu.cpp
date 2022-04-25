@@ -153,7 +153,7 @@ double NossaCpu::convert_to_operands(Digit *arg, int count, int offset)
 		digit = this->digit_to_int(arg[i]);
 		result += digit * pow(10, count - i + offset);
 	}
-	//seems to simple, i hope it works
+	//seems too simple, i hope it works
 }
 
 
@@ -484,10 +484,8 @@ void NossaCpu::receiveControl(Control c)
 			{
 				clear_array(this->arg1, &this->count1, &this->count_point1, 1);
 			}
-
 			convert_to_digit(this->memory, this->arg1, &this->count1);
 		}
-
 		this->mrcFlag = 1;
 
 		break;
