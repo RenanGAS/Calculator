@@ -174,14 +174,18 @@ int NossaCpu::convert_to_int(Digit *arg, int count)
 } */
 
 //converts a number to a finished array of digits
-int NossaCpu::convert_from_operand(double result)
+int NossaCpu::convert_to_digit(double result, Digit * vet, int * count)
 {
 	int i = 0;
-	this->count1 = 0;
+	count = 0;
 	if (result < 0)
 	{
 		result = -result;
+		//TODO: check case of MEMORY_READ_CLEAR
+	if ((vet == this->arg1))
+	{
 		this->signal = NEGATIVE;
+	}
 	}
 	int zero_checker = 0;
 	while (result != 0)
@@ -191,13 +195,13 @@ int NossaCpu::convert_from_operand(double result)
 			return 1;
 		}
 		Digit digit = int_to_digit((result / pow(10, MAX_DIGITS - i)));
-		this->arg1[i] = digit;
+		vet[i] = digit;
 		if ((digit != ZERO)) zero_checker = 1;
-		if (zero_checker && (digit == ZERO)) this->count1 -= 1;
+		if (zero_checker && (digit == ZERO)) count -= 1;
 		result =  fmod(result, pow(10, MAX_DIGITS - i));
 		i++;
 	}
-	this->count1 += i; //this is deliberate, do not alter unless you know what you are doing
+	count += i; //this is deliberate, do not alter unless you know what you are doing
 	//this is to handle zeros at the end of the number
 	
 }
@@ -367,14 +371,10 @@ void NossaCpu::Operate()
 
 	clear_array(this->arg1, &this->count1, &this->count_point1, 1);
 
-	if (this->convert_from_operand(result))
+	if (this->convert_to_digit(result, this->arg1, &this->count1))
 	{
 		this->error_handle();
 	}
-	/* if (convert_to_digit(result, this->arg1, &this->count1))
-	{
-		this->error_handle();
-	} */
 	this->count_point1 = point_counter;
 
 	clear_array(this->arg2, &this->count2, &this->count_point2, 0);
@@ -477,6 +477,7 @@ void NossaCpu::receiveControl(Control c)
 		{
 			clear_array(this->arg2, &this->count2, &this->count_point2, 0);
 			convert_to_digit(this->memory, this->arg2, &this->count2);
+			//
 		}
 		else
 		{

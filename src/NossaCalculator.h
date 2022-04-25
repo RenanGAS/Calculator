@@ -4,7 +4,6 @@
 
 #include "NossaCpu.h"
 #include "NossoDisplay.h"
-#include "NossasKeys.h"
 #include "NossoKeyboard.h"
 
 class NossaCalculator: public Calculator

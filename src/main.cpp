@@ -34,14 +34,14 @@ int main()
     k1.addKey(&key15);
     k1.addKey(&key16);
     
+    std::cout << "\n1.";
     key1.press(); // um
-    std::cout << "       .1\n";
+    std::cout << "\n2.";
     key3.press(); // três
-    std::cout << "       .2\n";
+    std::cout << "\n3.";
     key10.press(); // +
-    std::cout << "       .3\n";
+    std::cout << "\n4.";
     key2.press(); // dois
-    std::cout << "       .4\n";
+    std::cout << "\n5.";
     key16.press(); // igual
-    std::cout << "       .5\n";
 }
