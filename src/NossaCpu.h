@@ -20,7 +20,6 @@ class NossaCpu : public Cpu
 	void left_align(int);
 	void clear_array(Digit *, int *, int *, int);
 	int convert_to_int(Digit *, int);
-	int convert_to_digit(int, Digit *, int *);
 	void call_display();
 	void error_handle();
 	void Operate();
@@ -29,7 +28,7 @@ class NossaCpu : public Cpu
 	int digit_to_int(Digit);
 	Digit int_to_digit(int number);
 	double convert_to_operands(Digit *, int, int);
-	int convert_from_operand(double result);
+	int convert_to_digit(double result, Digit * vet, int * count);
 public:
     NossaCpu();
 	~NossaCpu();

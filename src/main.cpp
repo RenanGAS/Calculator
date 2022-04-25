@@ -1,7 +1,6 @@
 #include "calculator.h"
 #include "NossaCpu.h"
 #include "NossoKeyboard.h"
-#include "NossasKeys.h"
 #include "NossoDisplay.h"
 #include <iostream>
 
@@ -10,9 +9,9 @@ int main()
     NossoDisplay display;
     NossaCpu cpu;
     NossoKeyboard k1;
-    NossaKeyDigit key0(ZERO), key1(ONE), key2(TWO), key3(THREE), key4(FOUR), key5(FIVE), key6(SIX), key7(SEVEN), key8(EIGHT), key9(NINE);
-    NossaKeyOperation key10(ADDITION), key11(SUBTRACTION), key12(DIVISION), key13(MULTIPLICATION), key14(SQUARE_ROOT), key15(PERCENTAGE);
-    NossaKeyControl key16(EQUALS), key17(MEMORY_READ_CLEAR), key18(MEMORY_ADDITION), key19(MEMORY_SUBTRACTION);
+    KeyDigit key0(ZERO), key1(ONE), key2(TWO), key3(THRE), key4(FOUR), key5(FIVE), key6(SIX), key7(SEVEN), key8(EIGHT), key9(NINE);
+    KeyOperation key10(ADDITION), key11(SUBTRACTION), key12(DIVISION), key13(MULTIPLICATION), key14(SQUARE_ROOT), key15(PERCENTAGE);
+    KeyControl key16(EQUAL), key17(MEMORY_READ_CLEAR), key18(MEMORY_ADDITION), key19(MEMORY_SUBTRACTION);
 
     k1.setCpu(&cpu);
     cpu.setDisplay(&display);
@@ -35,14 +34,26 @@ int main()
     k1.addKey(&key15);
     k1.addKey(&key16);
     
+
+    /* key2.press();
+    key3.press();
+    key2.press();
+    key3.press();
+    key2.press();
+    key3.press();
+    key2.press();
+    key2.press();
+    key10.press();
+    key1.press();
+    key16.press(); */
+    std::cout << "\n1.";
     key1.press(); // um
-    std::cout << "       .1\n";
+    std::cout << "\n2.";
     key3.press(); // três
-    std::cout << "       .2\n";
+    std::cout << "\n3.";
     key10.press(); // +
-    std::cout << "       .3\n";
+    std::cout << "\n4.";
     key2.press(); // dois
-    std::cout << "       .4\n";
+    std::cout << "\n5.";
     key16.press(); // igual
-    std::cout << "       .5\n";
 }

@@ -153,7 +153,7 @@ double NossaCpu::convert_to_operands(Digit *arg, int count, int offset)
 		digit = this->digit_to_int(arg[i]);
 		result += digit * pow(10, count - i + offset);
 	}
-	//seems to simple, i hope it works
+	return result;
 }
 
 
@@ -161,7 +161,6 @@ double NossaCpu::convert_to_operands(Digit *arg, int count, int offset)
 /* //converts a finished array of digits to a number
 int NossaCpu::convert_to_int(Digit *arg, int count)
 {
-	//TODO: accomodate the floating point
 	//obsolete
 	int result = 0;
 	int digit;
@@ -174,32 +173,39 @@ int NossaCpu::convert_to_int(Digit *arg, int count)
 } */
 
 //converts a number to a finished array of digits
-int NossaCpu::convert_from_operand(double result)
+int NossaCpu::convert_to_digit(double result, Digit * vet, int * count)
 {
 	int i = 0;
-	this->count1 = 0;
+	count = 0;
 	if (result < 0)
 	{
 		result = -result;
+		//TODO: check case of MEMORY_READ_CLEAR
+	if ((vet == this->arg1))
+	{
 		this->signal = NEGATIVE;
+	}
 	}
 	int zero_checker = 0;
 	while (result != 0)
 	{
 		if (i > MAX_DIGITS)
 		{
-			return 1;
+			break;
 		}
 		Digit digit = int_to_digit((result / pow(10, MAX_DIGITS - i)));
-		this->arg1[i] = digit;
 		if ((digit != ZERO)) zero_checker = 1;
-		if (zero_checker && (digit == ZERO)) this->count1 -= 1;
+		vet[i] = digit;
+		if(zero_checker)
+		{
+			if(digit == ZERO) count -= 1;
+		}
+		printf(" v[%d] = %d", i, digit);
 		result =  fmod(result, pow(10, MAX_DIGITS - i));
 		i++;
 	}
-	this->count1 += i; //this is deliberate, do not alter unless you know what you are doing
-	//this is to handle zeros at the end of the number
-	
+	count += i;
+	return 0;
 }
 
 //deprecated
@@ -229,8 +235,8 @@ int NossaCpu::convert_to_digit(int num, Digit *result, int *count)
 // contains all the logic to call the display methods
 void NossaCpu::call_display()
 {
-	// TODO: accomodate floating point
-	// TODO: accomodate negative numbers
+
+	if (this->signal == NEGATIVE) std::cout << "-";
 	if (this->display == NULL)
 		return;
 
@@ -244,7 +250,7 @@ void NossaCpu::call_display()
 			{
 				this->display->setDecimalSeparator();
 			}
-			//check errors displaying zeros after dot
+			//TODO: check errors displaying zeros after dot
 			this->display->add(arg1[i]);
 			zero_checker = 1;
 		}
@@ -262,14 +268,14 @@ void NossaCpu::call_display()
 			zero_checker = 1;
 		}
 	}
+	std::cout << "\n";
 }
 
 // handles errors and displays them
 void NossaCpu::error_handle()
-{ // TODO: check how elgin does it
+{
 	clear_array(this->arg1, &this->count1, &this->count_point1, 1);
 	clear_array(this->arg2, &this->count2, &this->count_point2, 0);
-	// TODO: check if the error should be displayed at this moment or later
 	if (this->display != NULL)
 		this->display->setError();
 }
@@ -290,6 +296,7 @@ void NossaCpu::setOperands(int count1, int count2)
 // takes the numbers and the operation and performs the operation
 void NossaCpu::Operate()
 {
+	//TODO: something is wrong. Fix
 	int offset = this->calculate_offset();
 	double operand1, operand2;
 	int point_counter;
@@ -310,11 +317,12 @@ void NossaCpu::Operate()
 		operand2 = this->convert_to_operands(this->arg2, this->count2, offset);
 		point_counter = this->count_point1;
 	}
-
+	//TODO: check if necessary
+	/* 
 	if (this->signal == NEGATIVE)
 	{
 		operand1 *= -1;
-	}
+	} */
 	
 	//int operand1 = this->convert_to_int(this->arg1, this->count1);
 	//int operand2 = this->convert_to_int(this->arg2, this->count2);
@@ -356,7 +364,7 @@ void NossaCpu::Operate()
 	case PERCENTAGE:
 		//result = operand1 / 100;
 		//this may cause floats to appear
-		//TODO: just ajust the floating point counter
+		//DONE: just ajust the floating point counter
 		if (point_counter < 7)
 		{
 			point_counter += 2;
@@ -367,14 +375,11 @@ void NossaCpu::Operate()
 
 	clear_array(this->arg1, &this->count1, &this->count_point1, 1);
 
-	if (this->convert_from_operand(result))
+	//this is not in use. cant figure out how to know if a number has ended yet or not
+	if (this->convert_to_digit(result, this->arg1, &this->count1))
 	{
 		this->error_handle();
 	}
-	/* if (convert_to_digit(result, this->arg1, &this->count1))
-	{
-		this->error_handle();
-	} */
 	this->count_point1 = point_counter;
 
 	clear_array(this->arg2, &this->count2, &this->count_point2, 0);
@@ -412,7 +417,7 @@ void NossaCpu::setDisplay(Display *display)
 // contains the logic to receive the digits and put them in the correct array
 void NossaCpu::receiveDigit(Digit d)
 {
-	//TODO: if digit is remaining from a operantion, must be substituted when a new digit arrives
+	//TODO: if digit is remaining from a operation, must be substituted when a new digit arrives
 	if ((this->count1 < MAX_DIGITS))
 	{
 		this->arg1[this->count1++] = d;
@@ -438,8 +443,6 @@ void NossaCpu::receiveOperation(Operation op)
 	
 	setOperands(this->count1, this->count2);
 
-	// TODO: the setSignal occurs when it's pressed an operation or control key. How to filter these cases
-	// in callDisplay?
 	this->display->setSignal(this->signal);
 	call_display();
 }
@@ -477,6 +480,7 @@ void NossaCpu::receiveControl(Control c)
 		{
 			clear_array(this->arg2, &this->count2, &this->count_point2, 0);
 			convert_to_digit(this->memory, this->arg2, &this->count2);
+			//
 		}
 		else
 		{
@@ -484,10 +488,8 @@ void NossaCpu::receiveControl(Control c)
 			{
 				clear_array(this->arg1, &this->count1, &this->count_point1, 1);
 			}
-
 			convert_to_digit(this->memory, this->arg1, &this->count1);
 		}
-
 		this->mrcFlag = 1;
 
 		break;
@@ -532,8 +534,6 @@ void NossaCpu::receiveControl(Control c)
 		break;
 	}
 
-	// TODO: the setSignal occurs when it's pressed an operation or control key. How to filter these cases
-	// in callDisplay?
 	this->display->setSignal(this->signal);
 	call_display();
 }

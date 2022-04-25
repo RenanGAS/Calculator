@@ -48,6 +48,8 @@ public:
   virtual void clear() = 0;
 };
 
+class Keyboard;
+
 class Receiver
 {
 public:

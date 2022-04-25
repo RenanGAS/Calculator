@@ -1,11 +1,11 @@
-#include "NossasKeys.h"
 #include <iostream>
+#include "calculator.h"
 #include <cmath>
 
 //Class Key methods
 
 //Sets a receiver to the key
-void NossaKey::setReceiver(Receiver* receiver)
+void Key::setReceiver(Receiver* receiver)
 {
 	this->receiver = receiver;
 }
@@ -13,42 +13,42 @@ void NossaKey::setReceiver(Receiver* receiver)
 //Class KeyDigit methods
 
 //constructs a key digit
-NossaKeyDigit::NossaKeyDigit(Digit d)
+KeyDigit::KeyDigit(Digit d)
 {
 	this->digit = d;
 }
 
 //Sends a digit to the receiver
-void NossaKeyDigit::press()
+void KeyDigit::press()
 {
-	this->NossaKey::receiver->receiveDigit(this->digit);
+	this->Key::receiver->receiveDigit(this->digit);
 }
 
 //Class KeyOperation methods
 
 //constructs a key operation
 
-NossaKeyOperation::NossaKeyOperation(Operation op)
+KeyOperation::KeyOperation(Operation op)
 {
 	this->operation = op;
 }
 
 //Sends a operation to the receiver
-void NossaKeyOperation::press()
+void KeyOperation::press()
 {
-	this->NossaKey::receiver->receiveOperation(this->operation);
+	this->Key::receiver->receiveOperation(this->operation);
 }
 
 //Class KeyControl methods
 
 //constructs a key control
-NossaKeyControl::NossaKeyControl(Control c)
+KeyControl::KeyControl(Control c)
 {
 	this->control = c;
 }
 
 //Sends a control to the receiver
-void NossaKeyControl::press()
+void KeyControl::press()
 {
-	this->NossaKey::receiver->receiveControl(this->control);
+	this->Key::receiver->receiveControl(this->control);
 }
