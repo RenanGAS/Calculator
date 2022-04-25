@@ -300,7 +300,7 @@ void NossaCpu::Operate()
 	int offset = this->calculate_offset();
 	double operand1, operand2;
 	int point_counter;
-	if(this->op = SQUARE_ROOT)
+	if(this->op == SQUARE_ROOT)
 	{
 		operand1 = convert_to_operands(this->arg1, this->count1, 0);
 		operand2 = 0;
