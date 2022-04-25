@@ -34,6 +34,18 @@ int main()
     k1.addKey(&key15);
     k1.addKey(&key16);
     
+
+    /* key2.press();
+    key3.press();
+    key2.press();
+    key3.press();
+    key2.press();
+    key3.press();
+    key2.press();
+    key2.press();
+    key10.press();
+    key1.press();
+    key16.press(); */
     std::cout << "\n1.";
     key1.press(); // um
     std::cout << "\n2.";
