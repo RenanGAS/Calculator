@@ -18,7 +18,7 @@ class NossaCpu : public Cpu
 	Signal signal;
 	//TODO: name the variables in the methods
 	void left_align(int);
-	void clear_array(Digit *, int *, int *);
+	void clear_array(Digit *, int *, int *, int);
 	int convert_to_int(Digit *, int);
 	int convert_to_digit(int, Digit *, int *);
 	void call_display();
@@ -27,9 +27,9 @@ class NossaCpu : public Cpu
 	void setOperands(int, int);
 	int calculate_offset();
 	int digit_to_int(Digit);
-	Digit double_to_digit(double number);
+	Digit int_to_digit(int number);
 	double convert_to_operands(Digit *, int, int);
-	int convert_from_operand(int result, int offset);
+	int convert_from_operand(double result);
 public:
     NossaCpu();
 	~NossaCpu();
