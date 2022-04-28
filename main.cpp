@@ -10,8 +10,8 @@ int main()
     GuilhermeCpu cpu;
     GuilhermeKeyboard k1;
     KeyDigit key0(ZERO), key1(ONE), key2(TWO), key3(THRE), key4(FOUR), key5(FIVE), key6(SIX), key7(SEVEN), key8(EIGHT), key9(NINE);
-    KeyOperation key10(ADDITION), key11(SUBTRACTION), key12(DIVISION), key13(MULTIPLICATION), key14(SQUARE_ROOT), key15(PERCENTAGE);
-    KeyControl key16(EQUAL), key17(MEMORY_READ_CLEAR), key18(MEMORY_ADDITION), key19(MEMORY_SUBTRACTION), keyponto(DECIMAL_SEPARATOR);
+    KeyOperation keyaddition(ADDITION), keysubtraction(SUBTRACTION), keydivision(DIVISION), keymultiplication(MULTIPLICATION), keysqrt(SQUARE_ROOT), keypercentage(PERCENTAGE);
+    KeyControl keyequal(EQUAL), key17(MEMORY_READ_CLEAR), key18(MEMORY_ADDITION), key19(MEMORY_SUBTRACTION), keyponto(DECIMAL_SEPARATOR);
 
     k1.setCpu(&cpu);
     cpu.setDisplay(&display);
@@ -26,21 +26,23 @@ int main()
     k1.addKey(&key7);
     k1.addKey(&key8);
     k1.addKey(&key9);
-    k1.addKey(&key10);
-    k1.addKey(&key11);
-    k1.addKey(&key12);
-    k1.addKey(&key13);
-    k1.addKey(&key14);
-    k1.addKey(&key15);
-    k1.addKey(&key16);
+    k1.addKey(&keyaddition);
+    k1.addKey(&keysubtraction);
+    k1.addKey(&keydivision);
+    k1.addKey(&keymultiplication);
+    k1.addKey(&keysqrt);
+    k1.addKey(&keypercentage);
+    k1.addKey(&keyequal);
+    k1.addKey(&keyponto);
     k1.addKey(&key17);
     k1.addKey(&key18);
     k1.addKey(&key19);
     
     key1.press(); 
     key3.press();
+    keyponto.press();
     key3.press();
-    key11.press();
+    keysubtraction.press();
     key2.press();
-    key16.press(); 
+    keyequal.press(); 
 }

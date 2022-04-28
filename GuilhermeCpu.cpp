@@ -199,7 +199,7 @@ void GuilhermeCpu::call_display()
 	if (this->display == NULL)
 		return;
 
-	int zero_checker = 1;
+	int zero_checker = 0;
 
 	for (int i = 0; i < this->count1; i++)
 	{
@@ -214,7 +214,7 @@ void GuilhermeCpu::call_display()
 		}
 	}
 	
-	zero_checker = 1;
+	zero_checker = 0;
 
 	for (int i = 0; i < this->count2; i++)
 	{
@@ -228,33 +228,6 @@ void GuilhermeCpu::call_display()
 			zero_checker = 1;
 		}
 	}
-
-	/* for (int i = 0; i < this->count1; i++)
-	{
-		if (((arg1[i] != 0) || zero_checker) && !(this->count2))
-		{
-			if (i == this->count_point1) 
-			{
-				this->display->setDecimalSeparator();
-			}
-			//TODO: check errors displaying zeros after dot
-			this->display->add(arg1[i]);
-			zero_checker = 1;
-		}
-	} */
-	/* 
-	for (int i = 0; i < this->count2; i++)
-	{
-		if ((arg2[i] != 0) || zero_checker)
-		{
-			if (i == this->count_point2) 
-			{
-				this->display->setDecimalSeparator();
-			}
-			this->display->add(arg2[i]);
-			zero_checker = 1;
-		}
-	} */
 	std::cout << "\n";
 }
 
@@ -283,7 +256,6 @@ void GuilhermeCpu::setOperands(int count1, int count2)
 // takes the numbers and the operation and performs the operation
 void GuilhermeCpu::Operate()
 {
-	int offset = this->calculate_offset();
 	double operand1, operand2;
 	operand1 = convert_to_operands(this->arg1, this->count1, this->count_point1);
 	operand2 = convert_to_operands(this->arg2, this->count2, this->count_point2);
@@ -337,7 +309,7 @@ void GuilhermeCpu::Operate()
 	}
 
 	clear_array(this->arg1, &this->count1, &this->count_point1);
-
+	printf("%lf\n", result);
 	if (this->convert_to_digit(result, this->arg1, &this->count1, &this->count_point1))
 	{
 

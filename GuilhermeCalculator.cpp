@@ -15,7 +15,7 @@ void GuilhermeCalculator::setKeyboard(Keyboard* keyboard)
 //Sets the display for a calculator
 void GuilhermeCalculator::setDisplay(Display* display)
 {
-	 display;
+	display;
 }
 
 //Sets the cpu for a calculator
