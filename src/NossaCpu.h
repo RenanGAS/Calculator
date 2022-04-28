@@ -13,7 +13,7 @@ class NossaCpu : public Cpu
 	Digit *arg2;
 	int count2;
 	int count_point2;
-	int memory;
+	double memory;
 	int mrcFlag;
 	Signal signal;
 	Operation saveOp;

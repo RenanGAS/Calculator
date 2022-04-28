@@ -373,7 +373,7 @@ NossaCpu::NossaCpu()
 {
 	this->arg1 = static_cast<Digit *>(calloc(MAX_DIGITS, sizeof(Digit)));
 	this->arg2 = static_cast<Digit *>(calloc(MAX_DIGITS, sizeof(Digit)));
-	//this->op = NONE;
+	this->op = NONE;
 	this->count1 = 0;
 	this->count2 = 0;
 	this->count_point1 = MAX_DIGITS;
@@ -476,19 +476,17 @@ void NossaCpu::receiveControl(Control c)
 			break;
 		}
 
-		if (this->count2 > 0)
+		if (this->op == NONE)
+		{
+			clear_array(this->arg1, &this->count1, &this->count_point1);
+			convert_to_digit(this->memory, this->arg1, &this->count1, &this->count_point1);
+		}
+		else
 		{
 			clear_array(this->arg2, &this->count2, &this->count_point2);
 			convert_to_digit(this->memory, this->arg2, &this->count2, &this->count_point2);
 		}
-		else
-		{
-			if (this->count1 > 0)
-			{
-				clear_array(this->arg1, &this->count1, &this->count_point1);
-			}
-			convert_to_digit(this->memory, this->arg1, &this->count1, &this->count_point1);
-		}
+
 		this->mrcFlag = 1;
 
 		break;
@@ -496,11 +494,11 @@ void NossaCpu::receiveControl(Control c)
 		setOperands(this->count1, this->count2);
 		if (this->count2 > 0)
 		{
-			this->memory -= int(this->arg2[MAX_DIGITS - 1]);
+			this->memory -= convert_to_operands(this->arg2, this->count2, this->count_point2);
 		}
 		else if (this->count1 > 0)
 		{
-			this->memory -= int(this->arg1[MAX_DIGITS - 1]);
+			this->memory -= convert_to_operands(this->arg1, this->count1, this->count_point1);
 		}
 
 		// TODO: Implement a flag that disappears when MEMORY_SUBTRACTION sets the memory to zero.
@@ -509,11 +507,11 @@ void NossaCpu::receiveControl(Control c)
 		setOperands(this->count1, this->count2);
 		if (this->count2 > 0)
 		{
-			this->memory += int(this->arg2[MAX_DIGITS - 1]);
+			this->memory += convert_to_operands(this->arg2, this->count2, this->count_point2);
 		}
 		else if (this->count1 > 0)
 		{
-			this->memory += int(this->arg1[MAX_DIGITS - 1]);
+			this->memory += convert_to_operands(this->arg1, this->count1, this->count_point1);
 		}
 
 		// TODO: Implement a flag that appears when MEMORY_ADDITION is used.
