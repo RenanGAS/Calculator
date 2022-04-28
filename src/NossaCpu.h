@@ -17,8 +17,8 @@ class NossaCpu : public Cpu
 	int mrcFlag;
 	Signal signal;
 	//TODO: name the variables in the methods
-	void left_align(int);
-	void clear_array(Digit *, int *, int *, int);
+	void right_align(int);
+	void clear_array(Digit *, int *, int *);
 	int convert_to_int(Digit *, int);
 	void call_display();
 	void error_handle();
@@ -28,7 +28,7 @@ class NossaCpu : public Cpu
 	int digit_to_int(Digit);
 	Digit int_to_digit(int number);
 	double convert_to_operands(Digit *, int, int);
-	int convert_to_digit(double result, Digit * vet, int * count);
+	int convert_to_digit(double result, Digit * vet, int * count, int * decimal_count);
 public:
     NossaCpu();
 	~NossaCpu();
