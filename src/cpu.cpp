@@ -8,7 +8,7 @@
 // Class Cpu methods
 
 // makes the number "complete" as in ready to operate
-void NossaCpu::left_align(int arg)
+void NossaCpu::right_align(int arg)
 {
 	// TODO: accomodate the floating point
 	int count;
@@ -284,12 +284,12 @@ void NossaCpu::setOperands(int count1, int count2)
 {
 	if (count1 > 0 && count1 != MAX_DIGITS)
 	{
-		left_align(1);
+		right_align(1);
 	}
 
 	if (count2 > 0 && count2 != MAX_DIGITS)
 	{
-		left_align(2);
+		right_align(2);
 	}
 }
 
