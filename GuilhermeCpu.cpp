@@ -151,6 +151,7 @@ int GuilhermeCpu::convert_to_digit(double result, Digit *vet, int *count, int *d
 	int zero_checker = 0;
 	*count = 0;
 	*decimal_count = 0;
+	int countagem = 0;
 	if (result < 0)
 	{
 		result = -result;
@@ -162,6 +163,12 @@ int GuilhermeCpu::convert_to_digit(double result, Digit *vet, int *count, int *d
 	}
 	double result_helper = result;
 
+	*decimal_count = log10(result_helper) + 1;
+	if (*decimal_count > MAX_DIGITS)
+	{
+		return 1;
+	}
+	printf("Decimal count: %d\n", *decimal_count);
 
 	while (result != 0)
 	{
@@ -172,6 +179,7 @@ int GuilhermeCpu::convert_to_digit(double result, Digit *vet, int *count, int *d
 		Digit digit = int_to_digit((result / pow(10, MAX_DIGITS - i)));
 		if ((digit != ZERO))
 			zero_checker = 1;
+			countagem++;
 		if (zero_checker)
 		{
 			vet[*count] = digit;
@@ -180,13 +188,9 @@ int GuilhermeCpu::convert_to_digit(double result, Digit *vet, int *count, int *d
 		result = fmod(result, pow(10, MAX_DIGITS - i));
 		i++;
 	}
+	*count = countagem;
+	printf("countagem: %d\n", *count);
 	//this causes a bug when the last number is 
-	*decimal_count = *count + log10(result_helper) - 1;
-	if (*decimal_count > MAX_DIGITS)
-	{
-		return 1;
-	}
-	
 	return 0;
 }
 
@@ -417,11 +421,10 @@ void GuilhermeCpu::receiveControl(Control c)
 		// TODO: implement clear
 		break;
 	case RESET:
-		clear_array(this->arg1, &this->count1, &this->count_point2);
+		clear_array(this->arg1, &this->count1, &this->count_point1);
 		clear_array(this->arg2, &this->count2, &this->count_point2);
 		this->count1 = 0;
 		this->count2 = 0;
-		// TODO: make the changes needed to acommodate floats
 		break;
 	case MEMORY_READ_CLEAR:
 		setOperands(this->count1, this->count2);
