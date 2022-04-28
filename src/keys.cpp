@@ -21,7 +21,7 @@ KeyDigit::KeyDigit(Digit d)
 //Sends a digit to the receiver
 void KeyDigit::press()
 {
-	this->Key::receiver->receiveDigit(this->digit);
+	this->receiver->receiveDigit(this->digit);
 }
 
 //Class KeyOperation methods
@@ -36,7 +36,7 @@ KeyOperation::KeyOperation(Operation op)
 //Sends a operation to the receiver
 void KeyOperation::press()
 {
-	this->Key::receiver->receiveOperation(this->operation);
+	this->receiver->receiveOperation(this->operation);
 }
 
 //Class KeyControl methods
@@ -50,5 +50,5 @@ KeyControl::KeyControl(Control c)
 //Sends a control to the receiver
 void KeyControl::press()
 {
-	this->Key::receiver->receiveControl(this->control);
+	this->receiver->receiveControl(this->control);
 }
