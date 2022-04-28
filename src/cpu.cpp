@@ -15,6 +15,11 @@ void NossaCpu::right_align(int arg)
 	Digit *array;
 	int helper;
 
+	if (count + 1 > MAX_DIGITS)
+	{
+		return;
+	}
+
 	if (arg == 2)
 	{
 		helper = this->count2; // number of digits in the number
@@ -28,26 +33,23 @@ void NossaCpu::right_align(int arg)
 		count = this->count1;
 	}
 
-	if (count + 1 > MAX_DIGITS)
-	{
-		return;
-	}
 
 	if (arg == 2)
 	{
-		for (int i = 0; i < helper; i++) // transfers the numbers to the rightmost side
+		for (int i = (this->count2 -1); i <= 0; i--) // transfers the numbers to the rightmost side
 		{
-			this->arg2[MAX_DIGITS - helper + i] = array[i];
-			this->arg2[i] = Digit(ZERO);
+			this->arg2[MAX_DIGITS - this->count2 + i] = this->arg2[i];
+			this->arg2[i] = ZERO;
+			std::cout << "%d, %d\n", (MAX_DIGITS - 1 - this->count2 + i), i;
 		}
 		this->count2 = MAX_DIGITS;
 	}
 	else
 	{
-		for (int i = 0; i < helper; i++)
+		for (int i = (this->count1 - 1); i <= 0; i++)
 		{
-			this->arg1[MAX_DIGITS - helper + i] = array[i];
-			this->arg1[i] = Digit(ZERO);
+			this->arg1[MAX_DIGITS - this->count1 + i] = this->arg1[i];
+			this->arg1[i] = ZERO;
 		}
 
 		this->count1 = MAX_DIGITS;
