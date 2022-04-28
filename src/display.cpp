@@ -1,11 +1,11 @@
-#include "NossoDisplay.h"
+#include "GuilhermeDisplay.h"
 #include <iostream>
 #include <cmath>
 
 //Class Display methods
 
 //adds a digit to the display
-void NossoDisplay::add(Digit digit)
+void GuilhermeDisplay::add(Digit digit)
 {
 	//this is used to ensure the correct digit will be displayed even with a different order of the enum
 	switch (digit)
@@ -46,13 +46,13 @@ void NossoDisplay::add(Digit digit)
 }
 
 //adds a decimal separator to the display
-void NossoDisplay::setDecimalSeparator()
+void GuilhermeDisplay::setDecimalSeparator()
 {
 	std::cout << ".";
 }
 
 //Sets the signal of the number to be displayed
-void NossoDisplay::setSignal(Signal signal)
+void GuilhermeDisplay::setSignal(Signal signal)
 {
 	switch (signal)
 	{
@@ -68,13 +68,13 @@ void NossoDisplay::setSignal(Signal signal)
 }
 
 //Sets a error message
-void NossoDisplay::setError()
+void GuilhermeDisplay::setError()
 {
 	std::cout << "Error" << std::endl;
 }
 
 //clears the display
-void NossoDisplay::clear()
+void GuilhermeDisplay::clear()
 {
 	std::cout << "\n";
 }

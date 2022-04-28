@@ -2,24 +2,24 @@
 #include <cmath>
 
 #include "calculator.h"
-#include "NossaCalculator.h"
+#include "GuilhermeCalculator.h"
 //Class Calculator methods
 
 //Sets the keyboard for a calculator
 
-void NossaCalculator::setKeyboard(Keyboard* keyboard)
+void GuilhermeCalculator::setKeyboard(Keyboard* keyboard)
 {
 	this->keyboard = keyboard;
 }
 
 //Sets the display for a calculator
-void NossaCalculator::setDisplay(Display* display)
+void GuilhermeCalculator::setDisplay(Display* display)
 {
 	 display;
 }
 
 //Sets the cpu for a calculator
-void NossaCalculator::setCpu(Cpu* cpu)
+void GuilhermeCalculator::setCpu(Cpu* cpu)
 {
 	this->cpu = cpu;
 }

@@ -1,9 +1,9 @@
 #pragma once
 
 #include "calculator.h"
-#include "NossoDisplay.h"
+#include "GuilhermeDisplay.h"
 
-class NossaCpu : public Cpu
+class GuilhermeCpu : public Cpu
 {
     Display *display;
 	Digit *arg1;
@@ -31,8 +31,8 @@ class NossaCpu : public Cpu
 	double convert_to_operands(Digit *, int, int);
 	int convert_to_digit(double result, Digit * vet, int * count, int * decimal_count);
 public:
-    NossaCpu();
-	~NossaCpu();
+    GuilhermeCpu();
+	~GuilhermeCpu();
     void setDisplay(Display *);
 	void receiveDigit(Digit);
 	void receiveOperation(Operation);

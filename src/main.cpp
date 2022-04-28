@@ -1,17 +1,17 @@
 #include "calculator.h"
-#include "NossaCpu.h"
-#include "NossoKeyboard.h"
-#include "NossoDisplay.h"
+#include "GuilhermeCpu.h"
+#include "GuilhermeKeyboard.h"
+#include "GuilhermeDisplay.h"
 #include <iostream>
 
 int main()
 {
-    NossoDisplay display;
-    NossaCpu cpu;
-    NossoKeyboard k1;
+    GuilhermeDisplay display;
+    GuilhermeCpu cpu;
+    GuilhermeKeyboard k1;
     KeyDigit key0(ZERO), key1(ONE), key2(TWO), key3(THRE), key4(FOUR), key5(FIVE), key6(SIX), key7(SEVEN), key8(EIGHT), key9(NINE);
     KeyOperation key10(ADDITION), key11(SUBTRACTION), key12(DIVISION), key13(MULTIPLICATION), key14(SQUARE_ROOT), key15(PERCENTAGE);
-    KeyControl key16(EQUAL), key17(MEMORY_READ_CLEAR), key18(MEMORY_ADDITION), key19(MEMORY_SUBTRACTION);
+    KeyControl key16(EQUAL), key17(MEMORY_READ_CLEAR), key18(MEMORY_ADDITION), key19(MEMORY_SUBTRACTION), keyponto(DECIMAL_SEPARATOR);
 
     k1.setCpu(&cpu);
     cpu.setDisplay(&display);
@@ -38,11 +38,9 @@ int main()
     k1.addKey(&key19);
     
     key1.press(); 
-    key3.press(); 
-    key18.press();
-    key11.press(); 
     key3.press();
-    key19.press();
-    key17.press(); 
+    key3.press();
+    key11.press();
+    key3.press();
     key16.press(); 
 }
