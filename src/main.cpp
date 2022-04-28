@@ -41,6 +41,6 @@ int main()
     key3.press();
     key3.press();
     key11.press();
-    key3.press();
+    key2.press();
     key16.press(); 
 }
