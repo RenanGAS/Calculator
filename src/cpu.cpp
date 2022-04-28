@@ -31,7 +31,7 @@ void NossaCpu::right_align(int arg)
 	//this resolves an edge case where this->count = MAX_DIGITS and greater, because no operation is needed
 	if (helper + 1 > MAX_DIGITS) return;
 
-	*decimal_point = MAX_DIGITS - helper + *decimal_point; //this fixes the decimal point
+	if (*decimal_point < MAX_DIGITS) *decimal_point = MAX_DIGITS - helper + *decimal_point; //this fixes the decimal point
 	for (int i = (helper -1); i >= 0; i--) // transfers the numbers to the rightmost side
 	{ //this for transfers from right to left in order to not overrwite any number
 		(*array)[MAX_DIGITS - helper + i] = (*array)[i];
@@ -139,7 +139,7 @@ double NossaCpu::convert_to_operands(Digit *arg, int count, int point_count)
 	for (int i = 0; i < count; i++)
 	{
 		digit = digit_to_int(arg[i]);
-		result += digit * pow(10, point_count - i - 1);
+		result += digit * pow(10, point_count - i -1);
 	}
 	return result;
 }
