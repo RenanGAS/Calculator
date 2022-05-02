@@ -146,12 +146,11 @@ double GuilhermeCpu::convert_to_operands(Digit *arg, int count, int point_count)
 //converts a number to a finished array of digits
 int GuilhermeCpu::convert_to_digit(double result, Digit *vet, int *count, int *decimal_count)
 {
-	Digit digito;
+	Digit digit;
 	int i = 0;
 	int zero_checker = 0;
 	*count = 0;
 	*decimal_count = 0;
-	int countagem = 0;
 	if (result < 0)
 	{
 		result = -result;
@@ -162,24 +161,25 @@ int GuilhermeCpu::convert_to_digit(double result, Digit *vet, int *count, int *d
 		}
 	}
 	double result_helper = result;
-
-	*decimal_count = log10(result_helper) + 1;
+	*decimal_count = log10(result_helper);
 	if (*decimal_count > MAX_DIGITS)
 	{
 		return 1;
 	}
-	printf("Decimal count: %d\n", *decimal_count);
+	//printf("Decimal count: %d\n", *decimal_count);
 
-	while (result != 0)
+	while (*count <= *decimal_count)
 	{
 		if (*count == MAX_DIGITS)
 		{
 			break;
 		}
-		Digit digit = int_to_digit((result / pow(10, MAX_DIGITS - i)));
-		if ((digit != ZERO))
+		digit = int_to_digit((result / pow(10, MAX_DIGITS - i)));
+		if (digit != ZERO)
+		{
 			zero_checker = 1;
-			countagem++;
+		}
+		//printf("i: %d digito: %d countagem: %d\n", i, digit, *count);
 		if (zero_checker)
 		{
 			vet[*count] = digit;
@@ -188,9 +188,28 @@ int GuilhermeCpu::convert_to_digit(double result, Digit *vet, int *count, int *d
 		result = fmod(result, pow(10, MAX_DIGITS - i));
 		i++;
 	}
-	*count = countagem;
-	printf("countagem: %d\n", *count);
-	//this causes a bug when the last number is 
+	for(i = *decimal_count; i < MAX_DIGITS; i++)
+	{
+		if (vet[i] != ZERO) *count = i;
+	}
+	float digito_em_float; //yes, this is needed. and yes, it HAS to be a float
+	for(i = *decimal_count + 1; i <= *count + 1; i++)
+	{
+
+		result = result * 10;
+		digito_em_float = result / pow(10, *decimal_count - i + 1);
+		digit = int_to_digit(digito_em_float);
+		printf("i: %d digito: %d\n", i, digit);
+		vet[i] = digit;
+		i += 1;
+	}
+	
+	for(i = 0; i < MAX_DIGITS; i++)
+	{
+		printf("%d", vet[i]);
+		if(*decimal_count == i) printf(".");
+	}
+	printf("\n");
 	return 0;
 }
 
@@ -313,7 +332,7 @@ void GuilhermeCpu::Operate()
 	}
 
 	clear_array(this->arg1, &this->count1, &this->count_point1);
-	printf("%lf\n", result);
+	printf("Resultado em float msm: %lf\n", result);
 	if (this->convert_to_digit(result, this->arg1, &this->count1, &this->count_point1))
 	{
 
@@ -327,8 +346,8 @@ void GuilhermeCpu::Operate()
 // constructs the cpu
 GuilhermeCpu::GuilhermeCpu()
 {
-	this->arg1 = static_cast<Digit *>(calloc(MAX_DIGITS, sizeof(Digit)));
-	this->arg2 = static_cast<Digit *>(calloc(MAX_DIGITS, sizeof(Digit)));
+	this->arg1 = static_cast <Digit *> (calloc(MAX_DIGITS, sizeof(Digit)));
+	this->arg2 = static_cast <Digit *> (calloc(MAX_DIGITS, sizeof(Digit)));
 	this->op = NONE;
 	this->count1 = 0;
 	this->count2 = 0;
@@ -362,7 +381,7 @@ void GuilhermeCpu::receiveDigit(Digit d)
 	{
 		this->arg1[this->count1++] = d;
 	}
-	else if ((count2 < MAX_DIGITS))
+	else if ((count2 < MAX_DIGITS && this->op != NONE))
 	{
 		this->arg2[this->count2++] = d;
 	}

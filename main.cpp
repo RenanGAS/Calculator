@@ -38,6 +38,8 @@ int main()
     k1.addKey(&key18);
     k1.addKey(&key19);
     
+
+    key1.press(); 
     key1.press(); 
     key3.press();
     keyponto.press();
