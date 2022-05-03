@@ -10,10 +10,10 @@
 // makes the number "complete" as in ready to operate
 void GuilhermeCpu::right_align(int arg)
 {
-	int helper;			// this is used to count without changing the count
-	int *count;			// this is used to change the count
-	Digit **array;		// this is used to change the array
-	int *decimal_point; // this is used to change the decimal point
+	int helper;			//this is used to count without changing the count
+	int *count;			//this is used to change the count
+	Digit **array;		//this is used to change the array
+	int *decimal_point; //this is used to change the decimal point
 	if (arg == 2)
 	{
 		helper = this->count2;
@@ -28,21 +28,21 @@ void GuilhermeCpu::right_align(int arg)
 		array = &this->arg1;
 		decimal_point = &this->count_point1;
 	}
-	// this resolves an edge case where this->count = MAX_DIGITS and greater, because no operation is needed
+	//this resolves an edge case where this->count = MAX_DIGITS and greater, because no operation is needed
 	if (helper + 1 > MAX_DIGITS)
 		return;
 
 	if (*decimal_point < MAX_DIGITS)
-		*decimal_point = MAX_DIGITS - helper + *decimal_point; // this fixes the decimal point
+		*decimal_point = MAX_DIGITS - helper + *decimal_point; //this fixes the decimal point
 	for (int i = (helper - 1); i >= 0; i--)					   // transfers the numbers to the rightmost side
-	{														   // this for transfers from right to left in order to not overrwite any number
+	{														   //this for transfers from right to left in order to not overrwite any number
 		(*array)[MAX_DIGITS - helper + i] = (*array)[i];
 		(*array)[i] = ZERO;
 	}
 	*count = MAX_DIGITS;
 }
 
-// clears an array of digits
+//clears an array of digits
 void GuilhermeCpu::clear_array(Digit *array, int *count, int *decimal_count)
 {
 	for (int i = 0; i < MAX_DIGITS; i++)
@@ -52,13 +52,13 @@ void GuilhermeCpu::clear_array(Digit *array, int *count, int *decimal_count)
 
 	*count = 0;
 	*decimal_count = MAX_DIGITS;
-	if (array == this->arg1) // as the arg1 can have a negative signal, it must be cleaned when cleaning it
+	if (array == this->arg1) //as the arg1 can have a negative signal, it must be cleaned when cleaning it
 	{
 		this->signal = POSITIVE;
 	}
 }
 
-// TODO: check if this is necessary
+//TODO: check if this is necessary
 int GuilhermeCpu::calculate_offset()
 {
 	if (this->count1 > this->count2)
@@ -71,7 +71,7 @@ int GuilhermeCpu::calculate_offset()
 	}
 }
 
-// transforms a single digit in a single int
+//transforms a single digit in a single int
 int GuilhermeCpu::digit_to_int(Digit digit)
 {
 	switch (digit)
@@ -130,7 +130,7 @@ Digit GuilhermeCpu::int_to_digit(int number)
 	}
 }
 
-// Convert a finished array of digits to an double to accomodate floating points
+//Convert a finished array of digits to an double to accomodate floating points
 double GuilhermeCpu::convert_to_operands(Digit *arg, int count, int point_count)
 {
 	double result = 0;
@@ -143,7 +143,7 @@ double GuilhermeCpu::convert_to_operands(Digit *arg, int count, int point_count)
 	return result;
 }
 
-// converts a number to a finished array of digits
+//converts a number to a finished array of digits
 int GuilhermeCpu::convert_to_digit(double result, Digit *vet, int *count, int *decimal_count)
 {
 	Digit digit;
@@ -151,27 +151,23 @@ int GuilhermeCpu::convert_to_digit(double result, Digit *vet, int *count, int *d
 	int zero_checker = 0;
 	*count = 0;
 	*decimal_count = 0;
-
 	if (result < 0)
 	{
 		result = -result;
-		// TODO: check case of MEMORY_READ_CLEAR
+		//TODO: check case of MEMORY_READ_CLEAR
 		if (vet == this->arg1)
 		{
 			this->signal = NEGATIVE;
 		}
 	}
-
+	else this->signal = POSITIVE;
 	double result_helper = result;
-	*decimal_count = log10(result_helper) + 1;
-
-	// std::cout << "\ndecimal_count = " << *decimal_count << "\n";
-
+	*decimal_count = log10(result_helper);
 	if (*decimal_count > MAX_DIGITS)
 	{
 		return 1;
 	}
-	// printf("Decimal count: %d\n", *decimal_count);
+	//printf("Decimal count: %d\n", *decimal_count);
 
 	while (*count <= *decimal_count)
 	{
@@ -179,68 +175,43 @@ int GuilhermeCpu::convert_to_digit(double result, Digit *vet, int *count, int *d
 		{
 			break;
 		}
-
-		// std::cout << "\nMAX - i = " << MAX_DIGITS - i << "\n";
-
 		digit = int_to_digit(trunc(result / pow(10, MAX_DIGITS - i)));
-
-		// std::cout << "\ndigit = " << result / pow(10, MAX_DIGITS - i) << "\n";
-
 		if (digit != ZERO)
 		{
 			zero_checker = 1;
-			// std::cout << "\nzero_checker = " << zero_checker << "\n";
 		}
-
 		// printf("i: %d digito: %d countagem: %d\n", i, digit, *count);
-
 		if (zero_checker)
 		{
 			vet[*count] = digit;
-			// std::cout << "\nvet[" << *count << "] = " << digit << "\n";
 			*count += 1;
 		}
-
 		result = fmod(result, pow(10, MAX_DIGITS - i));
-
-		// std::cout << "\nresult fmod = " << result << "\n";
-
 		i++;
 	}
+	for(i = *decimal_count; i < MAX_DIGITS; i++)
+	{
+		if (vet[i] != ZERO) *count = i;
+	}
+	float digito_em_float; //yes, this is needed. and yes, it HAS to be a float
+	for(i = (*decimal_count) + 1; i <= *count + 1; i++)
+	{
 
-	// std::cout << "\ncount = " << *count << "\n";
-
-	// std::cout << "\ndecimal_count = " << *decimal_count << "\n";
-
-	// for (i = *decimal_count; i < MAX_DIGITS; i++)
-	// {
-	// 	if (vet[i] != ZERO)
-	// 	{
-	// 		*count = i;
-	// 	}
-	// }
-
-	// std::cout << "\nnew count = " << *count << "\n";
-
-	// float digito_em_float; // yes, this is needed. and yes, it HAS to be a float
-
-	// for (i = *decimal_count + 1; i <= *count + 1; i++)
-	// {
-
-	// 	result = result * 10;
-	// 	digito_em_float = result / pow(10, *decimal_count - i + 1);
-	// 	digit = int_to_digit(digito_em_float);
-	// 	// printf("i: %d digito: %d\n", i, digit);
-	// 	vet[i] = digit;
-	// 	i += 1;
-	// }
-
-	// for(i = 0; i < MAX_DIGITS; i++)
-	// {
-	// 	// printf("%d", vet[i]);
-	// 	if(*decimal_count == i) printf(".");
-	// }
-
+		//result = result * 10;
+		digito_em_float = result / pow(10, (*decimal_count)/* - i + */ -i);
+		printf("digito em float: %f , result: %f\n", digito_em_float, result);
+		digito_em_float =  fmod(digito_em_float, 10);
+		digit = int_to_digit(digito_em_float);
+		printf("i: %d digito: %d\n", i, digit);
+		vet[i] = digit;
+	}
+	
+	for(i = 0; i < MAX_DIGITS; i++)
+	{
+		printf("%d", vet[i]);
+		if(*decimal_count == i) printf(".");
+	}
+	printf("\n");
 	return 0;
 }
 
@@ -267,7 +238,7 @@ void GuilhermeCpu::call_display()
 			zero_checker = 1;
 		}
 	}
-
+	
 	zero_checker = 0;
 
 	for (int i = 0; i < this->count2; i++)
@@ -363,17 +334,12 @@ void GuilhermeCpu::Operate()
 	}
 
 	clear_array(this->arg1, &this->count1, &this->count_point1);
-
-	// std::cout << "\nresult = " << result << "\n";
-
+	printf("Resultado em float msm: %lf\n", result);
 	if (this->convert_to_digit(result, this->arg1, &this->count1, &this->count_point1))
 	{
 
 		this->error_handle();
 	}
-
-	// std::cout << "\ncount1 = " << this->count1 << "\n";
-
 	this->right_align(1);
 
 	clear_array(this->arg2, &this->count2, &this->count_point2);
@@ -382,8 +348,8 @@ void GuilhermeCpu::Operate()
 // constructs the cpu
 GuilhermeCpu::GuilhermeCpu()
 {
-	this->arg1 = static_cast<Digit *>(calloc(MAX_DIGITS, sizeof(Digit)));
-	this->arg2 = static_cast<Digit *>(calloc(MAX_DIGITS, sizeof(Digit)));
+	this->arg1 = static_cast <Digit *> (calloc(MAX_DIGITS, sizeof(Digit)));
+	this->arg2 = static_cast <Digit *> (calloc(MAX_DIGITS, sizeof(Digit)));
 	this->op = NONE;
 	this->count1 = 0;
 	this->count2 = 0;
@@ -412,7 +378,6 @@ void GuilhermeCpu::setDisplay(Display *display)
 // contains the logic to receive the digits and put them in the correct array
 void GuilhermeCpu::receiveDigit(Digit d)
 {
-	// TODO: if digit is remaining from a operation, must be substituted when a new digit arrives
 	if ((this->count1 < MAX_DIGITS))
 	{
 		this->arg1[this->count1++] = d;
@@ -426,15 +391,16 @@ void GuilhermeCpu::receiveDigit(Digit d)
 }
 
 // contains the logic to receive the operations and operate if needed
-// TODO: change it
+//TODO: change it
 void GuilhermeCpu::receiveOperation(Operation op)
 {
-
+	
 	if (op != PERCENTAGE)
 	{
 		this->saveOp = op;
 	}
-
+	
+	
 	right_align(1);
 	if (this->count2 > 0)
 	{
@@ -531,15 +497,13 @@ void GuilhermeCpu::receiveControl(Control c)
 		// TODO: Implement a flag that appears when MEMORY_ADDITION is used.
 		break;
 	case DECIMAL_SEPARATOR:
-		if (this->op == NONE)
+		if(this->op == NONE)
 		{
-			if (this->count_point1 == MAX_DIGITS)
-				this->count_point1 = this->count1;
+			if (this->count_point1 == MAX_DIGITS) this->count_point1 = this->count1;
 		}
 		else
 		{
-			if (this->count_point2 == MAX_DIGITS)
-				this->count_point2 = this->count2;
+			if (this->count_point2 == MAX_DIGITS) this->count_point2 = this->count2;
 		}
 	default:
 		break;
