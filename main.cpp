@@ -44,7 +44,7 @@ int main()
     key3.press();
     keyponto.press();
     key3.press();
-    keysubtraction.press();
+    keymultiplication.press();
     key2.press();
     keyequal.press(); 
 }
