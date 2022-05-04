@@ -47,7 +47,6 @@ int main()
     key3.press();
     key3.press();
     keysubtraction.press();
-    key1.press(); 
     keyponto.press();
     key1.press();
     key1.press();

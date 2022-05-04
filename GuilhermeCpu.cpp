@@ -220,6 +220,7 @@ void GuilhermeCpu::call_display()
 
 	int zero_checker = 0;
 	int helper;
+	if(this->count_point1 == 0) this->display->add(ZERO);
 	if(this->count_point1 > this->count1) helper = this->count1;
 	else helper = this->count_point1;
 	for (int i = 0; i < helper; i++)
@@ -231,6 +232,7 @@ void GuilhermeCpu::call_display()
 		}
 	}
 	zero_checker = 0;
+	if(this->count_point2 == 0) this->display->add(ZERO);
 	if (this->count1 > this->count_point1)
 	{
 		if(!(this->count2))
