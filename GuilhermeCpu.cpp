@@ -57,20 +57,6 @@ void GuilhermeCpu::clear_array(Digit *array, int *count, int *decimal_count)
 		this->signal = POSITIVE;
 	}
 }
-
-//TODO: check if this is necessary
-int GuilhermeCpu::calculate_offset()
-{
-	if (this->count1 > this->count2)
-	{
-		return (this->count1 - this->count2);
-	}
-	else
-	{
-		return (this->count2 - this->count1);
-	}
-}
-
 //transforms a single digit in a single int
 int GuilhermeCpu::digit_to_int(Digit digit)
 {
@@ -151,17 +137,18 @@ int GuilhermeCpu::convert_to_digit(double result, Digit *vet, int *count, int *d
 	int zero_checker = 0;
 	*count = 0;
 	*decimal_count = 0;
-	if (result < 0)
+	if(this->arg1 == vet)
 	{
-		result = -result;
-		//DONE: check case of MEMORY_READ_CLEAR
-		//TODO: wont work in case of MEMORY_READ_CLEAR and negative number
-		if (vet == this->arg1)
+		if (result < 0)
 		{
-			this->signal = NEGATIVE;
+			result = -result;
+			if (vet == this->arg1)
+			{
+				this->signal = NEGATIVE;
+			}
 		}
+		else this->signal = POSITIVE;
 	}
-	else this->signal = POSITIVE;
 	double result_helper = result;
 	*decimal_count = log10(result_helper) + 1;
 	if (*decimal_count > MAX_DIGITS)
@@ -430,7 +417,6 @@ void GuilhermeCpu::receiveDigit(Digit d)
 }
 
 // contains the logic to receive the operations and operate if needed
-//TODO: change it
 void GuilhermeCpu::receiveOperation(Operation op)
 {
 	
@@ -477,7 +463,7 @@ void GuilhermeCpu::receiveControl(Control c)
 		Operate();
 		break;
 	case CLEAR:
-		// TODO: implement clear
+		this->display->clear();
 		break;
 	case RESET:
 		clear_array(this->arg1, &this->count1, &this->count_point1);
@@ -490,7 +476,6 @@ void GuilhermeCpu::receiveControl(Control c)
 
 		if (this->mrcFlag)
 		{
-			// TODO: Implement a flag that disappears when MEMORY_CLEAR is used.
 			this->mrcFlag = 0;
 			break;
 		}
@@ -520,7 +505,6 @@ void GuilhermeCpu::receiveControl(Control c)
 			this->memory -= convert_to_operands(this->arg1, this->count1, this->count_point1);
 		}
 
-		// TODO: Implement a flag that disappears when MEMORY_SUBTRACTION sets the memory to zero.
 		break;
 	case MEMORY_ADDITION:
 		setOperands(this->count1, this->count2);
@@ -533,7 +517,6 @@ void GuilhermeCpu::receiveControl(Control c)
 			this->memory += convert_to_operands(this->arg1, this->count1, this->count_point1);
 		}
 
-		// TODO: Implement a flag that appears when MEMORY_ADDITION is used.
 		break;
 	case DECIMAL_SEPARATOR:
 		if(this->op == NONE)
@@ -547,7 +530,5 @@ void GuilhermeCpu::receiveControl(Control c)
 	default:
 		break;
 	}
-
-	this->display->setSignal(this->signal);
 	call_display();
 }
