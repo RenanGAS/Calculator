@@ -163,14 +163,14 @@ int GuilhermeCpu::convert_to_digit(double result, Digit *vet, int *count, int *d
 	}
 	else this->signal = POSITIVE;
 	double result_helper = result;
-	*decimal_count = log10(result_helper);
+	*decimal_count = log10(result_helper) + 1;
 	if (*decimal_count > MAX_DIGITS)
 	{
 		return 1;
 	}
 	//printf("Decimal count: %d\n", *decimal_count);
 
-	while (*count <= *decimal_count)
+	while (*count < *decimal_count)
 	{
 		if (*count == MAX_DIGITS)
 		{
@@ -189,33 +189,36 @@ int GuilhermeCpu::convert_to_digit(double result, Digit *vet, int *count, int *d
 		}
 		result = fmod(result, pow(10, MAX_DIGITS - i));
 		i++;
-	} 
+	}
 	(*count) += (*decimal_count);
+	//printf("\n\n%d   %d\n\n", *count, *decimal_count);
 	float digito_em_float; //yes, this is needed. and yes, it HAS to be a float
-	for(i = (*decimal_count) + 1; i < *count; i++)
+	for(i = (*decimal_count); i < *count; i++)
 	{
-
+		
 		//result = result * 10;
-		digito_em_float = result / pow(10, (*decimal_count)/* - i + */ -i);
+		digito_em_float = result / pow(10, (*decimal_count) -i - 1);
 		digito_em_float =  fmod(digito_em_float, 10);
-		printf("digito em float: %f , result: %f\n", digito_em_float, result);
+		//printf("digito em float: %f , result: %f\n", digito_em_float, result);
 		digit = int_to_digit(digito_em_float);
-		printf("i: %d digito: %d\n", i, digit);
+		//printf("i: %d digito: %d, result: %f\n", i, digit, result);
 		vet[i] = digit;
 	}
 	
-	for(i = 0; i < MAX_DIGITS; i++)
+	//printf("\n");
+	/* for(i = 0; i < MAX_DIGITS; i++)
 	{
-		printf("%d", vet[i]);
 		if(*decimal_count == i) printf(".");
-	}
+		printf("%d", vet[i]);
+	} */
+	//printf("\n\n");
 	for(i = 0; i < MAX_DIGITS; i++)
 	{
 		if (vet[i] != ZERO) (*count) = i;
-		printf("i: %d, count: %d, vet[%d] = %d\n", i, (*count), i ,vet[i]);
-	} 
-	printf("count: %d, decimal count: %d\n", *count, *decimal_count);
-	printf("\nsaiu da func\n");
+	}
+	*count += 1;
+	//printf("count: %d, decimal count: %d\n", *count, *decimal_count);
+	//printf("\nsaiu da func\n");
 	return 0;
 }
 
@@ -229,23 +232,54 @@ void GuilhermeCpu::call_display()
 		return;
 
 	int zero_checker = 0;
-
-	for (int i = 0; i < this->count1; i++)
+	int helper;
+	if(this->count_point1 > this->count1) helper = this->count1;
+	else helper = this->count_point1;
+	for (int i = 0; i < helper; i++)
 	{
 		if (((arg1[i] != 0) || zero_checker) && !(this->count2))
 		{
 			this->display->add(this->arg1[i]);
-			if (i == this->count_point1)
-			{
-				std::cout << ".";
-			}
 			zero_checker = 1;
 		}
 	}
+	zero_checker = 0;
+	if (this->count1 > this->count_point1)
+	{
+		if(!(this->count2))
+		{
+			std::cout << ".";
+			for(int i = this->count_point1; i < this->count1; i++)
+			{
+				this->display->add(this->arg1[i]);
+			}
+		}
+	}
+	
 	
 	zero_checker = 0;
 
-	for (int i = 0; i < this->count2; i++)
+	if(this->count_point2 > this->count2) helper = this->count2;
+	else helper = this->count_point2;
+	for (int i = 0; i < helper; i++)
+	{
+		if (((arg2[i] != 0) || zero_checker))
+		{
+			this->display->add(this->arg2[i]);
+			zero_checker = 1;
+		}
+	}
+	zero_checker = 0;
+	if (this->count2 > this->count_point2)
+	{
+		std::cout << ".";
+		for(int i = this->count_point2; i < this->count2; i++)
+		{
+			this->display->add(this->arg2[i]);
+		}
+	}
+
+	/* for (int i = 0; i < this->count2; i++)
 	{
 		if ((arg2[i] != 0) || zero_checker)
 		{
@@ -256,8 +290,8 @@ void GuilhermeCpu::call_display()
 			this->display->add(this->arg2[i]);
 			zero_checker = 1;
 		}
-	}
-	std::cout << "\n";
+	} */
+	this->display->clear();
 }
 
 // handles errors and displays them
@@ -344,7 +378,7 @@ void GuilhermeCpu::Operate()
 
 		this->error_handle();
 	}
-	printf("Resultado: %lf, contagem total: %d, contagem do ponto: %d\n", result, this->count1, this->count_point1);
+	printf("contagem total: %d, contagem do ponto: %d\n", result, this->count1, this->count_point1);
 	this->right_align(1);
 
 	clear_array(this->arg2, &this->count2, &this->count_point2);
