@@ -41,15 +41,17 @@ int main()
 
     key1.press(); 
     key1.press();
-    key1.press();
-    key3.press();
     keyponto.press();
+    key3.press();
+    key3.press();
     key3.press();
     key3.press();
     keysubtraction.press();
     key1.press(); 
-    key2.press();
     keyponto.press();
-    key0.press();
+    key1.press();
+    key1.press();
+    key1.press();
+    //key1.press();
     keyequal.press(); 
 }
