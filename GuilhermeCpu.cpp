@@ -372,13 +372,13 @@ void GuilhermeCpu::Operate()
 	}
 
 	clear_array(this->arg1, &this->count1, &this->count_point1);
-	printf("Resultado em float msm: %lf\n", result);
+	//printf("Resultado em float msm: %lf\n", result);
 	if (this->convert_to_digit(result, this->arg1, &this->count1, &this->count_point1))
 	{
 
 		this->error_handle();
 	}
-	printf("contagem total: %d, contagem do ponto: %d\n", result, this->count1, this->count_point1);
+	//printf("contagem total: %d, contagem do ponto: %d\n", result, this->count1, this->count_point1);
 	this->right_align(1);
 
 	clear_array(this->arg2, &this->count2, &this->count_point2);
