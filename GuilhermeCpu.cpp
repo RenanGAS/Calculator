@@ -33,7 +33,7 @@ void GuilhermeCpu::right_align(int arg)
 		return;
 
 	if (*decimal_point < MAX_DIGITS)
-		*decimal_point = MAX_DIGITS - helper + *decimal_point; //this fixes the decimal point
+		(*decimal_point) = MAX_DIGITS - helper + *decimal_point; //this fixes the decimal point
 	for (int i = (helper - 1); i >= 0; i--)					   // transfers the numbers to the rightmost side
 	{														   //this for transfers from right to left in order to not overrwite any number
 		(*array)[MAX_DIGITS - helper + i] = (*array)[i];
@@ -154,7 +154,8 @@ int GuilhermeCpu::convert_to_digit(double result, Digit *vet, int *count, int *d
 	if (result < 0)
 	{
 		result = -result;
-		//TODO: check case of MEMORY_READ_CLEAR
+		//DONE: check case of MEMORY_READ_CLEAR
+		//TODO: wont work in case of MEMORY_READ_CLEAR and negative number
 		if (vet == this->arg1)
 		{
 			this->signal = NEGATIVE;
@@ -193,6 +194,7 @@ int GuilhermeCpu::convert_to_digit(double result, Digit *vet, int *count, int *d
 	{
 		if (vet[i] != ZERO) *count = i;
 	}
+	(*count) += (*decimal_count);
 	float digito_em_float; //yes, this is needed. and yes, it HAS to be a float
 	for(i = (*decimal_count) + 1; i <= *count + 1; i++)
 	{
@@ -230,11 +232,11 @@ void GuilhermeCpu::call_display()
 	{
 		if (((arg1[i] != 0) || zero_checker) && !(this->count2))
 		{
+			this->display->add(this->arg1[i]);
 			if (i == this->count_point1)
 			{
 				std::cout << ".";
 			}
-			this->display->add(this->arg1[i]);
 			zero_checker = 1;
 		}
 	}
@@ -340,6 +342,7 @@ void GuilhermeCpu::Operate()
 
 		this->error_handle();
 	}
+	printf("Resultado: %lf, contagem total: %d, contagem do ponto: %d\n", result, this->count1, this->count_point1);
 	this->right_align(1);
 
 	clear_array(this->arg2, &this->count2, &this->count_point2);
