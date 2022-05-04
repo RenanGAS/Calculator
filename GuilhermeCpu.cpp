@@ -196,13 +196,13 @@ int GuilhermeCpu::convert_to_digit(double result, Digit *vet, int *count, int *d
 	}
 	(*count) += (*decimal_count);
 	float digito_em_float; //yes, this is needed. and yes, it HAS to be a float
-	for(i = (*decimal_count) + 1; i <= *count + 1; i++)
+	for(i = (*decimal_count) + 1; i < *count; i++)
 	{
 
 		//result = result * 10;
 		digito_em_float = result / pow(10, (*decimal_count)/* - i + */ -i);
-		printf("digito em float: %f , result: %f\n", digito_em_float, result);
 		digito_em_float =  fmod(digito_em_float, 10);
+		printf("digito em float: %f , result: %f\n", digito_em_float, result);
 		digit = int_to_digit(digito_em_float);
 		printf("i: %d digito: %d\n", i, digit);
 		vet[i] = digit;
