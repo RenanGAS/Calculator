@@ -40,6 +40,7 @@ int main()
     
 
     key1.press(); 
+    key1.press();
     key1.press(); 
     key3.press();
     keyponto.press();

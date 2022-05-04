@@ -189,11 +189,7 @@ int GuilhermeCpu::convert_to_digit(double result, Digit *vet, int *count, int *d
 		}
 		result = fmod(result, pow(10, MAX_DIGITS - i));
 		i++;
-	}
-	for(i = *decimal_count; i < MAX_DIGITS; i++)
-	{
-		if (vet[i] != ZERO) *count = i;
-	}
+	} 
 	(*count) += (*decimal_count);
 	float digito_em_float; //yes, this is needed. and yes, it HAS to be a float
 	for(i = (*decimal_count) + 1; i < *count; i++)
@@ -213,7 +209,13 @@ int GuilhermeCpu::convert_to_digit(double result, Digit *vet, int *count, int *d
 		printf("%d", vet[i]);
 		if(*decimal_count == i) printf(".");
 	}
-	printf("\n");
+	for(i = 0; i < MAX_DIGITS; i++)
+	{
+		if (vet[i] != ZERO) (*count) = i;
+		printf("i: %d, count: %d, vet[%d] = %d\n", i, (*count), i ,vet[i]);
+	} 
+	printf("count: %d, decimal count: %d\n", *count, *decimal_count);
+	printf("\nsaiu da func\n");
 	return 0;
 }
 
