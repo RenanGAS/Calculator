@@ -46,10 +46,11 @@ int main()
     key3.press();
     key3.press();
     key3.press();
-    keysubtraction.press();
-    //key1.press();
+    keydivision.press();
+    key1.press();
     keyponto.press();
     key1.press();
+    keyaddition.press();
     key1.press();
     key1.press();
     keyequal.press(); 

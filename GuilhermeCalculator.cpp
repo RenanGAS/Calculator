@@ -1,3 +1,4 @@
+/*
 #include <iostream>
 #include <cmath>
 
@@ -23,3 +24,5 @@ void GuilhermeCalculator::setCpu(Cpu* cpu)
 {
 	this->cpu = cpu;
 }
+
+*/

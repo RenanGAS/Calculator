@@ -336,6 +336,7 @@ void GuilhermeCpu::Operate()
 		this->error_handle();
 	}
 	this->right_align(1);
+	this->op = NONE;
 
 	clear_array(this->arg2, &this->count2, &this->count_point2);
 }
