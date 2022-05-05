@@ -280,7 +280,7 @@ void GuilhermeCpu::Operate()
 	double operand1, operand2;
 	operand1 = convert_to_operands(this->arg1, this->count1, this->count_point1);
 	operand2 = convert_to_operands(this->arg2, this->count2, this->count_point2);
-
+	if(this->op == NONE) this->op = this->saveOp;
 	double result = 0;
 	switch (this->op)
 	{
@@ -326,6 +326,8 @@ void GuilhermeCpu::Operate()
 		{
 			result = operand1 / (operand1 * (operand2 / 100));
 		}
+		break;
+	case NONE:
 		break;
 	}
 
@@ -416,7 +418,8 @@ void GuilhermeCpu::receiveOperation(Operation op)
 
 	if (this->op == PERCENTAGE)
 	{
-		receiveControl(EQUAL);
+		setOperands(this->count1, this->count2);
+		Operate();
 	}
 	else
 	{
@@ -431,6 +434,7 @@ void GuilhermeCpu::receiveControl(Control c)
 	switch (c)
 	{
 	case EQUAL:
+		if(this->op != PERCENTAGE) this->saveOp = this->op;
 		setOperands(this->count1, this->count2);
 		Operate();
 		break;
