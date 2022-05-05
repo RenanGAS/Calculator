@@ -67,7 +67,7 @@ int GuilhermeCpu::digit_to_int(Digit digit)
 		return 1;
 	case TWO:
 		return 2;
-	case THRE:
+	case THREE:
 		return 3;
 	case FOUR:
 		return 4;
@@ -97,7 +97,7 @@ Digit GuilhermeCpu::int_to_digit(int number)
 	case 2:
 		return TWO;
 	case 3:
-		return THRE;
+		return THREE;
 	case 4:
 		return FOUR;
 	case 5:

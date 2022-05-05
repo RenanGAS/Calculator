@@ -1,3 +1,4 @@
+/*
 #include <iostream>
 #include "calculator.h"
 #include <cmath>
@@ -52,3 +53,4 @@ void KeyControl::press()
 {
 	this->receiver->receiveControl(this->control);
 }
+*/

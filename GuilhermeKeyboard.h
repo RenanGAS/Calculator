@@ -4,13 +4,12 @@
 
 class GuilhermeKeyboard : public Keyboard
 {
-	Cpu *cpu;
 	Key *keys[200];
 	int KeysCount;
 
 public:
 	GuilhermeKeyboard();
-	void setCpu(Cpu *);
+	// void setCpu(Cpu *); defined in teacher's .cpp
 	void addKey(Key *);
 	void receiveDigit(Digit);
 	void receiveOperation(Operation);

@@ -19,7 +19,7 @@ void GuilhermeDisplay::add(Digit digit)
 	case TWO:
 		std::cout << "2";
 		break;
-	case THRE:
+	case THREE:
 		std::cout << "3";
 		break;
 	case FOUR:

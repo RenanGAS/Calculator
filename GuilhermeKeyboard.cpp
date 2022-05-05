@@ -10,12 +10,12 @@ GuilhermeKeyboard::GuilhermeKeyboard()
 	this->cpu = NULL;
 	this->KeysCount = 0;
 }
-
+/*
 //Sets the cpu for a keyboard
 void GuilhermeKeyboard::setCpu(Cpu* cpu)
 {
 	this->cpu = cpu;
-}
+} */
 
 //Adds a key to the keyboard and updates the counter
 void GuilhermeKeyboard::addKey(Key* key)

@@ -9,7 +9,7 @@ int main()
     GuilhermeDisplay display;
     GuilhermeCpu cpu;
     GuilhermeKeyboard k1;
-    KeyDigit key0(ZERO), key1(ONE), key2(TWO), key3(THRE), key4(FOUR), key5(FIVE), key6(SIX), key7(SEVEN), key8(EIGHT), key9(NINE);
+    KeyDigit key0(ZERO), key1(ONE), key2(TWO), key3(THREE), key4(FOUR), key5(FIVE), key6(SIX), key7(SEVEN), key8(EIGHT), key9(NINE);
     KeyOperation keyaddition(ADDITION), keysubtraction(SUBTRACTION), keydivision(DIVISION), keymultiplication(MULTIPLICATION), keysqrt(SQUARE_ROOT), keypercentage(PERCENTAGE);
     KeyControl keyequal(EQUAL), key17(MEMORY_READ_CLEAR), key18(MEMORY_ADDITION), key19(MEMORY_SUBTRACTION), keyponto(DECIMAL_SEPARATOR);
 
@@ -47,7 +47,7 @@ int main()
     key3.press();
     key3.press();
     keysubtraction.press();
-    key1.press();
+    //key1.press();
     keyponto.press();
     key1.press();
     key1.press();
