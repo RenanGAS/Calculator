@@ -5,7 +5,6 @@
 
 class GuilhermeCpu : public Cpu
 {
-    Display *display;
 	Digit *arg1;
 	int count1;
 	int count_point1;
@@ -17,18 +16,15 @@ class GuilhermeCpu : public Cpu
 	int mrcFlag;
 	Signal signal;
 	Operation saveOp;
-	//TODO: name the variables in the methods
-	void right_align(int);
-	void clear_array(Digit *, int *, int *);
-	int convert_to_int(Digit *, int);
+	void right_align(int arg);
+	void clear_array(Digit *array, int *count, int *decimal_count);
 	void call_display();
 	void error_handle();
 	void Operate();
-	void setOperands(int, int);
-	int calculate_offset();
-	int digit_to_int(Digit);
+	void setOperands(int count1, int count2);
+	int digit_to_int(Digit digit);
 	Digit int_to_digit(int number);
-	double convert_to_operands(Digit *, int, int);
+	double convert_to_operands(Digit *arg, int count, int point_count);
 	int convert_to_digit(double result, Digit * vet, int * count, int * decimal_count);
 public:
     GuilhermeCpu();

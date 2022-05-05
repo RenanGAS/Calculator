@@ -26,6 +26,7 @@ public:
 };
 class Cpu : public Receiver
 {
+protected:
   Display *display;
   Cpu *cpu;
   Keyboard *keyboard;
@@ -48,7 +49,6 @@ public:
   void setCpu(Cpu *);
 
   virtual void addKey(Key *) = 0;
-
   virtual void receiveDigit(Digit) = 0;
   virtual void receiveOperation(Operation) = 0;
   virtual void receiveControl(Control) = 0;
