@@ -2,7 +2,6 @@
 #include <iostream>
 #include <cmath>
 
-#define TEST 0
 #define MAX_DIGITS 8
 
 // Class Cpu methods
@@ -155,7 +154,6 @@ int GuilhermeCpu::convert_to_digit(double result, Digit *vet, int *count, int *d
 	{
 		return 1;
 	}
-	//printf("Decimal count: %d\n", *decimal_count);
 
 	while (*count < *decimal_count)
 	{
@@ -168,7 +166,6 @@ int GuilhermeCpu::convert_to_digit(double result, Digit *vet, int *count, int *d
 		{
 			zero_checker = 1;
 		}
-		// printf("i: %d digito: %d countagem: %d\n", i, digit, *count);
 		if (zero_checker)
 		{
 			vet[*count] = digit;
@@ -178,34 +175,20 @@ int GuilhermeCpu::convert_to_digit(double result, Digit *vet, int *count, int *d
 		i++;
 	}
 	(*count) += (*decimal_count);
-	//printf("\n\n%d   %d\n\n", *count, *decimal_count);
-	float digito_em_float; //yes, this is needed. and yes, it HAS to be a float
+	float digito_em_float; 
 	for(i = (*decimal_count); i < MAX_DIGITS; i++)
 	{
-		
-		//result = result * 10;
 		digito_em_float = result / pow(10, (*decimal_count) -i - 1);
 		digito_em_float =  fmod(digito_em_float, 10);
-		//printf("digito em float: %f , result: %f\n", digito_em_float, result);
 		digit = int_to_digit(digito_em_float);
-		//printf("i: %d digito: %d, result: %f\n", i, digit, result);
 		vet[i] = digit;
 	}
 	
-	//printf("\n");
-	/* for(i = 0; i < MAX_DIGITS; i++)
-	{
-		if(*decimal_count == i) printf(".");
-		printf("%d", vet[i]);
-	} */
-	//printf("\n\n");
 	for(i = 0; i < MAX_DIGITS; i++)
 	{
 		if (vet[i] != ZERO) (*count) = i;
 	}
 	*count += 1;
-	//printf("count: %d, decimal count: %d\n", *count, *decimal_count);
-	//printf("\nsaiu da func\n");
 	return 0;
 }
 
@@ -213,29 +196,25 @@ int GuilhermeCpu::convert_to_digit(double result, Digit *vet, int *count, int *d
 void GuilhermeCpu::call_display()
 {
 
-	if (this->signal == NEGATIVE)
-		std::cout << "-";
-	if (this->display == NULL)
-		return;
-
+	if (this->display == NULL) return;
+	this->display->setSignal(this->signal);
 	int zero_checker = 0;
 	int helper;
-	if(this->count_point1 == 0) this->display->add(ZERO);
+	if((this->count_point1 == 0) && (this->op == NONE)) this->display->add(ZERO);
 	if(this->count_point1 > this->count1) helper = this->count1;
 	else helper = this->count_point1;
 	for (int i = 0; i < helper; i++)
 	{
-		if (((arg1[i] != 0) || zero_checker) && !(this->count2))
+		if (((arg1[i] != 0) || zero_checker) && ((this->op == NONE) || (!this->count2) && (this->count_point2)))
 		{
 			this->display->add(this->arg1[i]);
 			zero_checker = 1;
 		}
 	}
 	zero_checker = 0;
-	if(this->count_point2 == 0) this->display->add(ZERO);
 	if (this->count1 > this->count_point1)
 	{
-		if(!(this->count2))
+		if(this->op == NONE || (!this->count2) && (this->count_point2))
 		{
 			std::cout << ".";
 			for(int i = this->count_point1; i < this->count1; i++)
@@ -245,9 +224,12 @@ void GuilhermeCpu::call_display()
 		}
 	}
 	
-	
 	zero_checker = 0;
 
+	if(this->count_point2 == 0 && this->op != NONE)
+	{
+		this->display->add(ZERO);
+	}
 	if(this->count_point2 > this->count2) helper = this->count2;
 	else helper = this->count_point2;
 	for (int i = 0; i < helper; i++)
@@ -267,19 +249,6 @@ void GuilhermeCpu::call_display()
 			this->display->add(this->arg2[i]);
 		}
 	}
-
-	/* for (int i = 0; i < this->count2; i++)
-	{
-		if ((arg2[i] != 0) || zero_checker)
-		{
-			if (i == this->count_point2)
-			{
-				std::cout << ".";
-			}
-			this->display->add(this->arg2[i]);
-			zero_checker = 1;
-		}
-	} */
 	this->display->clear();
 }
 
@@ -361,13 +330,11 @@ void GuilhermeCpu::Operate()
 	}
 
 	clear_array(this->arg1, &this->count1, &this->count_point1);
-	//printf("Resultado em float msm: %lf\n", result);
 	if (this->convert_to_digit(result, this->arg1, &this->count1, &this->count_point1))
 	{
 
 		this->error_handle();
 	}
-	//printf("contagem total: %d, contagem do ponto: %d\n", result, this->count1, this->count_point1);
 	this->right_align(1);
 
 	clear_array(this->arg2, &this->count2, &this->count_point2);
@@ -401,6 +368,8 @@ GuilhermeCpu::~GuilhermeCpu()
 void GuilhermeCpu::setDisplay(Display *display)
 {
 	this->display = display;
+	this->display->add(ZERO);
+	this->display->clear();
 }
 
 // contains the logic to receive the digits and put them in the correct array
@@ -472,6 +441,7 @@ void GuilhermeCpu::receiveControl(Control c)
 		clear_array(this->arg2, &this->count2, &this->count_point2);
 		this->count1 = 0;
 		this->count2 = 0;
+		this->display->clear();
 		break;
 	case MEMORY_READ_CLEAR:
 		setOperands(this->count1, this->count2);
