@@ -2,14 +2,14 @@
 
 #include "calculator.h"
 
-class NossoKeyboard : public Keyboard
+class GuilhermeKeyboard : public Keyboard
 {
 	Cpu *cpu;
 	Key *keys[200];
 	int KeysCount;
 
 public:
-	NossoKeyboard();
+	GuilhermeKeyboard();
 	void setCpu(Cpu *);
 	void addKey(Key *);
 	void receiveDigit(Digit);

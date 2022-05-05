@@ -2,11 +2,11 @@
 
 #include "calculator.h"
 
-#include "NossaCpu.h"
-#include "NossoDisplay.h"
-#include "NossoKeyboard.h"
+#include "GuilhermeCpu.h"
+#include "GuilhermeDisplay.h"
+#include "GuilhermeKeyboard.h"
 
-class NossaCalculator: public Calculator
+class GuilhermeCalculator: public Calculator
 {
     Cpu* cpu;
     Keyboard* keyboard;

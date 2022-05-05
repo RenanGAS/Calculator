@@ -1,4 +1,4 @@
-#include "NossaCpu.h"
+#include "GuilhermeCpu.h"
 #include <iostream>
 #include <cmath>
 
@@ -8,7 +8,7 @@
 // Class Cpu methods
 
 // makes the number "complete" as in ready to operate
-void NossaCpu::right_align(int arg)
+void GuilhermeCpu::right_align(int arg)
 {
 	int helper;			//this is used to count without changing the count
 	int *count;			//this is used to change the count
@@ -33,7 +33,7 @@ void NossaCpu::right_align(int arg)
 		return;
 
 	if (*decimal_point < MAX_DIGITS)
-		*decimal_point = MAX_DIGITS - helper + *decimal_point; //this fixes the decimal point
+		(*decimal_point) = MAX_DIGITS - helper + *decimal_point; //this fixes the decimal point
 	for (int i = (helper - 1); i >= 0; i--)					   // transfers the numbers to the rightmost side
 	{														   //this for transfers from right to left in order to not overrwite any number
 		(*array)[MAX_DIGITS - helper + i] = (*array)[i];
@@ -43,7 +43,7 @@ void NossaCpu::right_align(int arg)
 }
 
 //clears an array of digits
-void NossaCpu::clear_array(Digit *array, int *count, int *decimal_count)
+void GuilhermeCpu::clear_array(Digit *array, int *count, int *decimal_count)
 {
 	for (int i = 0; i < MAX_DIGITS; i++)
 	{
@@ -57,22 +57,8 @@ void NossaCpu::clear_array(Digit *array, int *count, int *decimal_count)
 		this->signal = POSITIVE;
 	}
 }
-
-//TODO: check if this is necessary
-int NossaCpu::calculate_offset()
-{
-	if (this->count1 > this->count2)
-	{
-		return (this->count1 - this->count2);
-	}
-	else
-	{
-		return (this->count2 - this->count1);
-	}
-}
-
 //transforms a single digit in a single int
-int NossaCpu::digit_to_int(Digit digit)
+int GuilhermeCpu::digit_to_int(Digit digit)
 {
 	switch (digit)
 	{
@@ -101,7 +87,7 @@ int NossaCpu::digit_to_int(Digit digit)
 	}
 }
 
-Digit NossaCpu::int_to_digit(int number)
+Digit GuilhermeCpu::int_to_digit(int number)
 {
 	switch (number)
 	{
@@ -131,7 +117,7 @@ Digit NossaCpu::int_to_digit(int number)
 }
 
 //Convert a finished array of digits to an double to accomodate floating points
-double NossaCpu::convert_to_operands(Digit *arg, int count, int point_count)
+double GuilhermeCpu::convert_to_operands(Digit *arg, int count, int point_count)
 {
 	double result = 0;
 	int digit;
@@ -144,44 +130,45 @@ double NossaCpu::convert_to_operands(Digit *arg, int count, int point_count)
 }
 
 //converts a number to a finished array of digits
-int NossaCpu::convert_to_digit(double result, Digit *vet, int *count, int *decimal_count)
+int GuilhermeCpu::convert_to_digit(double result, Digit *vet, int *count, int *decimal_count)
 {
-	Digit digito;
+	Digit digit;
 	int i = 0;
 	int zero_checker = 0;
 	*count = 0;
 	*decimal_count = 0;
-	if (result < 0)
+	if(this->arg1 == vet)
 	{
-		result = -result;
-		//TODO: check case of MEMORY_READ_CLEAR
-		if (vet == this->arg1)
+		if (result < 0)
 		{
-			this->signal = NEGATIVE;
+			result = -result;
+			if (vet == this->arg1)
+			{
+				this->signal = NEGATIVE;
+			}
 		}
+		else this->signal = POSITIVE;
 	}
 	double result_helper = result;
-
-	//TODO: calculate decimal place
-	while (result_helper > 1)
+	*decimal_count = log10(result_helper) + 1;
+	if (*decimal_count > MAX_DIGITS)
 	{
-		result_helper /= 10;
-		(*decimal_count)++;
-		if (*decimal_count > MAX_DIGITS)
-		{
-			return 1;
-		}
+		return 1;
 	}
+	//printf("Decimal count: %d\n", *decimal_count);
 
-	while (result != 0)
+	while (*count < *decimal_count)
 	{
 		if (*count == MAX_DIGITS)
 		{
 			break;
 		}
-		Digit digit = int_to_digit((result / pow(10, MAX_DIGITS - i)));
-		if ((digit != ZERO))
+		digit = int_to_digit(trunc(result / pow(10, MAX_DIGITS - i)));
+		if (digit != ZERO)
+		{
 			zero_checker = 1;
+		}
+		// printf("i: %d digito: %d countagem: %d\n", i, digit, *count);
 		if (zero_checker)
 		{
 			vet[*count] = digit;
@@ -190,12 +177,40 @@ int NossaCpu::convert_to_digit(double result, Digit *vet, int *count, int *decim
 		result = fmod(result, pow(10, MAX_DIGITS - i));
 		i++;
 	}
+	(*count) += (*decimal_count);
+	//printf("\n\n%d   %d\n\n", *count, *decimal_count);
+	float digito_em_float; //yes, this is needed. and yes, it HAS to be a float
+	for(i = (*decimal_count); i < MAX_DIGITS; i++)
+	{
+		
+		//result = result * 10;
+		digito_em_float = result / pow(10, (*decimal_count) -i - 1);
+		digito_em_float =  fmod(digito_em_float, 10);
+		//printf("digito em float: %f , result: %f\n", digito_em_float, result);
+		digit = int_to_digit(digito_em_float);
+		//printf("i: %d digito: %d, result: %f\n", i, digit, result);
+		vet[i] = digit;
+	}
 	
+	//printf("\n");
+	/* for(i = 0; i < MAX_DIGITS; i++)
+	{
+		if(*decimal_count == i) printf(".");
+		printf("%d", vet[i]);
+	} */
+	//printf("\n\n");
+	for(i = 0; i < MAX_DIGITS; i++)
+	{
+		if (vet[i] != ZERO) (*count) = i;
+	}
+	*count += 1;
+	//printf("count: %d, decimal count: %d\n", *count, *decimal_count);
+	//printf("\nsaiu da func\n");
 	return 0;
 }
 
 // contains all the logic to call the display methods
-void NossaCpu::call_display()
+void GuilhermeCpu::call_display()
 {
 
 	if (this->signal == NEGATIVE)
@@ -204,21 +219,56 @@ void NossaCpu::call_display()
 		return;
 
 	int zero_checker = 0;
-
-	for (int i = 0; i < this->count1; i++)
+	int helper;
+	if(this->count_point1 == 0) this->display->add(ZERO);
+	if(this->count_point1 > this->count1) helper = this->count1;
+	else helper = this->count_point1;
+	for (int i = 0; i < helper; i++)
 	{
 		if (((arg1[i] != 0) || zero_checker) && !(this->count2))
 		{
-			if (i == this->count_point1)
-			{
-				std::cout << ".";
-			}
 			this->display->add(this->arg1[i]);
 			zero_checker = 1;
 		}
 	}
+	zero_checker = 0;
+	if(this->count_point2 == 0) this->display->add(ZERO);
+	if (this->count1 > this->count_point1)
+	{
+		if(!(this->count2))
+		{
+			std::cout << ".";
+			for(int i = this->count_point1; i < this->count1; i++)
+			{
+				this->display->add(this->arg1[i]);
+			}
+		}
+	}
 	
-	for (int i = 0; i < this->count2; i++)
+	
+	zero_checker = 0;
+
+	if(this->count_point2 > this->count2) helper = this->count2;
+	else helper = this->count_point2;
+	for (int i = 0; i < helper; i++)
+	{
+		if (((arg2[i] != 0) || zero_checker))
+		{
+			this->display->add(this->arg2[i]);
+			zero_checker = 1;
+		}
+	}
+	zero_checker = 0;
+	if (this->count2 > this->count_point2)
+	{
+		std::cout << ".";
+		for(int i = this->count_point2; i < this->count2; i++)
+		{
+			this->display->add(this->arg2[i]);
+		}
+	}
+
+	/* for (int i = 0; i < this->count2; i++)
 	{
 		if ((arg2[i] != 0) || zero_checker)
 		{
@@ -229,39 +279,12 @@ void NossaCpu::call_display()
 			this->display->add(this->arg2[i]);
 			zero_checker = 1;
 		}
-	}
-
-	/* for (int i = 0; i < this->count1; i++)
-	{
-		if (((arg1[i] != 0) || zero_checker) && !(this->count2))
-		{
-			if (i == this->count_point1) 
-			{
-				this->display->setDecimalSeparator();
-			}
-			//TODO: check errors displaying zeros after dot
-			this->display->add(arg1[i]);
-			zero_checker = 1;
-		}
 	} */
-	/* 
-	for (int i = 0; i < this->count2; i++)
-	{
-		if ((arg2[i] != 0) || zero_checker)
-		{
-			if (i == this->count_point2) 
-			{
-				this->display->setDecimalSeparator();
-			}
-			this->display->add(arg2[i]);
-			zero_checker = 1;
-		}
-	} */
-	std::cout << "\n";
+	this->display->clear();
 }
 
 // handles errors and displays them
-void NossaCpu::error_handle()
+void GuilhermeCpu::error_handle()
 {
 	clear_array(this->arg1, &this->count1, &this->count_point1);
 	clear_array(this->arg2, &this->count2, &this->count_point2);
@@ -269,7 +292,7 @@ void NossaCpu::error_handle()
 		this->display->setError();
 }
 
-void NossaCpu::setOperands(int count1, int count2)
+void GuilhermeCpu::setOperands(int count1, int count2)
 {
 	if (count1 != MAX_DIGITS)
 	{
@@ -283,52 +306,34 @@ void NossaCpu::setOperands(int count1, int count2)
 }
 
 // takes the numbers and the operation and performs the operation
-void NossaCpu::Operate()
+void GuilhermeCpu::Operate()
 {
-	//TODO: something is wrong. Fix
-	int offset = this->calculate_offset();
 	double operand1, operand2;
 	operand1 = convert_to_operands(this->arg1, this->count1, this->count_point1);
 	operand2 = convert_to_operands(this->arg2, this->count2, this->count_point2);
 
-	//TODO: check if necessary
-	/* 
-	if (this->signal == NEGATIVE)
-	{
-		operand1 *= -1;
-	} */
-
-	//int operand1 = this->convert_to_int(this->arg1, this->count1);
-	//int operand2 = this->convert_to_int(this->arg2, this->count2);
 	double result = 0;
-	//TODO: operate with number of decimal digits
 	switch (this->op)
 	{
 	case ADDITION:
 		result = operand1 + operand2;
-		// DONE: check if the result is bigger than MAX_DIGITS
 		break;
 	case SUBTRACTION:
 		result = operand1 - operand2;
 		break;
 	case MULTIPLICATION:
 		result = operand1 * operand2;
-		// DONE: check if the result is bigger than MAX_DIGITS
 		break;
 	case DIVISION:
 		if (operand2 == 0)
 			this->error_handle();
 		else
 			result = operand1 / operand2;
-		//TODO: might lose precision (because of the double), if its a problem, change it
-		// DONE: check if operand2 is 0
 		break;
 	case SQUARE_ROOT:
-		// DONE: check if operand1 is negative
 		if (operand1 > 0)
 		{
 			result = sqrt(operand1);
-			//TODO: might lose precision (because of the double), if its a problem, change it
 		}
 		else
 		{
@@ -356,23 +361,23 @@ void NossaCpu::Operate()
 	}
 
 	clear_array(this->arg1, &this->count1, &this->count_point1);
-
-	//this is not in use. cant figure out how to know if a number has ended yet or not
+	//printf("Resultado em float msm: %lf\n", result);
 	if (this->convert_to_digit(result, this->arg1, &this->count1, &this->count_point1))
 	{
 
 		this->error_handle();
 	}
+	//printf("contagem total: %d, contagem do ponto: %d\n", result, this->count1, this->count_point1);
 	this->right_align(1);
 
 	clear_array(this->arg2, &this->count2, &this->count_point2);
 }
 
 // constructs the cpu
-NossaCpu::NossaCpu()
+GuilhermeCpu::GuilhermeCpu()
 {
-	this->arg1 = static_cast<Digit *>(calloc(MAX_DIGITS, sizeof(Digit)));
-	this->arg2 = static_cast<Digit *>(calloc(MAX_DIGITS, sizeof(Digit)));
+	this->arg1 = static_cast <Digit *> (calloc(MAX_DIGITS, sizeof(Digit)));
+	this->arg2 = static_cast <Digit *> (calloc(MAX_DIGITS, sizeof(Digit)));
 	this->op = NONE;
 	this->count1 = 0;
 	this->count2 = 0;
@@ -381,32 +386,31 @@ NossaCpu::NossaCpu()
 	this->display = NULL;
 	this->memory = 0;
 	this->mrcFlag = 0;
-	this->signal = Signal(POSITIVE);
-	this->saveOp = Operation(0);
+	this->signal = POSITIVE;
+	this->saveOp = NONE;
 }
 
 // destructs the cpu and frees the dinamically allocated arrays
-NossaCpu::~NossaCpu()
+GuilhermeCpu::~GuilhermeCpu()
 {
 	free(this->arg1);
 	free(this->arg2);
 }
 
 // connects a display to the cpu
-void NossaCpu::setDisplay(Display *display)
+void GuilhermeCpu::setDisplay(Display *display)
 {
 	this->display = display;
 }
 
 // contains the logic to receive the digits and put them in the correct array
-void NossaCpu::receiveDigit(Digit d)
+void GuilhermeCpu::receiveDigit(Digit d)
 {
-	//TODO: if digit is remaining from a operation, must be substituted when a new digit arrives
 	if ((this->count1 < MAX_DIGITS))
 	{
 		this->arg1[this->count1++] = d;
 	}
-	else if ((count2 < MAX_DIGITS))
+	else if ((count2 < MAX_DIGITS && this->op != NONE))
 	{
 		this->arg2[this->count2++] = d;
 	}
@@ -415,23 +419,27 @@ void NossaCpu::receiveDigit(Digit d)
 }
 
 // contains the logic to receive the operations and operate if needed
-//TODO: change it
-void NossaCpu::receiveOperation(Operation op)
+void GuilhermeCpu::receiveOperation(Operation op)
 {
+	
 	if (op != PERCENTAGE)
 	{
 		this->saveOp = op;
 	}
 	
-	this->op = op;
 	
 	right_align(1);
 	if (this->count2 > 0)
 	{
 		right_align(2);
 	}
+	if (this->op != NONE)
+	{
+		this->Operate();
+	}
+	this->op = op;
 	// If the user press the SUBTRACTION Key just after ON/CE, the operand 1 will be negative
-	if (this->op == 1 && this->count1 == 0)
+	if (this->op == ADDITION && this->count1 == 0)
 	{
 		this->signal = Signal(NEGATIVE);
 	}
@@ -448,7 +456,7 @@ void NossaCpu::receiveOperation(Operation op)
 }
 
 // receive the control digit and treat appropriately
-void NossaCpu::receiveControl(Control c)
+void GuilhermeCpu::receiveControl(Control c)
 {
 	switch (c)
 	{
@@ -457,21 +465,19 @@ void NossaCpu::receiveControl(Control c)
 		Operate();
 		break;
 	case CLEAR:
-		// TODO: implement clear
+		this->display->clear();
 		break;
 	case RESET:
-		clear_array(this->arg1, &this->count1, &this->count_point2);
+		clear_array(this->arg1, &this->count1, &this->count_point1);
 		clear_array(this->arg2, &this->count2, &this->count_point2);
 		this->count1 = 0;
 		this->count2 = 0;
-		// TODO: make the changes needed to acommodate floats
 		break;
 	case MEMORY_READ_CLEAR:
 		setOperands(this->count1, this->count2);
 
 		if (this->mrcFlag)
 		{
-			// TODO: Implement a flag that disappears when MEMORY_CLEAR is used.
 			this->mrcFlag = 0;
 			break;
 		}
@@ -501,7 +507,6 @@ void NossaCpu::receiveControl(Control c)
 			this->memory -= convert_to_operands(this->arg1, this->count1, this->count_point1);
 		}
 
-		// TODO: Implement a flag that disappears when MEMORY_SUBTRACTION sets the memory to zero.
 		break;
 	case MEMORY_ADDITION:
 		setOperands(this->count1, this->count2);
@@ -514,23 +519,18 @@ void NossaCpu::receiveControl(Control c)
 			this->memory += convert_to_operands(this->arg1, this->count1, this->count_point1);
 		}
 
-		// TODO: Implement a flag that appears when MEMORY_ADDITION is used.
 		break;
 	case DECIMAL_SEPARATOR:
-		if (count1 > 0 && count1 != MAX_DIGITS && (!this->count_point1))
+		if(this->op == NONE)
 		{
-			this->count_point1 = this->count1;
+			if (this->count_point1 == MAX_DIGITS) this->count_point1 = this->count1;
 		}
-		else if (!this->count_point2)
+		else
 		{
-			this->count_point2 = this->count2;
+			if (this->count_point2 == MAX_DIGITS) this->count_point2 = this->count2;
 		}
-		// TODO: test
-		break;
 	default:
 		break;
 	}
-
-	this->display->setSignal(this->signal);
 	call_display();
 }

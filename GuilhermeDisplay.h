@@ -2,7 +2,7 @@
 
 #include "calculator.h"
 
-class NossoDisplay : public Display
+class GuilhermeDisplay : public Display
 {
 public:
 	void add(Digit);
