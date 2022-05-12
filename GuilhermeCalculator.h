@@ -1,4 +1,3 @@
-/*
 #pragma once
 
 #include "calculator.h"
@@ -11,8 +10,12 @@ class GuilhermeCalculator: public Calculator
 {
     Cpu* cpu;
     Keyboard* keyboard;
+    Display* display;
     public:
-    virtual void setDisplay(Display* );
-    virtual void setCpu(Cpu* );
-    virtual void setKeyboard(Keyboard* );
-}; */
+    void setDisplay(Display* );
+    void setCpu(Cpu* );
+    void setKeyboard(Keyboard* );
+    Display* getDisplay();
+    Cpu* getCpu();
+    Keyboard* getKeyboard();
+};

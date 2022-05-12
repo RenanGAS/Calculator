@@ -10,8 +10,10 @@ class GuilhermeKeyboard : public Keyboard
 public:
 	GuilhermeKeyboard();
 	// void setCpu(Cpu *); defined in teacher's .cpp
-	void addKey(Key *);
+	bool addKey(Key *);
 	void receiveDigit(Digit);
 	void receiveOperation(Operation);
 	void receiveControl(Control);
+	bool removeKey(Key* );
+    KeyDigit* queryKeyDigit(Digit );
 };

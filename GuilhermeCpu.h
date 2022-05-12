@@ -16,6 +16,9 @@ class GuilhermeCpu : public Cpu
 	int mrcFlag;
 	Signal signal;
 	Operation saveOp;
+	Digit* argequal;
+	int countequal;
+	int countpointequal;
 	void right_align(int arg);
 	void clear_array(Digit *array, int *count, int *decimal_count);
 	void call_display();

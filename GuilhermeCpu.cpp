@@ -348,11 +348,14 @@ GuilhermeCpu::GuilhermeCpu()
 {
 	this->arg1 = static_cast <Digit *> (calloc(MAX_DIGITS, sizeof(Digit)));
 	this->arg2 = static_cast <Digit *> (calloc(MAX_DIGITS, sizeof(Digit)));
+	this->arg2 = static_cast <Digit *> (calloc(MAX_DIGITS, sizeof(Digit)));
 	this->op = NONE;
 	this->count1 = 0;
 	this->count2 = 0;
+	this->countequal = 0;
 	this->count_point1 = MAX_DIGITS;
 	this->count_point2 = MAX_DIGITS;
+	this->countpointequal = MAX_DIGITS;
 	this->display = NULL;
 	this->memory = 0;
 	this->mrcFlag = 0;
@@ -365,6 +368,7 @@ GuilhermeCpu::~GuilhermeCpu()
 {
 	free(this->arg1);
 	free(this->arg2);
+	free(this->argequal);
 }
 
 // connects a display to the cpu

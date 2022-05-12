@@ -33,27 +33,6 @@ class Cpu: public Receiver{
     virtual void receiveControl(Control ) = 0;
 };
 
-class Key; // Preset for early reference
-
-class Keyboard: public Receiver{
-  protected:
-   Cpu* cpu;
-  public:
-    void setCpu(Cpu* );
-
-    virtual void addKey(Key* ) = 0;
- 
-    virtual void receiveDigit(Digit ) = 0;
-    virtual void receiveOperation(Operation ) = 0;
-    virtual void receiveControl(Control ) = 0;
-};
-
-class Calculator{
-  public:
-    virtual void setDisplay(Display* ) = 0;
-    virtual void setCpu(Cpu* ) = 0;
-    virtual void setKeyboard(Keyboard* ) = 0;
-};
 
 class Key{
    protected:
@@ -86,4 +65,31 @@ class KeyControl: public Key{
    public:
       KeyControl(Control );
       void press();
+};
+
+class Keyboard: public Receiver{
+  protected:
+   Cpu* cpu;
+  public:
+    void setCpu(Cpu* );
+
+    virtual bool addKey(Key* ) = 0;
+    virtual bool removeKey(Key* ) = 0;
+    virtual KeyDigit* queryKeyDigit(Digit ) = 0;
+ 
+    virtual void receiveDigit(Digit ) = 0;
+    virtual void receiveOperation(Operation ) = 0;
+    virtual void receiveControl(Control ) = 0;
+};
+
+class Calculator{
+  public:
+    virtual void setDisplay(Display* ) = 0;
+    virtual Display* getDisplay() = 0;
+
+    virtual void setCpu(Cpu* ) = 0;
+    virtual Cpu* getCpu() = 0;
+    
+    virtual void setKeyboard(Keyboard* ) = 0;
+    virtual Keyboard* setKeyboard() = 0;
 };

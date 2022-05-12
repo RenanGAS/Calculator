@@ -18,7 +18,7 @@ void GuilhermeKeyboard::setCpu(Cpu* cpu)
 } */
 
 //Adds a key to the keyboard and updates the counter
-void GuilhermeKeyboard::addKey(Key* key)
+bool GuilhermeKeyboard::addKey(Key* key)
 {
 	if(this->KeysCount < 200)
 	{
@@ -29,6 +29,7 @@ void GuilhermeKeyboard::addKey(Key* key)
 	{
 		std::cout << "Keyboard is full" << std::endl;
 	}
+	return 0;
 }
 
 //Passes digits to the cpu
@@ -48,3 +49,23 @@ void GuilhermeKeyboard::receiveControl(Control c)
 {
 	this->cpu->receiveControl(c);
 }
+
+bool GuilhermeKeyboard::removeKey(Key*)
+{
+	int checker = 0;
+	for(int i = 0; i < this->KeysCount - 1; i++)
+	{
+		if (this->keys[i])
+		{
+			checker = 1;
+		}
+		if(checker)
+		{
+			this->keys[i] = this->keys[i + 1];
+		}
+		
+	}
+	return 0;
+}
+
+KeyDigit* GuilhermeKeyboard::queryKeyDigit(Digit) {return NULL;}

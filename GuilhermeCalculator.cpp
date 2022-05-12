@@ -1,4 +1,3 @@
-/*
 #include <iostream>
 #include <cmath>
 
@@ -25,4 +24,17 @@ void GuilhermeCalculator::setCpu(Cpu* cpu)
 	this->cpu = cpu;
 }
 
-*/
+Display* GuilhermeCalculator::getDisplay()
+{
+	return this->display;
+}
+
+Cpu* GuilhermeCalculator::getCpu()
+{
+	return this->cpu;
+}
+
+Keyboard* GuilhermeCalculator::getKeyboard()
+{
+	return this->keyboard;
+}
